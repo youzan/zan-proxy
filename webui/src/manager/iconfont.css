@@ -1,0 +1,37 @@
+
+@font-face {font-family: "iconfont";
+  src: url('iconfont.ttf?t=1516029560569') format('truetype'); /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
+}
+
+.iconfont {
+  font-family:"iconfont" !important;
+  font-size:16px;
+  font-style:normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-set:before { content: "\e6ae"; }
+
+.icon-bargraph:before { content: "\e608"; }
+
+.icon-beaker:before { content: "\e60a"; }
+
+.icon-layers:before { content: "\e636"; }
+
+.icon-search:before { content: "\e656"; }
+
+.icon-tools:before { content: "\e65f"; }
+
+.icon-box:before { content: "\e6cb"; }
+
+.icon-remind:before { content: "\e713"; }
+
+.icon-skip:before { content: "\e718"; }
+
+.icon-security:before { content: "\e71c"; }
+
+.icon-suoding:before { content: "\e6e6"; }
+
+.icon-hot:before { content: "\e756"; }
+

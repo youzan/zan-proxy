@@ -1,0 +1,32 @@
+{
+    "compilerOptions": {
+        "moduleResolution": "node",
+        "target": "es2015",
+        "sourceRoot": "./src",
+        "sourceMap": true,
+        "strictNullChecks": true,
+        "strictFunctionTypes": true,
+        "allowSyntheticDefaultImports": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "esModuleInterop": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "module": "commonjs",
+        "outDir": "dist",
+        "lib": [
+            "dom",
+            "es2017"
+        ]
+    },
+    "exclude": [
+        "cmd",
+        "esm",
+        "coverage",
+        "old",
+        ".felint",
+        ".milti_hooks",
+        "**/test/**/*.spec.ts"
+    ],
+    "compileOnSave": true
+}

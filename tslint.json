@@ -1,0 +1,16 @@
+{
+  "defaultSeverity": "error",
+  "extends": ["tslint:recommended"],
+  "jsRules": {},
+  "rules": {
+    "interface-name": false,
+    "no-console": false,
+    "no-var-requires": false,
+    "quotemark": [true, "single", "jsx-double"],
+    "arrow-parens": [true, "ban-single-arg-parens"]
+  },
+  "rulesDirectory": [],
+  "linterOptions": {
+    "exclude": ["test/**/*.ts", "dist/**/*", "webui/**/*"]
+  }
+}

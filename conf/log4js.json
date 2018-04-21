@@ -1,0 +1,25 @@
+{
+  "appenders": [
+    {
+      "type": "dateFile",
+      "filename": "logs/exception.log",
+      "pattern": "-yyyy-MM-dd",
+      "alwaysIncludePattern": false,
+      "category":"exception"
+    },
+    {
+      "type": "dateFile",
+      "filename": "logs/connect.log",
+      "pattern": "-yyyy-MM-dd",
+      "alwaysIncludePattern": false,
+      "category":"connect"
+    },
+    {
+      "type": "dateFile",
+      "filename": "logs/request.log",
+      "pattern": "-yyyy-MM-dd",
+      "alwaysIncludePattern": false,
+      "category":"request"
+    }
+  ]
+}

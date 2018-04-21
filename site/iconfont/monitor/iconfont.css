@@ -1,0 +1,22 @@
+
+@font-face {font-family: "iconfont";
+  src: url('iconfont.ttf?t=1515739363329') format('truetype'); /* iOS 4.1- */
+}
+
+.iconfont {
+  font-family:"iconfont" !important;
+  font-size:18px;
+  font-style:normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-bofang:before { content: "\e624"; }
+
+.icon-zanting:before { content: "\e629"; }
+
+.icon-sousuo:before { content: "\e632"; }
+
+.icon-qingchu:before { content: "\e645"; }
+
+

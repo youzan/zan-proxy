@@ -1,0 +1,47 @@
+* {
+  box-sizing: border-box;
+}
+
+.app {
+  height: 100%;
+  overflow: hidden;
+}
+
+.monitor {
+  display: flex;
+  flex: 1;
+}
+
+.op-bar {
+  padding: 10px 20px;
+  display: flex;
+  border-bottom: 1px solid #e1e3e6;
+  .buttons {
+    display: flex;
+    border-right: 1px solid #e1e3e6;
+    padding-right: 20px;
+    margin-right: 20px;
+    .icon-stop {
+      width: 12px;
+      height: 12px;
+      display: inline-block;
+      border-radius: 2px;
+      background-color: #fff;
+      veritical-align: middle;
+      margin-right: 7px;
+      line-height: 1;
+    }
+    .filter-input {
+      width: 300px;
+    }
+  }
+  .tips {
+    font-size: 12px;
+    color: red;
+    margin-right:10px;
+  }
+  .filters {
+    line-height: 27px;
+    height: 27px;
+  }
+}
