@@ -6,4 +6,5 @@ EXPOSE 8989
 COPY package*.json ./
 RUN npm install
 COPY . .
+RUN node ./resetDataFile.js
 CMD [ "node", "./dist/bin/index.js" ]

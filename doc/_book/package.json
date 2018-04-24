@@ -1,0 +1,10 @@
+{
+  "name": "admin",
+  "version": "1.0.0",
+  "description": "zan proxy doc",
+  "author": "taiyong <taiyong@youzan.com>",
+  "scripts": {
+    "dev": "gitbook serve",
+    "build": "gitbook build . ../dist/site/help"
+  }
+}

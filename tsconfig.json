@@ -1,8 +1,8 @@
 {
     "compilerOptions": {
         "moduleResolution": "node",
-        "target": "es2015",
-        "sourceRoot": "./src",
+        "target": "es2017",
+        "sourceRoot": "./refactor",
         "sourceMap": true,
         "strictNullChecks": true,
         "strictFunctionTypes": true,
@@ -25,8 +25,6 @@
         "coverage",
         "old",
         ".felint",
-        ".milti_hooks",
-        "**/test/**/*.spec.ts"
-    ],
-    "compileOnSave": true
+        ".milti_hooks"
+    ]
 }

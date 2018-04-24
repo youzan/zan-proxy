@@ -1,0 +1,17 @@
+[package]
+name = "localkv"
+version = "0.1.0"
+authors = ["jinzhixin <jinzhixin@youzan.com>"]
+license = "MIT"
+build = "build.rs"
+
+[lib]
+name = "localkv"
+crate-type = ["dylib"]
+
+[build-dependencies]
+neon-build = "0.1.22"
+
+[dependencies]
+neon = "0.1.22"
+sled = "0.15.13"

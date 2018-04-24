@@ -1,0 +1,463 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>规则配置 · ZanProxy</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="../data_manage/" />
+    
+    
+    <link rel="prev" href="../project/" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    简介
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../install/">
+            
+                <a href="../install/">
+            
+                    
+                    ZanProxy安装
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../cert/">
+            
+                <a href="../cert/">
+            
+                    
+                    证书安装
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../config/">
+            
+                <a href="../config/">
+            
+                    
+                    ZanProxy 配置
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../host/">
+            
+                <a href="../host/">
+            
+                    
+                    host配置
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../project/">
+            
+                <a href="../project/">
+            
+                    
+                    工程路径配置
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.7" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    规则配置
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="../data_manage/">
+            
+                <a href="../data_manage/">
+            
+                    
+                    自定义mock数据管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9" data-path="../monitor/">
+            
+                <a href="../monitor/">
+            
+                    
+                    监控窗
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.10" data-path="../chrome/">
+            
+                <a href="../chrome/">
+            
+                    
+                    chrome代理配置
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.11" data-path="../phone/">
+            
+                <a href="../phone/">
+            
+                    
+                    手机代理配置
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12" data-path="../internal/">
+            
+                <a href="../internal/">
+            
+                    
+                    内部机制
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.12.1" data-path="../internal/proxy.html">
+            
+                <a href="../internal/proxy.html">
+            
+                    
+                    代理流程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12.2" data-path="../internal/request-flow.html">
+            
+                <a href="../internal/request-flow.html">
+            
+                    
+                    请求处理流程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12.3" data-path="../internal/ws-debug.html">
+            
+                <a href="../internal/ws-debug.html">
+            
+                    
+                    ws调试
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.13" data-path="../question/">
+            
+                <a href="../question/">
+            
+                    
+                    常见问题
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >规则配置</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="&#x8F6C;&#x53D1;&#x89C4;&#x5219;">&#x8F6C;&#x53D1;&#x89C4;&#x5219;</h1>
+<p><img src="https://img.yzcdn.cn/public_files/2018/03/30/3a7f3c2c682180c496f2e748cf05851e.png"></p>
+<h2 id="&#x89C4;&#x5219;&#x5BFC;&#x5165;">&#x89C4;&#x5219;&#x5BFC;&#x5165;</h2>
+<p>&#x53EF;&#x4EE5;&#x5BFC;&#x5165;&#x8FDC;&#x7A0B;&#x89C4;&#x5219;&#x3001;&#x672C;&#x5730;&#x89C4;&#x5219;&#x3002;&#x65B9;&#x4FBF;&#x56E2;&#x961F;&#x4E4B;&#x95F4;&#x5171;&#x4EAB;&#x89C4;&#x5219;&#x6587;&#x4EF6;&#x3002;<br>&#x5BFC;&#x5165;gitlab&#x4E0A;&#x7684;&#x8FDC;&#x7A0B;&#x89C4;&#x5219;&#x65F6;&#xFF0C;&#x786E;&#x4FDD;&#x5DF2;&#x7ECF;&#x914D;&#x7F6E;&#x4E86;gitlab token</p>
+<h2 id="&#x89C4;&#x5219;&#x5BFC;&#x51FA;">&#x89C4;&#x5219;&#x5BFC;&#x51FA;</h2>
+<p>&#x5C06;&#x89C4;&#x5219;&#x6587;&#x4EF6;&#x5BFC;&#x51FA;&#xFF0C;&#x653E;&#x5230;gitlab&#x4E0A;&#xFF0C;&#x65B9;&#x4FBF;&#x522B;&#x4EBA;&#x5BFC;&#x5165;&#x3002;  </p>
+<h2 id="&#x89C4;&#x5219;&#x914D;&#x7F6E;">&#x89C4;&#x5219;&#x914D;&#x7F6E;</h2>
+<p>ZanProxy&#x4E2D;&#x4E00;&#x4E2A;&#x89C4;&#x5219;&#x96C6;&#x53EF;&#x5BF9;&#x5E94;&#x591A;&#x4E2A;&#x89C4;&#x5219;&#xFF0C;&#x6BCF;&#x4E2A;&#x89C4;&#x5219;&#x96C6;&#x548C;&#x6BCF;&#x4E2A;&#x89C4;&#x5219;&#x90FD;&#x53EF;&#x5355;&#x72EC;&#x914D;&#x7F6E;&#x662F;&#x5426;&#x751F;&#x6548;&#x3002;(&#x5982;a&#x89C4;&#x5219;&#x5728;A&#x89C4;&#x5219;&#x96C6;&#x4E0B;&#xFF0C;&#x5F53;A&#x89C4;&#x5219;&#x4E0D;&#x751F;&#x6548;&#x65F6;&#xFF0C;&#x65E0;&#x8BBA;a&#x89C4;&#x5219;&#x662F;&#x5426;&#x88AB;&#x52FE;&#x9009;&#xFF0C;&#x90FD;&#x4E0D;&#x751F;&#x6548;)&#x3002;
+<img src="https://img.yzcdn.cn/public_files/2018/03/30/3a7f3c2c682180c496f2e748cf05851e.png"></p>
+<h2 id="&#x89C4;&#x5219;&#x7F16;&#x8F91;">&#x89C4;&#x5219;&#x7F16;&#x8F91;</h2>
+<p><img src="https://img.yzcdn.cn/public_files/2018/03/30/4e6849fa6536d5c067e7dfb8fe732c6b.png"></p>
+<h4 id="&#x5339;&#x914D;&#x8FC7;&#x7A0B;">&#x5339;&#x914D;&#x8FC7;&#x7A0B;</h4>
+<p>URL&#x7279;&#x5F81;&#x4E3A;&#x8BE5;&#x8BF7;&#x6C42;&#x662F;&#x5426;&#x88AB;ZanProxy&#x6240;&#x8F6C;&#x53D1;&#x7684;&#x4E3B;&#x8981;&#x5224;&#x5B9A;&#x65B9;&#x5F0F;&#x3002;&#x5176;&#x5224;&#x5B9A;&#x89C4;&#x5219;&#x5982;&#x4E0B;&#xFF1A;</p>
+<ol>
+<li>&#x4F18;&#x5148;&#x5C06;URL&#x7279;&#x5F81;&#x5F53;&#x6210;&#x4E00;&#x4E2A;&#x5B57;&#x7B26;&#x53BB;&#x5339;&#x914D;&#x6240;&#x6709;&#x8BF7;&#x6C42;&#xFF0C;&#x5F53;&#x67D0;&#x4E00;&#x8BF7;&#x6C42;&#x7684;url&#x4E2D;&#x5305;&#x542B;URL&#x7279;&#x5F81;&#xFF0C;&#x5219;&#x89C6;&#x4E3A;&#x8BE5;&#x8BF7;&#x6C42;&#x7B26;&#x5408;&#x8BE5;URL&#x7279;&#x5F81;&#x3002;</li>
+<li>&#x5F53;&#x89C4;&#x5219;1&#x65E0;&#x6CD5;&#x5339;&#x914D;&#x65F6;&#xFF0C;&#x5C06;&#x8BE5;URL&#x7279;&#x5F81;&#x5B9E;&#x4F8B;&#x5316;&#x4E3A;&#x4E00;&#x4E2A;&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;&#xFF0C;&#x518D;&#x5BF9;&#x6240;&#x6709;&#x8BF7;&#x6C42;&#x8FDB;&#x884C;&#x5339;&#x914D;&#xFF08;RegExp.prototype.test&#x65B9;&#x6CD5;&#xFF09;&#x3002;</li>
+</ol>
+<h2 id="&#x8BF7;&#x6C42;&#x52A8;&#x4F5C;">&#x8BF7;&#x6C42;&#x52A8;&#x4F5C;</h2>
+<p>&#x8BF7;&#x6C42;&#x52A8;&#x4F5C;&#x4F1A;&#x6839;&#x636E;&#x6DFB;&#x52A0;&#x987A;&#x5E8F;&#x4F9D;&#x6B21;&#x6267;&#x884C;</p>
+<h3 id="&#x8BF7;&#x6C42;&#x52A8;&#x4F5C;&#xFF1A;&#x8F6C;&#x53D1;&#x8BF7;&#x6C42;">&#x8BF7;&#x6C42;&#x52A8;&#x4F5C;&#xFF1A;&#x8F6C;&#x53D1;&#x8BF7;&#x6C42;</h3>
+<p>&#x5C06;&#x8BF7;&#x6C42;&#x8F6C;&#x53D1;&#x5230;&#x672C;&#x5730;&#x3001;&#x6216;&#x8005;&#x53E6;&#x4E00;&#x4E2A;&#x5730;&#x5740;</p>
+<h3 id="&#x8BF7;&#x6C42;&#x52A8;&#x4F5C;&#xFF1A;&#x8FD4;&#x56DE;&#x81EA;&#x5B9A;&#x4E49;&#x6570;&#x636E;">&#x8BF7;&#x6C42;&#x52A8;&#x4F5C;&#xFF1A;&#x8FD4;&#x56DE;&#x81EA;&#x5B9A;&#x4E49;&#x6570;&#x636E;</h3>
+<p>&#x5C06;&#x6307;&#x5B9A;&#x7684;&#x6570;&#x636E;&#x6587;&#x4EF6;&#x8FD4;&#x56DE;&#x7ED9;&#x6D4F;&#x89C8;&#x5668;</p>
+<h3 id="&#x8BF7;&#x6C42;&#x52A8;&#x4F5C;&#xFF1A;&#x589E;&#x52A0;&#x8BF7;&#x6C42;&#x5934;">&#x8BF7;&#x6C42;&#x52A8;&#x4F5C;&#xFF1A;&#x589E;&#x52A0;&#x8BF7;&#x6C42;&#x5934;</h3>
+<p>&#x589E;&#x52A0;&#x8BF7;&#x6C42;&#x7684;header&#xFF0C;&#x5E38;&#x89C1;&#x7684;&#x5982;cookie&#x3001;user-agent&#x7B49;</p>
+<h3 id="&#x8BF7;&#x6C42;&#x52A8;&#x4F5C;&#xFF1A;&#x589E;&#x52A0;&#x54CD;&#x5E94;&#x5934;">&#x8BF7;&#x6C42;&#x52A8;&#x4F5C;&#xFF1A;&#x589E;&#x52A0;&#x54CD;&#x5E94;&#x5934;</h3>
+<p>&#x589E;&#x52A0;&#x670D;&#x52A1;&#x5668;&#x54CD;&#x5E94;&#x7684;header&#xFF0C;&#x5E38;&#x89C1;&#x7684;&#x5982;access-control-allow-origin</p>
+<h3 id="&#x8FDB;&#x9636;">&#x8FDB;&#x9636;</h3>
+<p>&#x5728;&#x4F7F;&#x7528;&#x6B63;&#x5219;&#x5199;URL&#x7279;&#x5F81;&#x65F6;&#xFF0C;ZanProxy&#x652F;&#x6301;&#x5728;&#x5904;&#x7406;&#x7C7B;&#x578B;&#x7684;&#x8F6C;&#x53D1;&#x4E2D;&#x5199;$&#x5360;&#x4F4D;&#x7B26;&#xFF0C;&#x7528;&#x4E8E;&#x66FF;&#x6362;&#x4E3A;&#x6B63;&#x5219;&#x5339;&#x914D;&#x540E;&#x7B2C;N&#x4E2A;&#x83B7;&#x53D6;&#x7EC4;&#x3002;<br>e.g.<br>&#x8BF7;&#x6C42;url&#x4E3A;&#xFF1A;<a href="https://b.yzcdn.cn/v2/build/wap/showcase/sku_58590c11af.js" target="_blank">https://b.yzcdn.cn/v2/build/wap/showcase/sku_58590c11af.js</a><br>&#x8981;&#x62E6;&#x622A;&#x7684;&#x8BF7;&#x6C42;&#x7684;url&#x7279;&#x5F81;&#x4E3A;&#xFF1A;build/wap/(.<em>?)<em>[^</em>]</em>$<br>&#x8BF7;&#x6C42;&#x8F6C;&#x53D1;&#x8DEF;&#x5F84;&#x4E3A;&#xFF1A;&lt;%=wapproject%&gt;/js/$1/main.js&#x3002;<br>&#x5219;&#x6700;&#x7EC8;&#x8BF7;&#x6C42;&#x8DEF;&#x5F84;&#x4E2D;&#x7684;$1&#x5C06;&#x88AB;&#x66FF;&#x6362;&#x4E3A;showcase/sku  </p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="../project/" class="navigation navigation-prev " aria-label="Previous page: 工程路径配置">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="../data_manage/" class="navigation navigation-next " aria-label="Next page: 自定义mock数据管理">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"规则配置","level":"1.7","depth":1,"next":{"title":"自定义mock数据管理","level":"1.8","depth":1,"path":"data_manage/README.md","ref":"data_manage/README.md","articles":[]},"previous":{"title":"工程路径配置","level":"1.6","depth":1,"path":"project/README.md","ref":"project/README.md","articles":[]},"dir":"ltr"},"config":{"plugins":["livereload"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":false,"twitter":false,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":[]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ZanProxy","links":{"gitbook":false,"sharing":{"google":false,"facebook":false,"twitter":false,"all":false}},"gitbook":"*"},"file":{"path":"rule/README.md","mtime":"2018-03-30T09:01:05.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-03-30T07:31:45.060Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-livereload/plugin.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

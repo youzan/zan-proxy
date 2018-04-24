@@ -1,0 +1,26 @@
+{
+  "name": "lib-zan-proxy",
+  "version": "2.0.0",
+  "scripts": {
+    "clean": "rm -rf ./lib",
+    "dev": "tsc -w --preserveWatchOutput"
+  },
+  "devDependencies": {
+    "@types/get-port": "^3.2.0",
+    "@types/ip": "^0.0.30",
+    "@types/lodash": "^4.14.105",
+    "@types/node": "^9.4.7",
+    "@types/pem": "^1.9.3",
+    "typescript": "^2.8.0"
+  },
+  "dependencies": {
+    "get-port": "^3.2.0",
+    "ip": "^1.1.5",
+    "lodash": "^4.17.5",
+    "parse-domain": "^2.0.0",
+    "pem": "^1.12.3",
+    "raw-body": "^2.3.2",
+    "reflect-metadata": "^0.1.12",
+    "typedi": "^0.7.1"
+  }
+}

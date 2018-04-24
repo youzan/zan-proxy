@@ -1,0 +1,75 @@
+.traffic {
+  .header {
+    line-height: 28px;
+    height: 28px;
+    font-size: 14px;
+    font-weight: bolder;
+  }
+
+  .row {
+    display: flex;
+    width: 100%;
+    cursor: default;
+    .cell-index {
+      width: 50px;
+    }
+    .cell-status {
+      width: 60px;
+    }
+    .cell-method {
+      width: 72px;
+    }
+    .cell-protocol {
+      width: 75px;
+    }
+    .cell-host {
+      width: 136px;
+    }
+    .cell-path {
+      flex-grow: 1;
+      flex-basis: 0%;
+    }
+    .cell-type {
+      width: 100px;
+    }
+    .cell-time {
+      width: 70px;
+    }
+  }
+
+  .cell {
+    flex-grow: 0;
+    flex-shrink: 0;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-all;
+    white-space: nowrap;
+  }
+
+  .record {
+    line-height: 22px;
+    height: 24px;
+    border-bottom: 1px solid #ddd;
+    border-top: 1px solid #ddd;
+    .cell {
+      font-size: 12px;
+    }
+    .cell-host, .cell-path {
+      text-align: left;
+      padding: 0 2px;
+    }
+  }
+
+  .record:hover {
+    background-color: #eef1f6
+  }
+
+  .selected {
+    background-color: #eef1f6
+  }
+  .right-clicked {
+    border-bottom: 1px solid #0dd000;
+    border-top: 1px solid #0dd000;
+  }
+}

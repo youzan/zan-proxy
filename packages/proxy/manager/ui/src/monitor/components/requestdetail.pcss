@@ -1,0 +1,28 @@
+.request {
+  .request__header {
+    height: 28px;
+    line-height: 28px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: bolder;
+    .request__tab {
+      flex-grow: 1;
+      box-sizing: border-box;
+      border-right: 1px solid #ccc;
+      border-bottom: 1px solid #ccc;
+      cursor: pointer;
+      &:last-child {
+        border-right: none;
+      }
+      &.active {
+        background-color: #e6e6e6;
+      }
+    }
+  }
+  .request__body {
+    height: calc(100% - 28px);
+    overflow-y: scroll;
+  }
+}

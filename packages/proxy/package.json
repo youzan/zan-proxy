@@ -1,0 +1,36 @@
+{
+  "name": "zan-proxy",
+  "version": "2.0.0",
+  "scripts": {
+    "build:localkv": "neon build",
+    "dev": "tsc -w --preserveWatchOutput",
+    "clean": "rm -rf ./bin"
+  },
+  "dependencies": {
+    "apollo-server-koa": "^1.3.4",
+    "graphql": "^0.13.2",
+    "koa": "^2.3.0",
+    "koa-bodyparser": "^4.2.0",
+    "koa-mount": "^3.0.0",
+    "koa-qs": "^2.0.0",
+    "koa-router": "^7.2.1",
+    "koa-static": "^4.0.1",
+    "lib-zan-proxy": "^2.0.0",
+    "reflect-metadata": "^0.1.12",
+    "socket.io": "^2.1.0",
+    "typedi": "^0.7.1"
+  },
+  "devDependencies": {
+    "@types/koa": "^2.0.45",
+    "@types/koa-bodyparser": "^4.2.0",
+    "@types/koa-mount": "^3.0.1",
+    "@types/koa-router": "^7.0.27",
+    "@types/koa-static": "^4.0.0",
+    "@types/node": "^9.4.7",
+    "@types/socket.io": "^1.4.33",
+    "graphql-import": "^0.5.0",
+    "graphql-tools": "^2.24.0",
+    "neon-cli": "^0.1.22",
+    "typescript": "^2.8.0"
+  }
+}
