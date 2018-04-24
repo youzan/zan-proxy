@@ -12,7 +12,6 @@ lib-cov
 coverage
 node_modules
 .lock-wscript
-.vscode
 tep/*
 .idea
 npm-debug.log
