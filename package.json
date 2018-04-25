@@ -1,14 +1,14 @@
 {
   "name": "zan-proxy",
-  "version": "4.0.3",
+  "version": "4.0.4",
   "description": "前端代理",
   "scripts": {
     "build": "tsc",
     "test": "HOME=/tmp/proxy-test nyc mocha -r ts-node/register -c --recursive 'test/**/**/*.spec.ts'",
     "watch": "tsc --watch",
     "postinstall": "node ./scripts/resetDataFile.js",
-    "lint": "tslint src/**/**/*.ts --force",
-    "pretty": "prettier ./src/**/**/*.ts --write"
+    "lint": "tslint 'src/**/**/*.ts' --force",
+    "pretty": "prettier 'src/**/**/*.ts' --write"
   },
   "dependencies": {
     "axios": "^0.16.1",
@@ -18,6 +18,7 @@
     "get-port": "^3.2.0",
     "http-proxy": "^1.16.2",
     "inflation": "^2.0.0",
+    "inquirer": "^5.2.0",
     "ip": "^0.3.2",
     "jsonfile": "^2.4.0",
     "koa": "^2.3.0",
@@ -39,6 +40,7 @@
     "raw-body": "^2.3.2",
     "reflect-metadata": "^0.1.12",
     "rimraf": "^2.6.1",
+    "selfupdate": "^1.1.0",
     "socket.io": "^1.7.3",
     "typedi": "^0.7.2",
     "uuid": "^3.2.1"
