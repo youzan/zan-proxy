@@ -41,7 +41,7 @@ const menuList = [
   {
     name: 'Host 管理',
     icon: 'icon-box',
-    link: '/hostfilelist'
+    link: '/hosts'
   },
   {
     name: 'Http 转发',

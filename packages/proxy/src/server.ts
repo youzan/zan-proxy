@@ -5,7 +5,7 @@ import Koa from 'koa'
 import Router from 'koa-router'
 import koaBody from 'koa-bodyparser'
 import serve from 'koa-static'
-import SocketIO from 'socket.io'
+// import SocketIO from 'socket.io'
 import { graphqlKoa, graphiqlKoa } from 'apollo-server-koa'
 
 import { schema, GraphQLContext } from './graphql'
@@ -14,7 +14,7 @@ import { schema, GraphQLContext } from './graphql'
 export class UIServer {
   app = new Koa()
   server = http.createServer(this.app.callback())
-  io = SocketIO(this.server)
+  // io = SocketIO(this.server)
   router = new Router()
 
   constructor() {

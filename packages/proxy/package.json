@@ -17,6 +17,7 @@
     "koa-static": "^4.0.1",
     "lib-zan-proxy": "^2.0.0",
     "reflect-metadata": "^0.1.12",
+    "rxjs": "^6.0.0",
     "socket.io": "^2.1.0",
     "typedi": "^0.7.1"
   },

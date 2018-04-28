@@ -11,8 +11,6 @@
 </template>
 
 <script>
-import gql from 'graphql-tag'
-
 import Header from './Header'
 import LeftMenu from './LeftMenu'
 

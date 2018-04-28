@@ -1,112 +1,134 @@
-import { Service, Inject } from 'typedi'
-import { EventEmitter } from 'events'
-import { HostService as IHostService, HostServiceToken, Storage, HostStorageToken, HostFile } from '../../service'
+import { Service, Inject } from 'typedi';
+import { escapeRegExp } from 'lodash';
+import LRU from 'lru-cache';
+import dns from 'dns';
+
+import {
+  HostService as IHostService,
+  HostServiceToken,
+  Storage,
+  HostStorageToken,
+  HostRecord,
+} from '../../service';
 
 const ipReg = /((?:(?:25[0-5]|2[0-4]\d|[01]?\d?\d)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d?\d))/;
-const storageKey = '$HOST_FILES$'
+const storageKey = '$HOST_FILES$';
 
 @Service({
-    id: HostServiceToken,
+  id: HostServiceToken,
 })
-export class HostService extends EventEmitter implements IHostService {
-    @Inject(HostStorageToken) storage:  Storage
-    hostFiles: Array<HostFile> = []
-    activeHosts: {}
-    
-    async init() {
-        this.hostFiles = await this.storage.get(storageKey) || []
-        this.renewActiveHosts()
+export class HostService implements IHostService {
+  @Inject(HostStorageToken) storage: Storage;
+  hostFiles: Array<HostRecord> = [];
+  activeHosts = new Map<string, string>();
+  cache: LRU.Cache<string, string>;
+
+  constructor() {
+    this.cache = LRU();
+  }
+
+  async init() {
+    this.hostFiles = (await this.storage.get(storageKey)) || [];
+    this.renewActiveHosts();
+  }
+
+  async resolveHost(hostname: string): Promise<string> {
+    if (ipReg.test(hostname)) {
+      return hostname;
     }
-    async resolveHost(hostname: string) {
-        if (ipReg.test(hostname)) {
-            return hostname
+    if (this.activeHosts.has(hostname)) {
+      return <string>this.activeHosts.get(hostname);
+    }
+    for (const [key, value] of this.activeHosts) {
+      if (new RegExp(escapeRegExp(key).replace('*', '.?')).test(hostname)) {
+        return value;
+      }
+    }
+    if (this.cache.has(hostname)) {
+      return <string>this.cache.get(hostname);
+    }
+    return new Promise<string>((resolve, reject) => {
+      dns.lookup(hostname, 4, (err, addr) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(addr);
         }
-        let ip = this.activeHosts[hostname]
-        if (ip) {
-            return ip
-        }
-        ip = Object.keys(this.activeHosts)
-            .filter(host => host.startsWith('*') && hostname.endsWith(host.substr(1)))
-            .map(host => this.activeHosts[host])[0]
-        if (ip) {
-            return ip
-        }
-        return hostname
-        
-    }
-    async createHostFile(name, description, content?) {
-        const f = await this.getHostFile(name)
-        if (f) {
-            throw new Error('Host file exists already')
-        }
-        const file: HostFile = {
-            meta: {
-                local: true
-            },
-            checked: false,
-            name,
-            description,
-            content: content || {}
-        }
-        this.hostFiles.push(file)
-        await this.onHostFilesChange()
-        this.emit('host-saved', name, file)
-        return file
-    }
+      });
+    });
+  }
 
-    async deleteHostFile(name) {
-        const file = await this.getHostFile(name)
-        this.hostFiles = this.hostFiles.filter(hostFile => name != hostFile.name)
-        await this.onHostFilesChange()
-        this.emit('host-deleted', name)
-        return file
+  async createHostRecord(name, description, content?) {
+    const f = this.getHostRecord(name);
+    if (f) {
+      throw new Error('Host file exists already');
     }
+    const record: HostRecord = {
+      meta: {
+        local: true,
+      },
+      checked: false,
+      name,
+      description,
+      content: content || [],
+    };
+    this.hostFiles.push(record);
+    await this.onHostFilesChange();
+    return record;
+  }
 
-    async getHostFile(name) {
-        const file = this.hostFiles.filter(hostFile => name === hostFile.name)[0]
-        return file
-    }
+  async deleteHostRecord(name: string) {
+    const record = await this.getHostRecord(name);
+    this.hostFiles = this.hostFiles.filter(hostFile => name !== hostFile.name);
+    await this.onHostFilesChange();
+    return record;
+  }
 
-    async setUseHost(name) {
-        const file = await this.getHostFile(name)
-        this.hostFiles.forEach(hostFile => {
-            if (hostFile.name === name) {
-                hostFile.checked = true
-            } else {
-                hostFile.checked = false
-            }
-        })
-        await this.onHostFilesChange()
-        return file
-    }
+  getHostRecord(name: string): HostRecord | undefined {
+    return this.hostFiles.find(hostFile => name === hostFile.name);
+  }
 
-    async saveHostFile(name, content) {
-        let file = await this.getHostFile(name)
-        if (!file) {
-            throw new Error('Host file not exist')
-        }
-        file = Object.assign(file, content)
-        await this.onHostFilesChange()
-        this.emit('host-saved', name, content)
-        return file
-    }
+  async setUseHost(name) {
+    const record = this.getHostRecord(name);
+    this.hostFiles.forEach(hostFile => {
+      if (hostFile.name === name) {
+        hostFile.checked = true;
+      } else {
+        hostFile.checked = false;
+      }
+    });
+    await this.onHostFilesChange();
+    return record;
+  }
 
-    async onHostFilesChange() {
-        this.storage.set(storageKey, this.hostFiles)
-        this.renewActiveHosts()
-        this.emit('data-change', this.hostFiles)
+  async saveHostRecord(name: string, content: HostRecord) {
+    const record = this.getHostRecord(name);
+    if (!record) {
+      throw new Error('Host file not exist');
     }
+    Object.assign(record, content);
+    await this.onHostFilesChange();
+    return record;
+  }
 
-    async getHostFileList() {
-        return this.hostFiles
-    }
+  async onHostFilesChange() {
+    await this.storage.set(storageKey, this.hostFiles);
+    this.renewActiveHosts();
+  }
 
-    renewActiveHosts() {
-        this.activeHosts = this.hostFiles
-            .filter(hostFile => hostFile.checked)
-            .map(hostFile => hostFile.content)
-            .reduce((prev, hostFileContent) => {
-                return Object.assign(prev, hostFileContent)
-            }, {})
-    }
+  async getHostRecordList() {
+    return this.hostFiles;
+  }
+
+  renewActiveHosts() {
+    this.activeHosts = this.hostFiles
+      .filter(hostFile => hostFile.checked)
+      .map(hostFile => hostFile.content)
+      .reduce((map, list) => {
+        list.forEach(({ hostname, address }) => {
+          map.set(hostname, address);
+        });
+        return map;
+      }, new Map<string, string>());
+  }
 }

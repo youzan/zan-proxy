@@ -1,27 +1,37 @@
 import { Token } from 'typedi';
-import { HasAsyncInit } from './hasAsyncInit'
-import { Storage } from './Storage'
+import { HasAsyncInit } from './hasAsyncInit';
+import { Storage } from './Storage';
 
-export interface HostFile {
-    meta: HostFileMeta
-    checked: boolean
-    name: string
-    description: string
-    content: object
+export interface Host {
+  hostname: string;
+  address: string;
 }
 
-export interface HostFileMeta {
-    local: boolean
+export interface HostRecord {
+  meta: HostRecordMeta;
+  checked: boolean;
+  name: string;
+  description: string;
+  content: Host[];
+}
+
+export interface HostRecordMeta {
+  local: boolean;
 }
 
 export interface HostService extends HasAsyncInit {
-    resolveHost(hostname: string): Promise<string>
-    createHostFile(name: string, description: string, content?): Promise<HostFile>
-    deleteHostFile(name: string): Promise<HostFile | undefined>
-    setUseHost(name: string): Promise<HostFile | undefined>
-    getHostFile(name: string): Promise<HostFile | undefined>
-    saveHostFile(name: string, content: object): Promise<HostFile>
+  resolveHost(hostname: string): Promise<string>;
+  createHostRecord(
+    name: string,
+    description: string,
+    content?,
+  ): Promise<HostRecord>;
+  deleteHostRecord(name: string): Promise<HostRecord | undefined>;
+  setUseHost(name: string): Promise<HostRecord | undefined>;
+  getHostRecord(name: string): HostRecord | undefined;
+  saveHostRecord(name: string, content: object): Promise<HostRecord>;
+  getHostRecordList(): Promise<HostRecord[]>;
 }
 
-export const HostServiceToken = new Token<HostService>('service.host')
-export const HostStorageToken = new Token<Storage>('storage.host')
+export const HostServiceToken = new Token<HostService>('service.host');
+export const HostStorageToken = new Token<Storage>('storage.host');

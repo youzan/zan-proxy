@@ -7,6 +7,7 @@
     "build": "neon build"
   },
   "dependencies": {
-    "neon-cli": "^0.1.22"
+    "neon-cli": "^0.1.22",
+    "rxjs": "^6.0.0"
   }
 }

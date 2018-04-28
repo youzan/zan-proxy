@@ -1,13 +1,19 @@
-import { queryProjectPaths, mutateProjectPaths, deleteProjectPath } from "./profile";
+import {
+  queryProjectPaths,
+  mutateProjectPaths,
+  deleteProjectPath,
+} from './profile';
+import { queryHostList } from './hosts';
 
 const resolvers = {
   RootQuery: {
-    projectPaths: queryProjectPaths
+    projectPaths: queryProjectPaths,
+    hostsList: queryHostList,
   },
   RootMutation: {
     saveProjectPaths: mutateProjectPaths,
-    deleteProjectPath
-  }
-}
+    deleteProjectPath,
+  },
+};
 
-export default resolvers
+export default resolvers;

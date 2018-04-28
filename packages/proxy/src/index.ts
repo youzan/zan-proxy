@@ -25,9 +25,9 @@ import {
 import { registerCleanup } from 'lib-zan-proxy/lib/utils'
 import 'lib-zan-proxy/lib/impl'
 import { RuntimeService, ScopedKVService } from 'lib-zan-proxy/lib/impl'
-import { UIServer } from './server'
 
 import { createLocalKVService, LocalKVService } from './localkv'
+import { UIServer } from './server';
 // import ManagerServer from '../manager/server'
 
 const start = async () => {

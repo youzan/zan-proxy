@@ -12,7 +12,17 @@ function getUserHome() {
 
 const create = promisify(native.create)
 const get = promisify(native.get)
-const set = promisify(native.set)
+// const set = promisify(native.set)
+const set = (...args) => new Promise<any>((resolve, reject) => {
+  console.log('callback called')
+  native.set(...args, (err, r) => {
+    if (err) {
+      reject(err)
+    } else {
+      resolve(r)
+    }
+  })
+})
 const remove = promisify(native.remove)
 
 export async function createLocalKVService() {

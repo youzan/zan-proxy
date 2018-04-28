@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="content-container">
     <div class="main-content__title">工程路径管理</div>
     <el-row :gutter="20" style="margin-bottom: 10px">
       <el-col :span="6" :offset="18" style="text-align:right">
@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import gql from 'graphql-tag'
+import gql from 'graphql-tag';
 
 const projectPaths = gql`
   query {
@@ -39,7 +39,7 @@ const projectPaths = gql`
       value
     }
   }
-`
+`;
 
 const save = gql`
   mutation($list: [InputProjectPath]) {
@@ -48,88 +48,106 @@ const save = gql`
       value
     }
   }
-`
+`;
 
 const deleteByName = gql`
-  mutation ($name: String!) {
+  mutation($name: String!) {
     deleteProjectPath(name: $name) {
       name
       value
     }
   }
-`
+`;
 
 export default {
   name: 'project-path',
   apollo: {
-    projectPaths
+    projectPaths,
   },
   data() {
     return {
       list: [],
-      projectPaths: []
-    }
+      projectPaths: [],
+    };
   },
   watch: {
     projectPaths(value) {
       this.list = value.map(({ name, value }) => ({
         name,
-        value
-      }))
-    }
+        value,
+      }));
+    },
   },
   methods: {
     async deleteByName(name) {
       await this.$confirm('此操作不可恢复, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
-      })
+        type: 'warning',
+      });
       await this.$apollo.mutate({
         mutation: deleteByName,
         variables: {
-          name
+          name,
         },
         update: (store, { data: { saveProjectPaths } }) => {
-          const data = store.readQuery({ query: projectPaths })
-          data.projectPaths.splice(0, data.projectPaths.length, ...saveProjectPaths)
-          store.writeQuery({ query: projectPaths, data })
-        }
-      })
+          const data = store.readQuery({ query: projectPaths });
+          data.projectPaths.splice(
+            0,
+            data.projectPaths.length,
+            ...saveProjectPaths,
+          );
+          store.writeQuery({ query: projectPaths, data });
+        },
+      });
       this.$notify({
         title: '删除成功',
         message: '删除成功',
-        type: 'success'
-      })
+        type: 'success',
+      });
     },
 
     async save() {
-      const list = this.list.filter(({ name }) => !!name)
+      const list = this.list.filter(({ name }) => !!name);
       await this.$apollo.mutate({
         mutation: save,
         variables: {
-          list
+          list,
         },
         update: (store, { data: { saveProjectPaths } }) => {
-          const data = store.readQuery({ query: projectPaths })
-          data.projectPaths.splice(0, data.projectPaths.length, ...saveProjectPaths)
-          store.writeQuery({ query: projectPaths, data })
-        }
-      })
+          const data = store.readQuery({ query: projectPaths });
+          data.projectPaths.splice(
+            0,
+            data.projectPaths.length,
+            ...saveProjectPaths,
+          );
+          store.writeQuery({ query: projectPaths, data });
+        },
+      });
       this.$notify({
         title: '保存成功',
         message: '保存成功',
-        type: 'success'
-      })
+        type: 'success',
+      });
       // this.$apollo.queries.projectPaths.refresh()
     },
 
     addParam() {
       this.list.push({
         name: '',
-        value: ''
-      })
-    }
-  }
-}
+        value: '',
+      });
+    },
+  },
+};
 </script>
+
+<style lang="scss" scoped>
+.content-container {
+  padding: 20px;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+}
+</style>
+
