@@ -78,10 +78,12 @@
             display: inline-block;
             text-decoration: none;
         }
+
         .z-page-header .z-btn:hover {
             background-color: #fff;
             border-color: #fff;
-            color: #2D4555;;
+            color: #2D4555;
+            ;
         }
 
         .z-page-header .z-header-con {
@@ -121,9 +123,11 @@
         .z-section:nth-of-type(odd) {
             background-color: #F5F5F5;
         }
+
         .z-section:nth-last-of-type(odd) .z-page-container {
             justify-content: flex-start;
         }
+
         .z-section:nth-of-type(even) {
             background-color: #fff;
         }
@@ -145,15 +149,15 @@
             line-height: 2;
         }
 
-        .z-section.z-section-r .z-text-wrap p {
+        .z-section.z-section:nth-last-of-type(even) .z-text-wrap p {
             padding-right: 50px;
         }
 
-        .z-section.z-section-l .z-text-wrap {
+        .z-section.z-section:nth-last-of-type(odd) .z-text-wrap {
             padding-left: 50px;
         }
 
-        .z-section.z-section-l .z-text-wrap p {
+        .z-section.z-section:nth-last-of-type(odd) .z-text-wrap p {
             padding-right: 50px;
         }
 
@@ -184,11 +188,13 @@
             width: 14px;
             height: 14px;
         }
+
         .logo-btns {
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
+
         .logo-btns .btns a {
             color: #ffffff;
             margin-left: 20px;
@@ -224,19 +230,40 @@
 
         <div class="z-section z-section-r">
             <div class="z-page-container">
+                <div class="z-img-wrap">
+                    <img src="https://img.yzcdn.cn/public_files/2018/04/18/faf2ff831089d20bfcad94321d2506e8.jpg">
+                </div>
                 <div class="z-text-wrap">
+
                     <h3>
                         自由转发
                     </h3>
                     <h3>连通线上环境与本地电脑</h3>
                     <p>
-                        无论是线上环境还是预发环境，都可以轻松地将资源请求（js/css）与接口请求转发到本地电脑，达到用本地电脑调试线上页面的效果。<br >
-                        支持 HTTPS、WebSocket，支持转发规则的共享。
+                        无论是线上环境还是预发环境，都可以轻松地将资源请求（js/css）与接口请求转发到本地电脑，达到用本地电脑调试线上页面的效果。
+                        <br> 支持 HTTPS、WebSocket，支持转发规则的共享。
                     </p>
                     <a href="./book/configure/rule.html" target="_blank" class="z-btn">相关文档</a>
                 </div>
+                <div class="z-clearfix"></div>
+            </div>
+        </div>
+
+        <div class="z-section z-section-r">
+            <div class="z-page-container">
+                <div class="z-text-wrap">
+                    <h3>
+                        规则同步
+                    </h3>
+                    <h3>一步打造团队业务专属规则</h3>
+                    <p>
+                        无需手动同步。
+                        <br> 利用远程规则功能，可将更新后的规则及时同步至团队内所有成员，从而保证团队内部规则统一。
+                    </p>
+                    <a href="./book/cooperation/remoteRule.html" target="_blank" class="z-btn">相关文档</a>
+                </div>
                 <div class="z-img-wrap">
-                    <img src="https://img.yzcdn.cn/public_files/2018/04/18/faf2ff831089d20bfcad94321d2506e8.jpg">
+                    <img src="https://img.yzcdn.cn/public_files/2018/05/02/45ff6d7ff525f86bb4bb9389aa568f47.png">
                 </div>
                 <div class="z-clearfix"></div>
             </div>

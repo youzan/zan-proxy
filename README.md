@@ -21,6 +21,7 @@ The proxy server can be easily configured by a user-friendly interface. In addit
 ## Features
 
 * Support HTTP, HTTPS and websocket
+* Support remote redirect rules
 * Modify the request target
 * Mock the response data
 * Custom plugins to modify default behaviour

@@ -91,7 +91,7 @@ export class RuleController {
       const userId = ctx.userId;
       const name = ctx.query.name;
       const content = await this.ruleService.getRuleFile(userId, name);
-      ctx.set('Content-disposition', `attachment;filename=${name}.json`);
+      ctx.set('Content-disposition', `attachment;filename=${encodeURI(name)}.json`);
       ctx.body = content;
     });
     // 测试规则
@@ -149,6 +149,16 @@ export class RuleController {
           msg: e,
         };
       }
+    });
+
+    ruleRouter.get('/copy', async ctx => {
+      const userId = ctx.userId;
+      const name = ctx.query.name;
+      const copied = await this.ruleService.copyRuleFile(userId, name);
+      ctx.body = {
+        code: 0,
+        data: copied,
+      };
     });
 
     router.use(ruleRouter.routes(), ruleRouter.allowedMethods());

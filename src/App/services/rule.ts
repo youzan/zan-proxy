@@ -210,11 +210,16 @@ export class RuleService extends EventEmitter {
 
   public async importRemoteRuleFile(userId, url): Promise<RuleFile> {
     const ruleFile = await this.fetchRemoteRuleFile(url);
+    ruleFile.content.forEach(rule => {
+      if (rule.action && !rule.actionList) {
+        rule.actionList = [rule.action];
+      }
+    });
     await this.saveRuleFile(userId, ruleFile);
     return ruleFile;
   }
 
-  public async fetchRemoteRuleFile(url): Promise<RuleFile> {
+  public async fetchRemoteRuleFile(url): Promise<any> {
     const response = await fetch(url);
     const responseData = await response.json();
     const ETag = response.headers.etag || '';
@@ -258,6 +263,22 @@ export class RuleService extends EventEmitter {
       name: responseData.name,
     };
     return ruleFile;
+  }
+
+  public async copyRuleFile(userId, name) {
+    const ruleFile = this.getRuleFile(userId, name);
+    if (!ruleFile) {
+      return;
+    }
+    const copied = cloneDeep(ruleFile);
+    copied.checked = false;
+    copied.name = `${copied.name}-复制`;
+    copied.meta = Object.assign({}, copied.meta, {
+      isCopy: true,
+      remote: false,
+    });
+    await this.saveRuleFile(userId, copied);
+    return copied;
   }
 
   private _getInuseRules(userId) {

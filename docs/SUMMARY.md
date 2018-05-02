@@ -19,4 +19,5 @@
 * [自定义插件](plugin/README.md)
     * [编写插件](plugin/code.md)
     * [使用插件](plugin/usage.md)
-
+* [团队协作](cooperation/README.md)
+    * [远程规则](cooperation/remoteRule.md)

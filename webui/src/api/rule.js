@@ -54,7 +54,11 @@ var api = {
 
   importRemote(url) {
     return axios.get(`/rule/import?url=${encodeURIComponent(url)}`)
-  }
+  },
+
+  copyFile(name) {
+    return axios.get(`/rule/copy?name=${encodeURI(name)}`);
+  },
 
 };
 

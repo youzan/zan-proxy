@@ -184,6 +184,7 @@ export class HostService extends EventEmitter {
     const hostfileName = this._getHostFilePath(userId, name);
     await jsonWriteFile(hostfileName, content, { encoding: 'utf-8' });
     this.emit('host-saved', userId, name, content);
+    this.emit('data-change', userId, this.getHostFileList(userId));
   }
 
   private _getHostFilePath(userId, hostName) {
