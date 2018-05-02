@@ -19,7 +19,7 @@
             </el-button>
           </a>
           <a :href="'/host/download?name='+scope.row.name" target="_blank">
-            <el-button type="info" icon='document' size="mini">
+            <el-button type="info" icon='share' size="mini">
             </el-button>
           </a>
           <el-button
