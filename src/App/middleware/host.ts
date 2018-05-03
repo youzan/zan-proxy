@@ -1,3 +1,4 @@
+import { isNull, isUndefined } from 'lodash';
 import URL from 'url';
 import { HostService, ProfileService } from '../services';
 
@@ -11,7 +12,7 @@ export const host = (
       return;
     }
     const { req, res } = ctx;
-    if (res.body) {
+    if (!isNull(res.body) || !isUndefined(res.body)) {
       await next();
       return;
     }

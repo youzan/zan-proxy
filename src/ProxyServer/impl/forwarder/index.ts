@@ -1,5 +1,6 @@
 import http from 'http';
 import https from 'https';
+import { isNull, isUndefined } from 'lodash';
 import { Forwarder as IForwarder } from '../../interfaces';
 import convert from './convert';
 
@@ -7,7 +8,7 @@ export class Forwarder implements IForwarder {
   public async forward(ctx): Promise<any> {
     return new Promise((resolve, reject) => {
       const { req, res } = ctx;
-      if (!res.writable || res.finished || res.body) {
+      if (!res.writable || res.finished || !isUndefined(res.body) || !isNull(res.body)) {
         return resolve(false);
       }
       const options = convert(req);
