@@ -3,6 +3,8 @@
     <div class="main-content__title">Host 文件列表</div>
     <el-row :gutter="20" style="margin-bottom: 10px">
       <el-col :span="6" :offset="18" class="addhost-btn-wrap">
+        <input type="file" ref="fileimport" @change="importHostFile" style="display:none;" />
+        <el-button size="small" @click='importHostFileBtnClick'>导入 Host 文件</el-button>
         <el-button size="small" @click='addNewHostFile'>新增 Host 文件</el-button>
       </el-col>
     </el-row>
@@ -14,6 +16,10 @@
         <template scope='scope'>
           <a :href="'#/edithost?name='+scope.row.name">
             <el-button type="info" icon='edit' size="mini">
+            </el-button>
+          </a>
+          <a :href="'/host/download?name='+scope.row.name" target="_blank">
+            <el-button type="info" icon='share' size="mini">
             </el-button>
           </a>
           <el-button
@@ -97,7 +103,23 @@
       },
       addNewHostFile(){
         this.$router.push('createhostfile');
-      }
+      },
+      importHostFileBtnClick() {
+        this.$refs.fileimport.click();
+      },
+      importHostFile(evt) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          const fileStr = e.target.result;
+          const hostFile = JSON.parse(fileStr);
+          hostFile.checked = false;
+          hostApi.saveFile(hostFile.name, hostFile);
+        };
+        const files = evt.target.files;
+        const file = files[0];
+        if (!file) return;
+        reader.readAsText(file);
+      },
     }
   }
 

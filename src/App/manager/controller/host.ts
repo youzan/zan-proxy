@@ -59,12 +59,20 @@ export class HostController {
       };
     });
     // /host/savefile?name=${name} ,content
-    router.post('/host/savefile', ctx => {
+    router.post('/host/savefile', async ctx => {
       const userId = ctx.userId;
-      this.hostService.saveHostFile(userId, ctx.query.name, ctx.request.body);
+      await this.hostService.saveHostFile(userId, ctx.query.name, ctx.request.body);
       ctx.body = {
         code: 0,
       };
+    });
+
+    router.get('/host/download', async ctx => {
+      const userId = ctx.userId;
+      const name = ctx.query.name;
+      const content = await this.hostService.getHostFile(userId, name);
+      ctx.set('Content-disposition', `attachment;filename=${encodeURI(name)}.json`);
+      ctx.body = content;
     });
   }
 }

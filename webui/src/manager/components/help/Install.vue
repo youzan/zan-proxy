@@ -1,6 +1,6 @@
 <template>
   <div class="install-body">
-    <h1>Zan Proxy</h1>
+    <h1>Zan Proxy<a class="quick-start">快速开始</a></h1>
     <h2 id="toc_0">一、说明</h2>
 
     <p>由于<code>zanProxy</code>默认不修改系统代理设置，所以在 chrome 上使用代理功能时需要依赖第三方 chrome 插件。</p>
@@ -123,6 +123,11 @@ export default {
   a {
     color: #3498db;
     text-decoration: none;
+  }
+
+  .quick-start {
+    font-size: 14px;
+    margin-left: 15px;
   }
 }
 </style>

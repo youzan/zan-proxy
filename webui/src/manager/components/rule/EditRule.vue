@@ -28,9 +28,16 @@
       </el-table-column>
       <el-table-column prop="match" label="URL特征" />
       <el-table-column prop="name" label="描述" />
-      <el-table-column label="操作" :width="100" align="center" :context="_self">
+      <el-table-column label="转发地址">
+        <template slot-scope="scope">
+          {{
+            scope.row.actionList.filter(a => a.type === 'redirect')[0] ? scope.row.actionList.filter(a => a.type === 'redirect')[0].data.target : '--'
+          }}
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" :width="200" align="center" :context="_self">
         <template scope='scope'>
-          <div>
+          <div class="actions-container">
             <el-tooltip class="item" effect="dark" content="编辑" placement="left">
               <el-button icon='edit' size="mini" type="primary"
                          @click='dialogEdit(scope.row.key)'>
@@ -41,8 +48,6 @@
                          @click='onDeleteRow(scope.row,scope.$index,filecontent.content)'>
               </el-button>
             </el-tooltip>
-          </div>
-          <div style="text-align: left; padding-left: 2px;margin-top: 5px;">
             <el-tooltip class="item" effect="dark" content="复制" placement="left">
               <el-button icon='document' size="mini"
                          @click='onDuplicateRow(scope.row,scope.$index,filecontent.content)'>

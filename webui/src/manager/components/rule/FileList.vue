@@ -10,16 +10,28 @@
       </el-col>
     </el-row>
     <el-table border :data="$dc.ruleFileList">
+      <el-table-column prop="checked" label="启用" width="100">
+        <template scope='scope'>
+          <el-checkbox
+            v-model="scope.row.checked"
+            :disabled="!$dc.ruleState"
+            @change="onSelectionChange(scope.row.name,scope.row.checked)"
+          />
+        </template>
+      </el-table-column>
       <el-table-column prop="name" label="名字" width="200">
         <template scope="scope">
-          {{ scope.row.name }}
-          <el-tooltip class="item" effect="dark" content="远程规则" placement="right">
-            <span v-if="scope.row.meta.remote" class="remote-tag">R</span>
+          <el-tooltip class="item" effect="dark" content="远程规则" placement="right" v-if="scope.row.meta.remote">
+            <span class="file-tag remote">R</span>
           </el-tooltip>
+          <el-tooltip class="item" effect="dark" content="本地规则" placement="right" v-else >
+            <span class="file-tag">L</span>
+          </el-tooltip>
+          {{ scope.row.name }}
         </template>
       </el-table-column>
       <el-table-column prop="description" label="描述" />
-      <el-table-column label="操作" :width="150" :context="_self">
+      <el-table-column label="操作" :width="180" :context="_self">
         <template scope="scope">
           <a :href="'#/editrule?name='+scope.row.name">
             <el-tooltip class="item" effect="dark" content="编辑规则" placement="top-start">
@@ -27,13 +39,18 @@
               </el-button>
             </el-tooltip>
           </a>
-          <el-tooltip class="item" effect="dark" content="导出规则" placement="top-start">
-            <el-button  type="info" icon='share' size="mini" @click='onShareFile(scope.row,scope.$index)' />
+          <span>
+            <el-tooltip class="item" effect="dark" content="导出规则" placement="top-start">
+              <el-button  type="info" icon='share' size="mini" @click='onShareFile(scope.row,scope.$index)' />
+            </el-tooltip>
+          </span>
+          <el-tooltip class="item" effect="dark" content="复制规则" placement="top-start">
+            <el-button  type="info" icon='document' size="mini" @click='onCopyFile(scope.row,scope.$index)' />
           </el-tooltip>
           <span>
             <el-button type="danger" icon='delete' size="mini" @click='onDeleteFile(scope.row,scope.$index)' />
           </span>
-          <span>
+          <!-- <span>
             <el-tooltip class="item" effect="dark" content="同步远程文件" placement="top-start">
               <el-button
                 type="success"
@@ -43,10 +60,10 @@
                 @click="onUpdateFile(scope.row,scope.$index)"
               />
             </el-tooltip>
-          </span>
+          </span> -->
         </template>
       </el-table-column>
-      <el-table-column prop="checked" label="启用" width="100">
+      <!-- <el-table-column prop="checked" label="启用" width="100">
         <template scope='scope'>
           <el-switch
             v-model="scope.row.checked"
@@ -54,7 +71,7 @@
             @change="onSelectionChange(scope.row.name,scope.row.checked)"
           />
         </template>
-      </el-table-column>
+      </el-table-column> -->
     </el-table>
   </div>
 </template>
@@ -93,6 +110,14 @@ export default {
           callback: action => {}
         });
       }
+    },
+    onCopyFile(row, index) {
+      ruleApi.copyFile(row.name).then(() => {
+        this.$message({
+          type: 'success',
+          message: '复制成功!'
+        })
+      });
     },
     onUpdateFile(row, index) {
       this.$confirm(`确定更新: ${row.name} 么?`, '提示', {
@@ -172,7 +197,7 @@ export default {
       var _this = this;
       var files = evt.target.files;
       var file = files[0];
-      if (!file || file.type.indexOf('json') < 0) return;
+      if (!file) return;
 
       var reader = new FileReader();
       reader.onload = function(e) {
@@ -247,7 +272,7 @@ export default {
   cursor: pointer;
 }
 
-.remote-tag {
+.file-tag {
   background-color: rgb(191, 203, 217);
   color: #fff;
   font-size: 10px;
@@ -258,6 +283,11 @@ export default {
   line-height: 16px;
   margin-left: 2px;
   text-align: center;
+  opacity: 0.5;
+}
+
+.file-tag.remote {
+  background-color: #58b7ff;
 }
 
 </style>

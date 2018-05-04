@@ -1,4 +1,5 @@
 import fs from 'fs';
+import mime from 'mime-types';
 import URL from 'url';
 import { MockDataService, ProfileService, RuleService } from '../services';
 
@@ -25,7 +26,12 @@ export const rule = ({
       await next();
       return;
     }
-    ctx.res.setHeader('zan-proxy-rule-watch', processRule.match);
+    ctx.res.setHeader('zan-proxy-rule-match', processRule.match);
+    if (urlObj.pathname && mime.lookup(urlObj.pathname)) {
+      ctx.res.setHeader('Content-Type', mime.lookup(urlObj.pathname));
+    }
+    // 规则的响应头先缓存在这里
+    const resHeaders = {};
     for (const action of processRule.actionList) {
       const { data } = action;
       switch (action.type) {
@@ -46,7 +52,10 @@ export const rule = ({
           ctx.req.headers[data.headerKey] = data.headerValue;
           break;
         case 'addResponseHeader':
-          ctx.res.setHeader(data.headerKey, data.headerValue);
+          resHeaders[data.headerKey] = data.headerValue;
+          break;
+        case 'empty':
+          ctx.res.body = '';
           break;
         case 'redirect':
           const target = profileService.calcPath(
@@ -70,5 +79,8 @@ export const rule = ({
       }
     }
     await next();
+    Object.keys(resHeaders).forEach(headerKey => {
+      ctx.res.setHeader(headerKey, resHeaders[headerKey]);
+    });
   };
 };
