@@ -12,7 +12,7 @@ export const host = (
       return;
     }
     const { req, res } = ctx;
-    if (!isNull(res.body) || !isUndefined(res.body)) {
+    if (!(isNull(res.body) || isUndefined(res.body))) {
       await next();
       return;
     }
