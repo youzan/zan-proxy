@@ -10,6 +10,15 @@
       </el-col>
     </el-row>
     <el-table border :data="$dc.ruleFileList">
+      <el-table-column prop="checked" label="启用" width="100">
+        <template scope='scope'>
+          <el-checkbox
+            v-model="scope.row.checked"
+            :disabled="!$dc.ruleState"
+            @change="onSelectionChange(scope.row.name,scope.row.checked)"
+          />
+        </template>
+      </el-table-column>
       <el-table-column prop="name" label="名字" width="200">
         <template scope="scope">
           <el-tooltip class="item" effect="dark" content="远程规则" placement="right" v-if="scope.row.meta.remote">
@@ -54,7 +63,7 @@
           </span> -->
         </template>
       </el-table-column>
-      <el-table-column prop="checked" label="启用" width="100">
+      <!-- <el-table-column prop="checked" label="启用" width="100">
         <template scope='scope'>
           <el-switch
             v-model="scope.row.checked"
@@ -62,7 +71,7 @@
             @change="onSelectionChange(scope.row.name,scope.row.checked)"
           />
         </template>
-      </el-table-column>
+      </el-table-column> -->
     </el-table>
   </div>
 </template>
