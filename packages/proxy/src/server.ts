@@ -1,14 +1,15 @@
-import { Service, Container } from 'typedi'
+import { Service } from 'typedi'
 import http from 'http'
 import path from 'path'
 import Koa from 'koa'
 import Router from 'koa-router'
 import koaBody from 'koa-bodyparser'
 import serve from 'koa-static'
+
 // import SocketIO from 'socket.io'
 import { graphqlKoa, graphiqlKoa } from 'apollo-server-koa'
 
-import { schema, GraphQLContext } from './graphql'
+import { schema } from 'lib-zan-proxy/lib/api'
 
 @Service()
 export class UIServer {
@@ -22,8 +23,7 @@ export class UIServer {
     this.router.post(
       '/graphql',
       graphqlKoa({
-        schema,
-        context: Container.get(GraphQLContext)
+        schema
       })
     )
     this.router.get(
