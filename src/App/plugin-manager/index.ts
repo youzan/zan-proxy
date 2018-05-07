@@ -57,7 +57,10 @@ export default class PluginManager {
           return resolve(plugins);
         });
       };
-      npmConfig = Object.assign({}, npmConfig, { prefix: this.getDir() });
+      npmConfig = Object.assign({}, npmConfig, {
+        loglevel: 'silent',
+        prefix: this.getDir(),
+      });
       if (npm.config.loaded) {
         Object.keys(npmConfig).forEach(k => {
           npm.config.set(k, npmConfig[k]);
@@ -81,7 +84,7 @@ export default class PluginManager {
           return resolve(plugins);
         });
       };
-      const npmConfig = { prefix: this.getDir() };
+      const npmConfig = { loglevel: 'silent', prefix: this.getDir() };
       if (npm.config.loaded) {
         Object.keys(npmConfig).forEach(k => {
           npm.config.set(k, npmConfig[k]);

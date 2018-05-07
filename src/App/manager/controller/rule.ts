@@ -62,6 +62,19 @@ export class RuleController {
         code: 0,
       };
     });
+    // 设置文件勾选状态
+    // /rule/setfiledisablesync?name=${name}&diable=${disable?1:0}
+    ruleRouter.get('/setfiledisablesync', ctx => {
+      const userId = ctx.userId;
+      this.ruleService.setRuleFileDisableSync(
+        userId,
+        ctx.query.name,
+        parseInt(ctx.query.disable, 10) === 1 ? true : false,
+      );
+      ctx.body = {
+        code: 0,
+      };
+    });
     // 获取规则文件
     // /rule/getfile?name=${name}
     ruleRouter.get('/getfile', async ctx => {
@@ -91,7 +104,10 @@ export class RuleController {
       const userId = ctx.userId;
       const name = ctx.query.name;
       const content = await this.ruleService.getRuleFile(userId, name);
-      ctx.set('Content-disposition', `attachment;filename=${encodeURI(name)}.json`);
+      ctx.set(
+        'Content-disposition',
+        `attachment;filename=${encodeURI(name)}.json`,
+      );
       ctx.body = content;
     });
     // 测试规则

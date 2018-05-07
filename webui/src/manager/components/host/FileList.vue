@@ -9,6 +9,11 @@
       </el-col>
     </el-row>
     <el-table border align='center' :data="$dc.hostFileList">
+      <el-table-column prop="checked" label="启用" width="85">
+        <template scope='scope'>
+          <el-radio v-model="selectedFileName" :label="scope.row.name" :disabled="!$dc.hostState" />
+        </template>
+      </el-table-column>
       <el-table-column prop="name" label="名字" width="150">
       </el-table-column>
       <el-table-column prop="description" label="描述" />
@@ -28,11 +33,6 @@
             size="mini"
             @click="onDeleteFile(scope.row,scope.$index,user_list)"
           />
-        </template>
-      </el-table-column>
-      <el-table-column prop="checked" label="启用" width="85">
-        <template scope='scope'>
-          <el-radio v-model="selectedFileName" :label="scope.row.name" :disabled="!$dc.hostState" />
         </template>
       </el-table-column>
     </el-table>

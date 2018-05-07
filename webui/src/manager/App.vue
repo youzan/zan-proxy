@@ -2,9 +2,10 @@
     <div class="main-wrapper">
         <!-- 顶部导航 -->
         <header class="head-nav">
+            <span class="dropdown-label">Host 设置：</span>
             <el-dropdown menu-align="start" :hide-on-click="false" @command="selectHostFile">
                 <el-button type="text">
-                    Host 设置<i class="el-icon-caret-bottom el-icon--right"/>
+                    {{ hostState ? selectedHost.join('，') : '禁用' }}<i class="el-icon-caret-bottom el-icon--right"/>
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
                     <!-- host文件 -->
@@ -39,10 +40,10 @@
                         inactive-text="启用host">
                 </el-switch>
             </span> -->
-
+            <span class="dropdown-label">请求转发：</span>
             <el-dropdown :hide-on-click="false" menu-align="start" @command="selectRuleFile">
                 <el-button type="text">
-                    Rule 设置<i class="el-icon-caret-bottom el-icon--right"/>
+                    {{ ruleState ? selectedRuleFiles.join('，') : '禁用' }}<i class="el-icon-caret-bottom el-icon--right"/>
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
                     <!-- rule文件 -->
@@ -152,6 +153,7 @@
     import dataApi from '../api/data';
     import uuidV4 from 'uuid/v4';
     import CodeMirror from 'codemirror';
+    import isJSON from 'is-json';
     import 'codemirror/lib/codemirror.css';
 
     import 'codemirror/addon/display/fullscreen';
@@ -211,20 +213,13 @@
             filterState() {
                 return this.profile.enableFilter || false;
             },
-            selectedHost: {
-                get: function () {
-                    return this.hostFileList.filter(h => h.checked).map(h => h.name)
-                },
-                set: function(newValue) {
-                    this.hostFileList.forEach(f => {
-                        if (newValue.includes(f.name)) {
-                            f.checked = true;
-                        } else {
-                            f.checked = false;
-                        }
-                    })
-                }
+            selectedHost() {
+                return this.hostFileList.filter(h => h.checked).map(h => h.name)
+            },
+            selectedRuleFiles() {
+                return this.ruleFileList.filter(f => f.checked).map(f => f.name)
             }
+            
         },
         methods: {
             async switchHost(value){
@@ -426,6 +421,10 @@
             },
             finishEditDataFile() {
                 var entry = this.editDataFileForm.entry;
+                if (entry.contenttype.includes('json') && !isJSON(editor.getValue())) {
+                    this.$message.error('不是json数据，请检查');
+                    return;
+                }
                 dataApi.saveDataFile(entry.id, editor.getValue()).then(response => {
                     var serverData = response.data;
                     if (serverData.code == 0) {
@@ -510,7 +509,11 @@
 
 <style scoped>
     .el-dropdown-menu {
-        max-height: 220px;
+        max-height: 500px;
         overflow-y: auto;
+    }
+    .dropdown-label {
+        color: #333333;
+        font-size: 14px;
     }
 </style>
