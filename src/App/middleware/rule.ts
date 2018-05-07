@@ -3,6 +3,12 @@ import mime from 'mime-types';
 import URL from 'url';
 import { MockDataService, ProfileService, RuleService } from '../services';
 
+const fsExists = p => {
+  return new Promise(resolve => {
+    fs.exists(p, exists => resolve(exists));
+  });
+};
+
 export const rule = ({
   ruleService,
   mockDataService,
@@ -13,6 +19,10 @@ export const rule = ({
   profileService: ProfileService;
 }) => {
   return async (ctx, next) => {
+    if (ctx.ignore) {
+      await next();
+      return;
+    }
     if (!profileService.enableRule(ctx.userID)) {
       await next();
       return;
@@ -71,7 +81,13 @@ export const rule = ({
           if (target.startsWith('http')) {
             ctx.req.url = target;
           } else {
-            ctx.res.body = fs.createReadStream(target);
+            const exists = await fsExists(target);
+            if (exists) {
+              ctx.res.body = fs.createReadStream(target);
+            } else {
+              ctx.res.body = `target ${target} does not exist`;
+              ctx.res.statusCode = 404;
+            }
           }
           break;
         default:

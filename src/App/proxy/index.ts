@@ -1,6 +1,14 @@
 import { Container, Service } from 'typedi';
 import { ProxyServer } from '../../ProxyServer';
-import { actualRequest, endPoint, host, ip, rule, user } from '../middleware';
+import {
+  actualRequest,
+  endPoint,
+  host,
+  Ignorer,
+  ip,
+  rule,
+  user,
+} from '../middleware';
 import PluginManager from '../plugin-manager';
 import {
   HostService,
@@ -13,13 +21,19 @@ import {
 @Service()
 export class Proxy {
   private server: ProxyServer;
-
+  private ignorer: Ignorer;
   public async listen(port?) {
     this.server.listen(port);
   }
 
+  public ignore(pattern) {
+    this.ignorer.addPattern(pattern);
+  }
+
   public async init() {
     this.server = await ProxyServer.create();
+    this.ignorer = new Ignorer();
+    this.server.use(this.ignorer.middleware.bind(this.ignorer));
     this.server.use(ip());
     this.server.use(user(Container.get(ProfileService)));
     this.server.use(endPoint(Container.get(HttpTrafficService)));

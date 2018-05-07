@@ -7,12 +7,16 @@ export default async (proxyPort?, uiPort?) => {
   app.start(proxyPort, uiPort);
 
   process.on('unhandledRejection', (reason, p) => {
-    console.error('Unhandled Rejection at: Promise ', p, ' reason: ', reason);
+    if (process.env.DEBUG) {
+      console.error('Unhandled Rejection at: Promise ', p, ' reason: ', reason);
+    }
   });
   process.on('SIGINT', () => {
     process.exit();
   });
   process.on('uncaughtException', err => {
-    console.error(err);
+    if (process.env.DEBUG) {
+      console.error(err);
+    }
   });
 };

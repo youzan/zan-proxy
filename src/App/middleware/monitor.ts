@@ -6,6 +6,10 @@ import { HttpTrafficService } from '../services';
 
 export const endPoint = (httpTrafficService: HttpTrafficService) => {
   return async (ctx, next) => {
+    if (ctx.ignore) {
+      await next();
+      return;
+    }
     const { userID } = ctx;
     const urlObj = URL.parse(ctx.req.url);
     const requestID = httpTrafficService.getRequestId(userID, urlObj);
@@ -50,6 +54,10 @@ export const endPoint = (httpTrafficService: HttpTrafficService) => {
 
 export const actualRequest = (httpTrafficService: HttpTrafficService) => {
   return async (ctx, next) => {
+    if (ctx.ignore) {
+      await next();
+      return;
+    }
     const { userID, requestID } = ctx;
     if (requestID > 0 && httpTrafficService.hasMonitor(userID)) {
       const url = URL.parse(ctx.req.url);

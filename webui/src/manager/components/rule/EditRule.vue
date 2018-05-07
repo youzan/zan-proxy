@@ -1,9 +1,10 @@
 <template>
   <div>
     <div class="main-content__title">编辑规则集{{ loaded ? ': ' + (filecontent.name || '拼命加载中') : ': 拼命加载中' }}</div>
+    <span class="save-tip" v-if="loaded && filecontent.meta && filecontent.meta.remote">该规则集为远程规则集，重启同步后相关配置会被覆盖。如需永久保存修改，则可以复制该规则集成本地规则集。</span>
     <el-row :gutter="20" style="margin-bottom: 10px;text-align: right;">
       <el-col :span="6" :offset="18">
-        <el-button size="small" @click='addRule' :disabled='filecontent.meta.remote'>新增规则</el-button>
+        <el-button size="small" @click='addRule'>新增规则</el-button>
         <!-- <el-button size="small" type="primary" @click='saveFileRightNow'>保存规则集</el-button> -->
       </el-col>
     </el-row>
@@ -301,3 +302,10 @@
   }
 
 </script>
+
+<style scoped>
+  .save-tip {
+    font-size: 14px;
+    color: #999999;
+  }
+</style>
