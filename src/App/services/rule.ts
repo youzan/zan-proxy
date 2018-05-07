@@ -39,6 +39,7 @@ export interface RuleFile {
   name: string;
   description: string;
   content: Rule[];
+  disableSync?: boolean;
 }
 
 export interface RuleFileMeta {
@@ -118,6 +119,7 @@ export class RuleService extends EventEmitter {
         rulesRemote.push({
           checked: content.checked,
           description: content.description,
+          disableSync: content.disableSync,
           meta: content.meta,
           name: content.name,
         });
@@ -153,6 +155,18 @@ export class RuleService extends EventEmitter {
   // 设置规则文件的使用状态
   public async setRuleFileCheckStatus(userId, name, checked) {
     this.rules[userId][name].checked = checked;
+    const ruleFilePath = this._getRuleFilePath(userId, name);
+    await jsonfileWriteFile(ruleFilePath, this.rules[userId][name], {
+      encoding: 'utf-8',
+    });
+    // 发送消息通知
+    this.emit('data-change', userId, this.getRuleFileList(userId));
+    delete this.usingRuleCache[userId];
+  }
+
+  // 设置规则文件的禁用同步状态
+  public async setRuleFileDisableSync(userId, name, disable) {
+    this.rules[userId][name].disableSync = disable;
     const ruleFilePath = this._getRuleFilePath(userId, name);
     await jsonfileWriteFile(ruleFilePath, this.rules[userId][name], {
       encoding: 'utf-8',

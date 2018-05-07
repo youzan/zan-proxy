@@ -2639,6 +2639,10 @@ is-glob@^4.0.0:
   dependencies:
     is-extglob "^2.1.1"
 
+is-json@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.npmjs.org/is-json/-/is-json-2.0.1.tgz#6be166d144828a131d686891b983df62c39491ff"
+
 is-number@^2.1.0:
   version "2.1.0"
   resolved "http://registry.npm.qima-inc.com/is-number/download/is-number-2.1.0.tgz#01fcbbb393463a548f2f466cce16dece49db908f"

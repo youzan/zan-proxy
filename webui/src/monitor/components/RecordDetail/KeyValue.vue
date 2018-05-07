@@ -12,6 +12,10 @@ export default {
 </script>
 
 <style scoped>
+    .kv-pair {
+        overflow-x: auto;
+        word-break: break-all;
+    }
     .kv-pair label {
         font-weight: bolder;
         margin-right: 5px;

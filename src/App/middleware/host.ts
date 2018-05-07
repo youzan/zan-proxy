@@ -7,6 +7,10 @@ export const host = (
   profileService: ProfileService,
 ) => {
   return async (ctx, next) => {
+    if (ctx.ignore) {
+      await next();
+      return;
+    }
     if (!profileService.enableHost(ctx.userID)) {
       await next();
       return;

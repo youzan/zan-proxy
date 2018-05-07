@@ -60,6 +60,10 @@ var api = {
     return axios.get(`/rule/copy?name=${encodeURI(name)}`);
   },
 
+  setFileDisableSync(name, disable) {
+    return axios.get(`/rule/setfiledisablesync?name=${name}&disable=${disable ? 1 : 0}`)
+  },
+
 };
 
 // 构造debounce函数
