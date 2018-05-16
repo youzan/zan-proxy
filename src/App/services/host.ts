@@ -171,6 +171,9 @@ export class HostService extends EventEmitter {
   }
 
   public getHostFile(userId, name) {
+    if (!this.userHostFilesMap[userId]) {
+      return {};
+    }
     return this.userHostFilesMap[userId][name];
   }
 
@@ -204,7 +207,10 @@ export class HostService extends EventEmitter {
     if (!f.name) {
       f.name = url.split('/').slice(-1)[0] || url;
     }
-    if (this.getHostFile(userId, f.name).checked) {
+    if (
+      this.getHostFile(userId, f.name) &&
+      this.getHostFile(userId, f.name).checked
+    ) {
       f.checked = true;
     } else {
       f.checked = false;
