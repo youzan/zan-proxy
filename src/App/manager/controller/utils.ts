@@ -2,7 +2,12 @@ import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
 import { Inject, Service } from 'typedi';
-import { AppInfoService, HostService, RuleFile, RuleService } from '../../services';
+import {
+  AppInfoService,
+  HostService,
+  RuleFile,
+  RuleService,
+} from '../../services';
 
 @Service()
 export class UtilsController {
@@ -55,12 +60,13 @@ export class UtilsController {
           const hostFileContent = hf.content;
           const hosts = Object.keys(hostFileContent);
           for (const host of hosts) {
-            matchScripts.push(
-              `if ( host == "${host}" ) { return zProxy; }`,
-            );
+            matchScripts.push(`if ( host == "${host}" ) { return zProxy; }`);
             if (host.startsWith('*')) {
               matchScripts.push(
-                `if ( host.indexOf("${host.substr(1, host.length)}") > -1 ) { return zProxy; } `,
+                `if ( host.indexOf("${host.substr(
+                  1,
+                  host.length,
+                )}") > -1 ) { return zProxy; } `,
               );
             }
           }

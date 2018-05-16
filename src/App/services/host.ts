@@ -89,7 +89,7 @@ export class HostService extends EventEmitter {
       name: string;
       checked: boolean;
       description: string;
-      meta: object;
+      meta: any;
     }> = [];
     forEach(this.userHostFilesMap[userId], content => {
       fileList.push({
