@@ -39,9 +39,12 @@ export class HttpTrafficService extends EventEmitter {
     setInterval(() => {
       this.sendCachedData();
     }, 2000);
-
-    rimraf.sync(this.trafficDir);
-    fs.mkdirSync(this.trafficDir);
+    try {
+      rimraf.sync(this.trafficDir);
+      fs.mkdirSync(this.trafficDir);
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   public getFilter(userId) {

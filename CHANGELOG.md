@@ -1,16 +1,15 @@
 # Github Change Log
 
-## zan-proxy@4.0.5 (2018-05-02)
+## zan-proxy@4.0.10 (2018-05-16)
 
 **Implemented enhancements:**
 
-- 支持规则集的复制
-- 支持Host文件的导出与导入
+- 增加导入远程Host文件功能
+- 优化mock数据交互
 
 **Fixed bugs:**
 
-- 修复导出中文名字的规则集的bug
-- 修复windows平台下导入规则集的[bug](https://github.com/youzan/zan-proxy/issues/2)
+- 删除缓存数据导致启动失败的 [issue] (https://github.com/youzan/zan-proxy/issues/9)
 
 ## zan-proxy@4.0.6 ~ 4.0.9 (2018-05-07)
 
@@ -25,3 +24,15 @@
 
 - 修复请求监控中请求内容被遮挡的问题
 - 自更新兼容npm的[issue]（https://github.com/npm/npm/issues/17444）
+
+## zan-proxy@4.0.5 (2018-05-02)
+
+**Implemented enhancements:**
+
+- 支持规则集的复制
+- 支持Host文件的导出与导入
+
+**Fixed bugs:**
+
+- 修复导出中文名字的规则集的bug
+- 修复windows平台下导入规则集的[bug](https://github.com/youzan/zan-proxy/issues/2)

@@ -43,6 +43,7 @@ export default {
         background-color: #eef1f6;
         transition: left 0.5s;
         overflow-y: auto;
+        word-break: break-all;
     }
     .record-detail.show {
         left: calc(100% - 600px);

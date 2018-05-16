@@ -1,6 +1,6 @@
 {
   "name": "zan-proxy",
-  "version": "4.0.9",
+  "version": "4.0.10",
   "description": "前端代理",
   "scripts": {
     "build": "tsc",

@@ -30,7 +30,7 @@
     <ol>
       <li>mac 系统请<a :href="url">点击下载到本地安装</a></li>
       <li>手机请扫码安装证书<img class="install-body__qrcode" :src="imgUrl" ></li>
-      <li>证书信任请参考<a href="/help/cert/" target="_blank">如何信任证书</a></li>
+      <li>证书信任请参考<a href="https://youzan.github.io/zan-proxy/book/quick-start/cert.html" target="_blank">如何信任证书</a></li>
     </ol>
   </div>
 
