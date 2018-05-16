@@ -94,48 +94,26 @@
 
 
         <!-- 新增自定义mock数据文件对话框 -->
-        <el-dialog title="新建Mock数据文件" v-model="addDataFileForm.visible">
+        <el-dialog title="Mock数据文件" v-model="mockDataFileForm.visible" ref="mockDataDialg" :close-on-click-modal="false">
             <el-form :model="addDataFileForm" label-width="80px">
                 <el-form-item label="名称">
-                    <el-input v-model="addDataFileForm.name"></el-input>
+                    <el-input v-model="mockDataFileForm.name"></el-input>
                 </el-form-item>
                 <el-form-item label="格式">
-                    <el-select v-model="addDataFileForm.contenttype" placeholder="请选择数据文件格式">
+                    <el-select v-model="mockDataFileForm.contenttype" placeholder="请选择数据文件格式">
                         <el-option label="html" value="text/html"></el-option>
                         <el-option label="json" value="application/json"></el-option>
                         <el-option label="javascript" value="application/javascript"></el-option>
                     </el-select>
                 </el-form-item>
             </el-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button @click="addDataFileForm.visible = false">取 消</el-button>
-                <el-button type="primary" @click="addDataFile">确 定</el-button>
-            </div>
-        </el-dialog>
-
-        <!-- 编辑数据文件对话框 -->
-        <el-dialog
-                ref="editDataFileDialog"
-                title="编辑Mock数据文件"
-                :close-on-press-escape="false"
-                v-model="editDataFileForm.visible">
-            <span slot="title">
-                编辑数据文件 {{editDataFileForm.entry.name}} [Content-Type: {{editDataFileForm.entry.contenttype}}]
-            </span>
             <div id="content-editor-container" style="height: 305px;">
                 <div id="content-editor"></div>
             </div>
-            <div>
-                Press <strong>F11</strong> when cursor is in the editor to
-                toggle full screen editing. <strong>Esc</strong> can also be used
-                to <i>exit</i> full screen editing.
-            </div>
-
             <div slot="footer" class="dialog-footer">
-                <el-button @click="editDataFileForm.visible = false">取 消</el-button>
-                <el-button @click="toggleFullScreen">全屏</el-button>
+                <el-button @click="mockDataFileForm.visible = false">取 消</el-button>
                 <el-button @click="formatEditor">格式化</el-button>
-                <el-button type="primary" @click="finishEditDataFile">确 定</el-button>
+                <el-button type="primary" @click="saveMockData">确 定</el-button>
             </div>
         </el-dialog>
     </div>
@@ -200,6 +178,15 @@
                     visible: false,
                     entry: {},
                     content: ''
+                },
+                mockDataFileForm: {
+                    isNew: true,
+                    visible: false,
+                    id: '',
+                    name: '',
+                    contenttype: '',
+                    content: '',
+                    callback: null,
                 }
             };
         },
@@ -305,18 +292,17 @@
                 });
             },
 
-            requestAddDataFile(callback) {
-                this.addDataFileForm.callback = callback;
-                this.addDataFileForm.visible = true;
+            requestAddDataFile(cb) {
+                this.showEditDataFileForm({}, true, cb);
             },
 
             addDataFile() {
                 this.addDataFileForm.visible = false;
-                var id = uuidV4();
+                // var id = uuidV4();
                 this.dataList.push({
-                    id: id,
-                    name: this.addDataFileForm.name,
-                    contenttype: this.addDataFileForm.contenttype
+                    id: this.mockDataFileForm.id || uuidV4(),
+                    name: this.mockDataFileForm.name,
+                    contenttype: this.mockDataFileForm.contenttype
                 });
                 dataApi.saveDataList(this.dataList).then(res => {
                     var serverData = res.data;
@@ -325,10 +311,8 @@
                             type: 'success',
                             message: '新建成功!'
                         });
-                        this.addDataFileForm.name = '';
-                        this.addDataFileForm.contenttype = '';
-                        this.addDataFileForm.callback && this.addDataFileForm.callback(id);
-                        this.addDataFileForm.callback = null;
+                        this.mockDataFileForm.name = '';
+                        this.mockDataFileForm.contenttype = '';
                     } else {
                         this.$message.error(`出错了，${serverData.msg}`);
                     }
@@ -366,7 +350,7 @@
             formatEditor() {
                 // editDataFileForm.entry 可以获得 content的类型
                 try {
-                    if (!/json/i.test(this.editDataFileForm.entry.contenttype)) {
+                    if (!/json/i.test(this.mockDataFileForm.contenttype)) {
                         return;
                     }
                     let content = editor.getValue();
@@ -375,21 +359,29 @@
                     editor.refresh();
                     editor.focus();
                 } catch (e) {
+                    this.$message.error('JSON格式错误，请检查');
                 }
             },
-
-            requestEditDataFile(entry) {
-                this.editDataFileForm.entry = entry;
-                dataApi.getDataFile(entry.id).then(response => {
-                    var serverData = response.data;
+            async showEditDataFileForm(entry, isNew, callback) {
+                this.mockDataFileForm.isNew = isNew;
+                this.mockDataFileForm.id = entry.id || uuidV4();
+                this.mockDataFileForm.name = entry.name || '';
+                this.mockDataFileForm.contenttype = entry.contenttype || '';
+                this.mockDataFileForm.content = '';
+                this.mockDataFileForm.callback = callback;
+                if (!isNew) {
+                    const response = await dataApi.getDataFile(this.mockDataFileForm.id);
+                    const serverData = response.data;
                     if (serverData.code != 0) {
                         this.$message.error(`出错了，${serverData.msg}`);
                         return;
                     }
-                    this.editDataFileForm.visible = true;
-                    if (editor) {
-                        editor.setValue(serverData.data);
-                        editor.setOption('mode', entry.contenttype);
+                    this.mockDataFileForm.content = serverData.data;
+                }
+                this.mockDataFileForm.visible = true;
+                if (editor) {
+                        editor.setValue(this.mockDataFileForm.content);
+                        editor.setOption('mode', this.mockDataFileForm.contenttype);
                         this.$nextTick(() => {
                             editor.refresh();
                             editor.focus();
@@ -400,30 +392,29 @@
                             window.editor = editor = new CodeMirror(
                                 document.getElementById('content-editor'),
                                 {
-                                    value: serverData.data,
-                                    mode: entry.contenttype,
+                                    value: this.mockDataFileForm.content,
+                                    mode: this.mockDataFileForm.contenttype ,
                                     lineNumbers: true,
                                     matchBrackets: true,
                                     autofocus: true,
-                                    extraKeys: {
-                                        F11: _ => {
-                                            this.toggleFullScreen();
-                                        },
-                                        Esc: _ => {
-                                            this.closeFullScreen();
-                                        }
-                                    }
                                 }
                             );
                         });
                     }
-                });
+
+            },
+            requestEditDataFile(entry, cb) {
+                this.showEditDataFileForm(entry, false, cb);
             },
             finishEditDataFile() {
                 var entry = this.editDataFileForm.entry;
-                if (entry.contenttype.includes('json') && !isJSON(editor.getValue())) {
-                    this.$message.error('不是json数据，请检查');
-                    return;
+                if (entry.contenttype.includes('json')) {
+                    try {
+                        JSON.parse(editor.getValue())
+                    } catch (error) {
+                        this.$message.error('JSON格式错误，请检查');
+                        return;
+                    }
                 }
                 dataApi.saveDataFile(entry.id, editor.getValue()).then(response => {
                     var serverData = response.data;
@@ -439,8 +430,53 @@
                         this.$message.error(`出错了，${serverData.msg}`);
                     }
                 });
-            }
         },
+        async saveMockData() {
+            if (!this.mockDataFileForm.name) {
+                this.$message.error('请填写名字');
+                return;
+            }
+            if (!this.mockDataFileForm.contenttype) {
+                this.$message.error('请选择格式');
+                return;
+            }
+            if (this.mockDataFileForm.contenttype.includes('json')) {
+                    try {
+                        JSON.parse(editor.getValue())
+                    } catch (error) {
+                        this.$message.error('JSON格式错误，请检查');
+                        return;
+                    }
+            }
+            if (this.mockDataFileForm.isNew) {
+                this.dataList.push({
+                    id: this.mockDataFileForm.id,
+                    name: this.mockDataFileForm.name,
+                    contenttype: this.mockDataFileForm.contenttype,
+                })
+                await dataApi.saveDataList(this.dataList)
+            }
+            dataApi.saveDataFile(this.mockDataFileForm.id, editor.getValue()).then(response => {
+                    var serverData = response.data;
+                    if (serverData.code == 0) {
+                        this.$message({
+                            type: 'success',
+                            message: '保存成功!'
+                        });
+                        this.mockDataFileForm.callback && this.mockDataFileForm.callback(this.mockDataFileForm.id);
+                        this.mockDataFileForm.name = '';
+                        this.mockDataFileForm.id = null;
+                        this.mockDataFileForm.contenttype = ''
+                        this.mockDataFileForm.content = ''
+                        this.mockDataFileForm.visible = false;
+                        this.mockDataFileForm.callback = null
+                        editor.setValue('');
+                    } else {
+                        this.$message.error(`出错了，${serverData.msg}`);
+                    }
+                });
+        },
+    },
 
         created() {
             if (!window.io) return;
@@ -485,7 +521,7 @@
 
         mounted() {
             // 强制dialog渲染body部分, 对ele dialog hack的初始化方式，原始的dialog不提供mouted后的事件
-            this.$refs.editDataFileDialog.rendered = true;
+            this.$refs.mockDataDialg.rendered = true;
         },
         
         watch: {
@@ -502,7 +538,12 @@
                 } else {
                     document.title = 'Zan Proxy'
                 }
-            }
+            },
+            'mockDataFileForm.contenttype': function(newValue) {
+                if (editor) {
+                    editor.setOption('mode', newValue);
+                }
+            },
         }
     };
 </script>

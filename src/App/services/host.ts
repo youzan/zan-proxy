@@ -3,6 +3,7 @@ import EventEmitter from 'events';
 import fs from 'fs';
 import jsonfile from 'jsonfile';
 import { find, forEach } from 'lodash';
+import fetch from 'node-fetch';
 import path from 'path';
 import { Service } from 'typedi';
 import { AppInfoService } from './appInfo';
@@ -174,6 +175,9 @@ export class HostService extends EventEmitter {
   }
 
   public async saveHostFile(userId, name, content) {
+    if (!this.userHostFilesMap[userId]) {
+      this.userHostFilesMap[userId] = {};
+    }
     this.userHostFilesMap[userId][name] = content;
 
     // 如果正在使用，则删除
@@ -185,6 +189,27 @@ export class HostService extends EventEmitter {
     await jsonWriteFile(hostfileName, content, { encoding: 'utf-8' });
     this.emit('host-saved', userId, name, content);
     this.emit('data-change', userId, this.getHostFileList(userId));
+  }
+
+  public async importRemoteHostFile(userId, url): Promise<any> {
+    const resp = await fetch(url);
+    const f = await resp.json();
+    f.meta = {
+      local: false,
+      url,
+    };
+    if (!f.content) {
+      f.content = {};
+    }
+    if (!f.name) {
+      f.name = url.split('/').slice(-1)[0] || url;
+    }
+    if (this.getHostFile(userId, f.name).checked) {
+      f.checked = true;
+    } else {
+      f.checked = false;
+    }
+    return await this.saveHostFile(userId, f.name, f);
   }
 
   private _getHostFilePath(userId, hostName) {

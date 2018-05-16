@@ -5,6 +5,7 @@
       <el-col :span="6" :offset="18" class="addhost-btn-wrap">
         <input type="file" ref="fileimport" @change="importHostFile" style="display:none;" />
         <el-button size="small" @click='importHostFileBtnClick'>导入 Host 文件</el-button>
+        <el-button size="small" type="primary" @click='importRemoteHostFile'>导入远程 Host 文件</el-button>
         <el-button size="small" @click='addNewHostFile'>新增 Host 文件</el-button>
       </el-col>
     </el-row>
@@ -119,6 +120,33 @@
         const file = files[0];
         if (!file) return;
         reader.readAsText(file);
+      },
+      // 导入远程文件
+      async importRemoteHostFile() {
+        let result = await this.$prompt(
+          '请输入远程Host文件的url',
+          '导入远程Host文件',
+          {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消'
+          }
+        );
+
+        let url = result.value;
+        try{
+          const response = await hostApi.importRemote(url)
+          const res = response.data
+          if (res.code !== 0) {
+            throw res.msg
+          }
+          this.$message({
+            message: '导入成功',
+            type: 'success'
+          })
+        } catch (e) {
+          this.$message.error(`出错了, ${e}`)
+        }
+        return
       },
     }
   }

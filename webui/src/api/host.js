@@ -31,7 +31,10 @@ var api = {
     },
     saveFile(name,content){
         return axios.post(`/host/savefile?name=${name}`,content);
-    }
+    },
+    importRemote(url) {
+        return axios.get(`/host/import?url=${encodeURIComponent(url)}`)
+    },
 };
 api.debouncedUseFile = _.debounce(function (name, callback) {
     api.useFile(name).then((response) => {
