@@ -7,6 +7,7 @@ import ip from 'ip';
 import open from 'open';
 import selfUpdate from './selfUpdate';
 import start from './start';
+import syncHost from './syncHost';
 import syncRule from './syncRule';
 
 const packageInfo = require('../../package');
@@ -26,6 +27,7 @@ async function run() {
   }
   if (program.sync) {
     await syncRule();
+    await syncHost();
   }
   const managerPort = program.manager_port || 40001;
   const url = `http://${ip.address()}:${managerPort}`;

@@ -81,5 +81,25 @@ export class HostController {
       );
       ctx.body = content;
     });
+
+    router.get('/host/import', async ctx => {
+      const { userId, query } = ctx;
+      const hostFileUrl = query.url;
+      try {
+        const hostFile = await this.hostService.importRemoteHostFile(
+          userId,
+          hostFileUrl,
+        );
+        ctx.body = {
+          code: 0,
+          data: hostFile,
+        };
+      } catch (e) {
+        ctx.body = {
+          code: 1,
+          msg: e,
+        };
+      }
+    });
   }
 }
