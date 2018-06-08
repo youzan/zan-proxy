@@ -53,6 +53,12 @@ The detailed documentation can be refered [here](https://youzan.github.io/zan-pr
 * [React UI](https://www.youzanyun.com/zanui/zent)
 * [Weapp UI](https://github.com/youzan/zanui-weapp)
 
+## Wechat Group
+
+Scan the qrcode to join our wechat discussion group, please note that you want to join ZanProxy discussion group.
+
+<img src="https://img.yzcdn.cn/vant/wechat_20180606.png" width="220" height="292" >
+
 ## LICENSE
 
 [MIT](https://zh.wikipedia.org/wiki/MIT%E8%A8%B1%E5%8F%AF%E8%AD%89)
