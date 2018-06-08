@@ -50,6 +50,13 @@ Zan Proxy的管理页面会自动打开。
 * [React UI](https://www.youzanyun.com/zanui/zent)
 * [Weapp UI](https://github.com/youzan/zanui-weapp)
 
+## 微信讨论群
+
+欢迎大家加入 ZanProxy 交流群一起讨论，添加下方微信并注明『加入 ZanProxy 交流群』即可
+
+<img src="https://img.yzcdn.cn/vant/wechat_20180606.png" width="220" height="292" >
+
+
 ## 开源协议
 
 [MIT](https://zh.wikipedia.org/wiki/MIT%E8%A8%B1%E5%8F%AF%E8%AD%89)

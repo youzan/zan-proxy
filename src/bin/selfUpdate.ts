@@ -7,6 +7,7 @@ import selfupdate from 'selfupdate';
 const packageInfo = require('../../package');
 const update = promisify(selfupdate.update);
 const isUpdated = promisify(selfupdate.isUpdated);
+const exec = promisify(childProcess.exec);
 
 export default async () => {
   const checkSpinner = ora('正在检查更新...').start();
@@ -27,29 +28,16 @@ export default async () => {
     return;
   }
   const updateSpinner = ora('正在更新').start();
-  try {
-    await update(packageInfo);
-  } catch (e) {
-    childProcess.exec(
-      `npm uninstall --global --silent ${packageInfo.name}`,
-      uninstllErr => {
-        if (uninstllErr) {
-          console.error('更新失败', uninstllErr);
-          process.exit(1);
-        }
-        childProcess.exec(
-          `npm install --global --silent ${packageInfo.name}`,
-          installErr => {
-            if (installErr) {
-              console.error('更新失败', installErr);
-              process.exit(1);
-            }
-          },
-        );
-      },
-    );
-  }
-  updateSpinner.stop();
-  console.log('更新完成，请重新启动!');
-  process.exit(0);
+  return update(packageInfo)
+    .catch(() => exec(`npm uninstall --global --silent ${packageInfo.name}`))
+    .then(() => exec(`npm install --global --silent ${packageInfo.name}`))
+    .then(() => {
+      updateSpinner.stop();
+      console.log('更新完成，请重新启动!');
+      process.exit(0);
+    })
+    .catch(error => {
+      console.error('更新失败', error);
+      process.exit(1);
+    });
 };
