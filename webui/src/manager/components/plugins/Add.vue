@@ -1,7 +1,7 @@
 <template>
   <div class="add-btn grid" @click="showDialog">
     <i class="el-icon-plus"></i>
-    <el-dialog title="添加插件" :visible.sync="dialogVisible" size="tiny" :modal-append-to-body="true">
+    <el-dialog title="添加插件" :visible.sync="dialogVisible" size="tiny" :modal-append-to-body="true" :before-close="handleClose">
       <el-form :model="plugin">
         <el-form-item label="包名" :label-width="formLabelWidth">
           <el-input v-model="plugin.name" auto-complete="off" placeholder="插件包名"></el-input>
@@ -58,6 +58,11 @@ export default {
       }
       this.add(name, registry).then(() => this.hideDialog(e))
     },
+
+    handleClose(done) {
+      // hack for element 1.4
+      setTimeout(_ => done(),0);
+    }
   }
 }
 </script>
