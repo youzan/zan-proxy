@@ -16,19 +16,17 @@ export class HttpsServer {
   ) {}
   public setHttpHandler(httpHandler: HttpHandler) {
     this.server.on('request', (req, res) => {
-      const url = URL.parse(req.url);
-      const host = req.headers.host;
-      url.hostname = host;
-      url.protocol = 'https';
-      url.path = url.path;
-      req.url = URL.format(url);
+      this.fillReqURL(req);
       // req.headers["x-forwarded-for"] = this.connectHandler.getIP(req.connection.remotePort);
       httpHandler.handle(req, res);
     });
   }
 
   public setUpgradeHandler(upgradeHandler) {
-    this.server.on('upgrade', upgradeHandler.handle.bind(upgradeHandler));
+    this.server.on('upgrade', (req, socket, head) => {
+      this.fillReqURL(req);
+      upgradeHandler.handle(req, socket, head);
+    });
   }
 
   public async listen(port) {
@@ -52,5 +50,14 @@ export class HttpsServer {
       cert: serverCrt.cert,
       key: serverCrt.key,
     });
+  }
+
+  private fillReqURL(req) {
+    const url = URL.parse(req.url);
+    const host = req.headers.host;
+    url.hostname = host;
+    url.protocol = 'https';
+    url.path = url.path;
+    req.url = URL.format(url);
   }
 }
