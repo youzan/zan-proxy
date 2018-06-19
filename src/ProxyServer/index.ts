@@ -55,7 +55,9 @@ export class ProxyServer {
         },
       ]),
     );
+    this.handlers.connect.httpPort = port;
     this.handlers.http.setMiddleware(handlerMiddleware);
+    this.handlers.upgrade.setMiddleware(compose(this.middleware));
     this.httpProxyServer.listen(port);
     this.httpsProxyServer.listen(this.httpsPort);
   }

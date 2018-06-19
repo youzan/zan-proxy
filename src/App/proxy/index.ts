@@ -44,11 +44,11 @@ export class Proxy {
         ruleService: Container.get(RuleService),
       }),
     );
+    const pluginManager: PluginManager = Container.get(PluginManager);
+    pluginManager.loadProxyMiddleware(this.server);
     this.server.use(
       host(Container.get(HostService), Container.get(ProfileService)),
     );
     this.server.use(actualRequest(Container.get(HttpTrafficService)));
-    const pluginManager: PluginManager = Container.get(PluginManager);
-    pluginManager.loadProxyMiddleware(this.server);
   }
 }

@@ -16,7 +16,7 @@
     "cookie": "^0.3.1",
     "es6-promisify": "^6.0.0",
     "get-port": "^3.2.0",
-    "http-proxy": "^1.16.2",
+    "http-proxy": "^1.17.0",
     "inflation": "^2.0.0",
     "inquirer": "^5.2.0",
     "ip": "^0.3.2",

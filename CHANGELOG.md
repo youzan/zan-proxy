@@ -1,5 +1,12 @@
 # Github Change Log
 
+## zan-proxy@4.0.11 ~ 4.0.13 (2018-06-12)
+
+**Implemented enhancements:**
+
+- 支持自定义websocket代理，可以自定义转发
+- 调整中间件的顺序，把host解析延后至自定义插件之后
+
 ## zan-proxy@4.0.10 (2018-05-16)
 
 **Implemented enhancements:**
