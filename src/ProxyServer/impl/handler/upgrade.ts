@@ -25,11 +25,7 @@ export class UpgradeHandler implements IUpgradeHandler {
       socket,
     };
     this.middleware(ctx).then(() => {
-      const { hostname, port } = URL.parse(req.url);
-      const protocol =
-        !!req.connection.encrypted && !/^http:/.test(req.url)
-          ? 'https'
-          : 'http';
+      const { hostname, port, protocol } = URL.parse(req.url);
       this.proxy.ws(req, socket, head, {
         target: {
           hostname,
