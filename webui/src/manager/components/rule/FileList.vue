@@ -2,7 +2,7 @@
   <div>
     <div class="main-content__title">规则集列表</div>
     <el-row :gutter="20" style="margin-bottom: 10px">
-      <el-col :span="10" class="addrule-btn-wrap">
+      <el-col class="addrule-btn-wrap">
         <input type="file" @change="fileUpload" class="importfile"/>
         <el-button size="small">导入规则集</el-button>
         <el-button size="small" type="primary" @click='importRemoteRule'>导入远程规则</el-button>

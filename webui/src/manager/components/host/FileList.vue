@@ -2,7 +2,7 @@
   <div class="host-view">
     <div class="main-content__title">Host 文件列表</div>
     <el-row :gutter="20" style="margin-bottom: 10px">
-      <el-col :span="6" :offset="18" class="addhost-btn-wrap">
+      <el-col class="addhost-btn-wrap">
         <input type="file" ref="fileimport" @change="importHostFile" style="display:none;" />
         <el-button size="small" @click='importHostFileBtnClick'>导入 Host 文件</el-button>
         <el-button size="small" type="primary" @click='importRemoteHostFile'>导入远程 Host 文件</el-button>
