@@ -1,4 +1,4 @@
-<p>
+<p  align="center">
     <a href="https://github.com/youzan/"><img alt="logo" width="36" height="36" src="https://img.yzcdn.cn/public_files/2017/02/09/e84aa8cbbf7852688c86218c1f3bbf17.png" alt="youzan">
     </a>
 </p>
