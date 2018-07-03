@@ -101,7 +101,7 @@ export class RuleController {
     // 重命名规则文件
     // /rule/changefilename?newName=${name}, body -> RuleFile
     ruleRouter.post('/changefilename', async ctx => {
-      ctx.body = await this.ruleService.changeRuleFileName(ctx.userId, ctx.request.body, ctx.query.newName);
+      ctx.body = await this.ruleService.changeRuleFileName(ctx.userId, ctx.request.body, ctx.query.newName, ctx.query.newDescription);
     });
 
     // 导出规则文件

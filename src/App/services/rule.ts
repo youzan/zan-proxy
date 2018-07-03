@@ -202,7 +202,7 @@ export class RuleService extends EventEmitter {
   }
 
   // 修改规则文件名称
-  public async changeRuleFileName(userId, ruleFile: RuleFile, newName: string) {
+  public async changeRuleFileName(userId, ruleFile: RuleFile, newName: string, newDescription: string) {
     const oldName = ruleFile.name;
     const userRuleMap = this.rules[userId] || {};
     if (userRuleMap[newName]) {
@@ -219,6 +219,7 @@ export class RuleService extends EventEmitter {
 
     // 修改rule名称
     ruleFile.name = newName;
+    ruleFile.description = newDescription;
     userRuleMap[newName] = ruleFile;
     this.rules[userId] = userRuleMap;
 
