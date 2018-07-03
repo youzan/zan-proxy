@@ -38,10 +38,11 @@ export class HostController {
         code: 0,
       };
     });
-    // /host/usefile?name=${name}
-    router.get('/host/usefile', async ctx => {
+    // /host/togglefile?name=${name}
+    router.get('/host/togglefile', async ctx => {
       const userId = ctx.userId;
-      await this.hostService.setUseHost(userId, ctx.query.name);
+      const { name } = ctx.query;
+      await this.hostService.toggleUseHost(userId, name);
       ctx.body = {
         code: 0,
       };

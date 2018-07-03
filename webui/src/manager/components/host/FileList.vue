@@ -12,7 +12,7 @@
     <el-table border align='center' :data="$dc.hostFileList">
       <el-table-column prop="checked" label="启用" width="85">
         <template scope='scope'>
-          <el-radio v-model="selectedFileName" :label="scope.row.name" :disabled="!$dc.hostState" />
+          <el-checkbox :checked="scope.row.checked" @change="toggleFile(scope.row.name)" :disabled="!$dc.hostState" />
         </template>
       </el-table-column>
       <el-table-column prop="name" label="名字" width="150">
@@ -47,28 +47,6 @@
 
   export default {
     name: 'hostlist',
-
-    computed: {
-      selectedFileName: {
-        get(){
-          // 遍历找出选择的文件
-          var selectedFile = _.find(this.$dc.hostFileList, (file) => {
-            return file.checked;
-          });
-          return selectedFile ? selectedFile.name : '';
-        },
-        set(value){
-          this.$dc.hostFileList.forEach(function (row) {
-              if (row.name != value) {
-                  row.checked = false;
-              } else {
-                  row.checked = true;
-              }
-          });
-          this.useFile(value);
-        }
-      }
-    },
     methods: {
       onDeleteFile(row, index, list) {
         this.$confirm(`此操作将永久删除该文件: ${row.name}, 是否继续?`, '提示', {
@@ -89,7 +67,7 @@
           });
         })
       },
-      useFile(name) {
+      toggleFile(name) {
           hostApi.debouncedUseFile(name, (response) => {
           var serverData = response.data;
           if (serverData.code == 0) {
