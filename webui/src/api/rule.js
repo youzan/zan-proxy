@@ -21,7 +21,7 @@ var api = {
     return axios.get('/rule/filelist');
   },
   deleteFile(name){
-    return axios.get(`/rule/deletefile?name=${name}`);
+    return axios.get(`/rule/deletefile?name=${encodeURIComponent(name)}`);
   },
   setFileCheckStatus(name, checked){
     return axios.get(`/rule/setfilecheckstatus?name=${name}&checked=${checked ? 1 : 0}`);
