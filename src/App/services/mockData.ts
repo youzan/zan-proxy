@@ -160,7 +160,12 @@ export class MockDataService extends EventEmitter {
    * @private
    */
   private _getDataFilePath(userId, dataId) {
-    return path.join(this.mockDataDir, userId + '_' + dataId);
+    const dataFileRealPath = fs.realpathSync(path.join(this.mockDataDir, userId + '_' + dataId));
+    if (dataFileRealPath.includes(this.mockDataDir)){
+      return path.join(this.mockDataDir, userId + '_' + dataId);
+    }else {
+      return '';
+    }
   }
 
   /**
