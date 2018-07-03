@@ -201,6 +201,44 @@ export class RuleService extends EventEmitter {
     this.emit('data-change', userId, this.getRuleFileList(userId));
   }
 
+  // 修改规则文件名称
+  public async changeRuleFileName(userId, ruleFile: RuleFile, newName: string) {
+    const oldName = ruleFile.name;
+    const userRuleMap = this.rules[userId] || {};
+    if (userRuleMap[newName]) {
+      return {
+        code: -1,
+        message: `名称为"${newName}"的规则集已存在!`,
+      };
+    }
+
+    // 删除旧的rule
+    delete this.rules[userId][oldName];
+    const ruleFilePath = this._getRuleFilePath(userId, oldName);
+    await fsUnlink(ruleFilePath);
+
+    // 修改rule名称
+    ruleFile.name = newName;
+    userRuleMap[newName] = ruleFile;
+    this.rules[userId] = userRuleMap;
+
+    // 写文件
+    const filePath = this._getRuleFilePath(userId, newName);
+    await jsonfileWriteFile(filePath, userRuleMap[newName], {
+      encoding: 'utf-8',
+    });
+
+    // 清空缓存
+    delete this.usingRuleCache[userId];
+
+    // 发送消息通知
+    this.emit('data-change', userId, this.getRuleFileList(userId));
+
+    return {
+      code: 0,
+    };
+  }
+
   /**
    * 根据请求,获取处理请求的规则
    * @param method
