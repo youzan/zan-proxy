@@ -313,6 +313,7 @@
         } else {
           this.filecontent.name = newName;
           this.editRuleConfigDialogVisible = false;
+          this.$router.replace(`editrule?name=${newName}`);
           this.$message({
             type: 'success',
             message: '修改规则集名称成功!'
