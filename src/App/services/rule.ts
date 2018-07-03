@@ -208,7 +208,7 @@ export class RuleService extends EventEmitter {
     if (userRuleMap[newName]) {
       return {
         code: -1,
-        message: `名称为"${newName}"的规则集已存在!`,
+        msg: `名称为"${newName}"的规则集已存在!`,
       };
     }
 
