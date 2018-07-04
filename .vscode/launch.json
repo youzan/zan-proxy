@@ -33,6 +33,7 @@
       "env": {
         "DEBUG": "1",
       },
+      "runtimeVersion": "8.11.1",
       "args": [
         "-r",
         "ts-node/register",

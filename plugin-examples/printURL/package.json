@@ -1,0 +1,14 @@
+{
+  "name": "zp-print-url",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mickeyinfoshan",
+  "license": "MIT",
+  "dependencies": {
+    "koa": "^2.5.1"
+  }
+}
