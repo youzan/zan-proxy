@@ -1,6 +1,8 @@
 # 编写插件
 
-ZanProxy插件包是是一个npm包，可以添加任意需要的依赖。ZanProxy插件是一个可实例化的类，该类要实现两个实例方法`proxy`和`manage`。
+ZanProxy插件是是一个**npm包**，这个npm包需要导出一个类，这个类要实现两个方法：`proxy`和`manage`，**除此之外没有任何特殊要求**。 `proxy`方法用于请求的处理，`manage`方法用于插件的配置。
+
+可以参考的例子：[点击这里](https://github.com/youzan/zan-proxy/tree/master/plugin-examples)。
 
 **注意**
 
@@ -29,7 +31,7 @@ ZanProxy中间件是一个处理请求的函数，形如`async (ctx, next) => {.
 
 ## manage方法
 
-manage方法需要返回一个Koa的App，该app会被挂载到ZanProxy管理服务器的`/plugins/{插件名}`路径，用于插件的可视化数据管理。
+manage方法需要返回一个Koa的App，该app会被挂载到ZanProxy管理服务器的`/plugins/{插件名}`路径，用于插件的可视化数据管理。该app可以有自己的http接口和静态资源。
 
 ### 管理Access-Control-Allow-Origin响应头数据的manage例子
 
