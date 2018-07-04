@@ -1,0 +1,276 @@
+html,
+        body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+            font-family: 'Avenir', Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .z-page-container {
+            margin: 0 auto;
+            min-width: 1200px;
+            display: flex;
+        }
+
+        .z-page-header {
+            height: 650px;
+            padding-top: 30px;
+            background-color: #2D4555;
+            background-image: url(https://img.yzcdn.cn/public_files/2018/04/18/fa3fb1da3394e6ce57a63a241b6c03bc.png);
+            background-repeat: no-repeat;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        .z-page-header .z-page-header-container {
+            width: 1000px;
+            margin: 0 auto;
+        }
+
+        .z-page-header .z-logo img {
+            width: 15px;
+            height: auto;
+            vertical-align: middle;
+        }
+
+        .z-page-header .z-logo span {
+            vertical-align: middle;
+        }
+
+        .z-page-header h2 {
+            color: #00EEFF;
+            font-size: 70px;
+            margin-bottom: 30px;
+        }
+
+        .z-page-header p {
+            font-size: 28px;
+            font-weight: 300;
+        }
+
+        .z-page-header h2,
+        .z-page-header p,
+        .z-page-header .btn-wrapper {
+            text-align: center;
+        }
+
+        .z-page-header .z-btn {
+            background-color: transparent;
+            color: #00EEFF;
+            width: 140px;
+            height: 40px;
+            line-height: 40px;
+            box-shadow: transparent;
+            outline: none;
+            border: solid 1px #00EEFF;
+            font-size: 16px;
+            cursor: pointer;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .z-page-header .z-btn:hover {
+            background-color: #fff;
+            border-color: #fff;
+            color: #2D4555;
+            ;
+        }
+
+        .z-page-header .z-header-con {
+            width: 100%;
+            height: auto;
+            margin-top: 30px;
+        }
+
+        .z-page-header .z-header-con img {
+            width: 100%;
+            height: auto;
+        }
+
+        .z-section {
+            height: 450px;
+            padding-top: 70px;
+            overflow-x: hidden;
+            overflow-y: hidden;
+        }
+
+        .z-section .z-img-wrap {
+            width: 50%;
+            height: 100%;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15)
+        }
+
+        .z-section .z-img-wrap img {
+            width: 100%;
+            height: auto;
+        }
+
+        .z-section .z-text-wrap {
+            width: 520px;
+            padding-top: 100px;
+        }
+
+        .z-section:nth-of-type(odd) {
+            background-color: #F5F5F5;
+        }
+
+        .z-section:nth-last-of-type(odd) .z-page-container {
+            justify-content: flex-start;
+        }
+
+        .z-section:nth-of-type(even) {
+            background-color: #fff;
+        }
+
+        .z-section:nth-last-of-type(even) .z-page-container {
+            justify-content: flex-end;
+        }
+
+        .z-section .z-text-wrap h3 {
+            font-size: 28px;
+            color: #333333;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .z-section .z-text-wrap p {
+            font-size: 16px;
+            color: #999999;
+            line-height: 2;
+        }
+
+        .z-section.z-section:nth-last-of-type(even) .z-text-wrap p {
+            padding-right: 50px;
+        }
+
+        .z-section.z-section:nth-last-of-type(odd) .z-text-wrap {
+            padding-left: 50px;
+        }
+
+        .z-section.z-section:nth-last-of-type(odd) .z-text-wrap p {
+            padding-right: 50px;
+        }
+
+        .z-section .z-text-wrap .z-btn {
+            font-size: 14px;
+            line-height: 1;
+            text-align: center;
+            color: #2D4555;
+            cursor: pointer;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .z-clearfix {
+            clear: both;
+        }
+
+        .z-page-footer {
+            font-size: 12px;
+            background-color: #373D44;
+            color: #AAAAAA;
+            /* height: 114px; */
+            line-height: 114px;
+            text-align: center;
+        }
+
+        .z-page-footer img {
+            width: 14px;
+            height: 14px;
+        }
+
+        .logo-btns {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-btns .btns a {
+            color: #ffffff;
+            margin-left: 20px;
+            text-decoration: none;
+        }
+
+        @media screen and (max-width: 800px) {
+            .z-page-footer {
+                line-height: 2;
+                padding: 20px 12px;
+            }
+            .z-section {
+                height: auto;
+            }
+            .z-page-container {
+                text-align: center;
+                min-width: auto;
+            }
+
+            .z-section .z-text-wrap {
+                width: auto;
+                padding-top: 0;
+            }
+
+            .z-section .z-text-wrap {
+                padding: 0;
+                padding-left: 20px !important;
+                padding-right: 20px !important;
+            }
+
+            .z-section.z-section .z-text-wrap p {
+                padding-right: 0px !important;
+                padding-left: 0px !important;
+            }
+
+            .z-section .z-img-wrap {
+                width: 100%;
+                height: auto;
+                margin-top: 30px;
+            }
+            .z-section:nth-of-type(odd) .z-page-container {
+                flex-direction: column;
+            }
+            .z-section:nth-of-type(even) .z-page-container {
+                flex-direction: column-reverse;
+            }
+            .z-page-header {
+                height: 380px;
+            }
+            .z-page-header .z-page-header-container {
+                width: auto;
+                padding: 0 30px;
+            }
+
+            .z-page-header p {
+                font-size: 16px;
+                margin-bottom: 30px;
+            }
+
+            .z-page-header h2 {
+                font-size: 40px;
+                margin-top: 50px;
+                margin-bottom: 0;
+                font-weight: normal;
+            }
+
+            .z-section .z-text-wrap h3 {
+                font-size: 22px;
+            }
+
+            .z-section .z-text-wrap h3:nth-last-of-type(1) {
+                font-size: 18px;
+                color: #999999;
+                font-weight: 400;
+                margin-bottom: 30px;
+                margin-top: 14px;
+            }
+
+            .z-section .z-text-wrap p {
+                font-size: 14px;
+            }
+
+            .logo-btns .btns a {
+                font-size: 14px;
+            }
+        }
