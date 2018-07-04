@@ -4,6 +4,7 @@
     <span class="save-tip" v-if="loaded && filecontent.meta && filecontent.meta.remote">该规则集为远程规则集，重启同步后相关配置会被覆盖。如需永久保存修改，则可以复制该规则集成本地规则集。</span>
     <el-row :gutter="20" style="margin-bottom: 10px;text-align: right;">
       <el-col :span="6" :offset="18">
+        <el-button size="small" @click='openEditRuleNameDialog'>设置</el-button>
         <el-button size="small" @click='addRule'>新增规则</el-button>
         <!-- <el-button size="small" type="primary" @click='saveFileRightNow'>保存规则集</el-button> -->
       </el-col>
@@ -92,6 +93,13 @@
       </div>
     </el-dialog>
     <edit-dialog :visible="dialogVisible" :save="dialogSave" :cancel="hideEditDialog" :initRule="editingRule"></edit-dialog>
+    <edit-rule-config-dialog
+      :visible="editRuleConfigDialogVisible"
+      :ok="changeFileName"
+      :cancel="closeEditRuleNameDialog"
+      :defaultName="filecontent.name"
+      :defaultDescription="filecontent.description"
+    ></edit-rule-config-dialog>
   </div>
 </template>
 
@@ -102,6 +110,7 @@
   import RuleDetail from './RuleDetail';
   import Vue from 'vue';
   import EditDialog from './EditRuleDialog';
+  import EditRuleConfigDialog from './EditRuleConfigDialog.vue';
   
   Vue.component(RuleDetail.name, RuleDetail);
 
@@ -109,6 +118,7 @@
     name: 'edit-rule',
     components: {
       'edit-dialog': EditDialog,
+      'edit-rule-config-dialog': EditRuleConfigDialog,
     },
     data() {
       return {
@@ -125,6 +135,7 @@
           msg: ''
         },
         dialogVisible: false,
+        editRuleConfigDialogVisible: false, // 编辑规则集名称弹窗
         editRuleKey: null,
       }
     },
@@ -274,6 +285,40 @@
         this.filecontent.content = rules;
         this.hideEditDialog();
         this.saveFileRightNow();
+      },
+      openEditRuleNameDialog() {
+        this.editRuleConfigDialogVisible = true;
+      },
+      closeEditRuleNameDialog() {
+        this.editRuleConfigDialogVisible = false;
+      },
+      async changeFileName(newName, newDescription) {
+        let errMessage = '';
+        if (newName === '') {
+          errMessage = '规则集名称不能为空!';
+        } else {
+          const {status, data} = await ruleApi.changeFileName(newName, newDescription, this.filecontent);
+          if (status !== 200) {
+            errMessage = '请求失败';
+          } else if (data.code !== 0) {
+            errMessage = data.msg;
+          }
+        }
+
+        if (errMessage) {
+          this.$message({
+            type: 'error',
+            message: errMessage
+          });
+        } else {
+          this.filecontent.name = newName;
+          this.editRuleConfigDialogVisible = false;
+          this.$router.replace(`editrule?name=${newName}`);
+          this.$message({
+            type: 'success',
+            message: '修改规则集名称成功!'
+          });
+        }
       }
     },
     mounted() {
