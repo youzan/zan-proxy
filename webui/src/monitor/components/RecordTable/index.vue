@@ -125,7 +125,7 @@ export default {
           record.hostpath += `:${record.originRequest.port}`
         }
         if (splited.length) {
-          record.name += splited.slice(-1)[0]
+          record.name = splited.slice(-1)[0] + record.name
         }
         if (!record.name) {
           record.name = '/'
