@@ -35,12 +35,12 @@ var api = {
 
   /**
    * 修改规则集文件名
-   * @param {String} newName 新名称
-   * @param {String} newDescription 新描述
-   * @param {Object} content 规则集内容
+   * @param {String} origin 原名称
+   * @param {String} name 新名称
+   * @param {String} description 新描述
    */
-  changeFileName(newName, newDescription, content) {
-    return axios.post(`/rule/changefilename?newName=${encodeURIComponent(newName)}&newDescription=${newDescription}`, content);
+  updateFileInfo(origin, { name, description }) {
+    return axios.post(`/rule/updatefileinfo/${encodeURIComponent(origin)}`, { name, description });
   },
 
   testRule(content){
