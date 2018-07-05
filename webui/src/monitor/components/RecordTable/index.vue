@@ -87,7 +87,7 @@
 
 import { getStatusText } from 'http-status-codes'
 
-import prettySize from 'prettysize'
+import prettySize from './prettySize'
 import prettyTime from 'prettytime'
 
 const contentTypeText = {
