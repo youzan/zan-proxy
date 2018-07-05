@@ -1,5 +1,22 @@
 # Github Change Log
 
+## zan-proxy@4.0.14 (2018-07-05)
+
+**Implemented enhancements:**
+
+- [支持Host多选](https://github.com/youzan/zan-proxy/issues/24)
+- [支持转发规则集信息编辑](https://github.com/youzan/zan-proxy/pull/30)
+- [使用fs.realpathSync判断dataFileRealPath是否包含mockDataDir](https://github.com/youzan/zan-proxy/pull/25)
+- 优化构建命令
+- 增加更新提示
+
+**Fixed bugs:**
+
+- [修复@types/node版本过高导致构建失败的问题](https://github.com/youzan/zan-proxy/issues/27)
+- [删除特殊字符的规则时报错](https://github.com/youzan/zan-proxy/pull/28)
+- 修复监控器请求数据展示异常
+- 兼容没有action的老数据
+
 ## zan-proxy@4.0.11 ~ 4.0.13 (2018-06-12)
 
 **Implemented enhancements:**
