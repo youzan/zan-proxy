@@ -14,9 +14,9 @@
   version "5.2.0"
   resolved "https://registry.npmjs.org/@types/mocha/-/mocha-5.2.0.tgz#b3c8e69f038835db1a7fdc0b3d879fc50506e29e"
 
-"@types/node@^9.4.7":
-  version "9.6.6"
-  resolved "https://registry.npmjs.org/@types/node/-/node-9.6.6.tgz#439b91f9caf3983cad2eef1e11f6bedcbf9431d2"
+"@types/node@<=9.6.13":
+  version "9.6.13"
+  resolved "https://registry.npmjs.org/@types/node/-/node-9.6.13.tgz#ab0e691f166500b04075a2f01ca49235ea58e816"
 
 JSONStream@^1.3.2:
   version "1.3.2"

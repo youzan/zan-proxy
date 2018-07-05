@@ -108,7 +108,7 @@ function convertRuleFile(oldRuleFile) {
     newRuleFile.content = newRuleFile
         .content
         .filter((rule) => {
-            return rule.action.type === "redirect"; // 其他action暂时不支持
+            return rule.action && rule.action.type === "redirect"; // 其他action暂时不支持
         })
         .map(convertRule);
     return newRuleFile;

@@ -4,7 +4,7 @@
     <span class="save-tip" v-if="loaded && filecontent.meta && filecontent.meta.remote">该规则集为远程规则集，重启同步后相关配置会被覆盖。如需永久保存修改，则可以复制该规则集成本地规则集。</span>
     <el-row :gutter="20" style="margin-bottom: 10px;text-align: right;">
       <el-col :span="6" :offset="18">
-        <el-button size="small" @click='openEditRuleNameDialog'>设置</el-button>
+        <el-button size="small" @click='openEditRuleInfoDialog'>编辑名字/描述</el-button>
         <el-button size="small" @click='addRule'>新增规则</el-button>
         <!-- <el-button size="small" type="primary" @click='saveFileRightNow'>保存规则集</el-button> -->
       </el-col>
@@ -95,7 +95,7 @@
     <edit-dialog :visible="dialogVisible" :save="dialogSave" :cancel="hideEditDialog" :initRule="editingRule"></edit-dialog>
     <edit-rule-config-dialog
       :visible="editRuleConfigDialogVisible"
-      :ok="changeFileName"
+      :ok="updateFileInfo"
       :cancel="closeEditRuleNameDialog"
       :defaultName="filecontent.name"
       :defaultDescription="filecontent.description"
@@ -286,18 +286,21 @@
         this.hideEditDialog();
         this.saveFileRightNow();
       },
-      openEditRuleNameDialog() {
+      openEditRuleInfoDialog() {
         this.editRuleConfigDialogVisible = true;
       },
       closeEditRuleNameDialog() {
         this.editRuleConfigDialogVisible = false;
       },
-      async changeFileName(newName, newDescription) {
+      async updateFileInfo(newName, newDescription) {
         let errMessage = '';
         if (newName === '') {
           errMessage = '规则集名称不能为空!';
         } else {
-          const {status, data} = await ruleApi.changeFileName(newName, newDescription, this.filecontent);
+          const {status, data} = await ruleApi.updateFileInfo(this.filecontent.name, {
+            name: newName,
+            description: newDescription,
+          });
           if (status !== 200) {
             errMessage = '请求失败';
           } else if (data.code !== 0) {

@@ -33,7 +33,11 @@ export default async () => {
     .then(() => exec(`npm install --global --silent ${packageInfo.name}`))
     .then(() => {
       updateSpinner.stop();
-      console.log('更新完成，请重新启动!');
+      console.log(
+        `更新完成，请重新启动! 如出现命令丢失情况，请手动重新安装：npm install -g ${
+          packageInfo.name
+        }`,
+      );
       process.exit(0);
     })
     .catch(error => {

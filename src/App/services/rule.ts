@@ -11,6 +11,7 @@ import { AppInfoService } from './appInfo';
 
 const jsonfileWriteFile = promisify(jsonfile.writeFile);
 const fsUnlink = promisify(fs.unlink);
+export const ErrNameExists = new Error('name exists');
 
 export interface Rule {
   name: string;
@@ -84,7 +85,7 @@ export class RuleService extends EventEmitter {
   // 创建规则文件
   public async createRuleFile(userId, name, description) {
     if (this.rules[userId] && this.rules[userId][name]) {
-      return false;
+      return ErrNameExists;
     }
     const ruleFile = {
       checked: false,
@@ -202,42 +203,31 @@ export class RuleService extends EventEmitter {
   }
 
   // 修改规则文件名称
-  public async changeRuleFileName(userId, ruleFile: RuleFile, newName: string, newDescription: string) {
-    const oldName = ruleFile.name;
+  public async updateFileInfo(
+    userId,
+    originName: string,
+    {
+      name,
+      description,
+    }: {
+      name: string;
+      description: string;
+    },
+  ) {
     const userRuleMap = this.rules[userId] || {};
-    if (userRuleMap[newName]) {
-      return {
-        code: -1,
-        msg: `名称为"${newName}"的规则集已存在!`,
-      };
+    if (userRuleMap[name]) {
+      throw ErrNameExists;
     }
-
+    const ruleFile = userRuleMap[originName];
     // 删除旧的rule
-    delete this.rules[userId][oldName];
-    const ruleFilePath = this._getRuleFilePath(userId, oldName);
+    delete this.rules[userId][originName];
+    const ruleFilePath = this._getRuleFilePath(userId, originName);
     await fsUnlink(ruleFilePath);
 
     // 修改rule名称
-    ruleFile.name = newName;
-    ruleFile.description = newDescription;
-    userRuleMap[newName] = ruleFile;
-    this.rules[userId] = userRuleMap;
-
-    // 写文件
-    const filePath = this._getRuleFilePath(userId, newName);
-    await jsonfileWriteFile(filePath, userRuleMap[newName], {
-      encoding: 'utf-8',
-    });
-
-    // 清空缓存
-    delete this.usingRuleCache[userId];
-
-    // 发送消息通知
-    this.emit('data-change', userId, this.getRuleFileList(userId));
-
-    return {
-      code: 0,
-    };
+    ruleFile.name = name;
+    ruleFile.description = description;
+    await this.saveRuleFile(userId, ruleFile);
   }
 
   /**

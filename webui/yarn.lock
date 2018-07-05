@@ -4307,10 +4307,6 @@ pretty-error@^2.0.2:
     renderkid "^2.0.1"
     utila "~0.4"
 
-prettysize@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.npmjs.org/prettysize/-/prettysize-1.1.0.tgz#c6c52f87161ff172ea435f375f99831dd9a97bb0"
-
 prettytime@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/prettytime/-/prettytime-1.0.0.tgz#bdab4fd19aa267ca10159f70adf5f07fbcd188f8"

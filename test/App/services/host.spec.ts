@@ -98,7 +98,7 @@ describe("HostService", () => {
             },
             name: "test2",
         });
-        await hostService.setUseHost("root", "test2");
+        await hostService.toggleUseHost("root", "test2");
         const address = await hostService.resolveHost("root", "test.youzan.com");
         address.should.equal("192.168.1.1");
         await hostService.deleteHostFile("root", "test2");

@@ -66,9 +66,6 @@ export class HostService extends EventEmitter {
     let ip;
     const inUsingHosts = this.getInUsingHosts(userId);
     ip = inUsingHosts.hostMap[hostname];
-    if (ip) {
-      return ip;
-    }
     // 配置 *开头的host  计算属性globHostMap已经将*去除
     ip = find(inUsingHosts.globHostMap, (_, host) => {
       return hostname.endsWith(host);
@@ -149,14 +146,11 @@ export class HostService extends EventEmitter {
     this.emit('host-deleted', userId, name);
   }
 
-  public async setUseHost(userId, filename) {
+  public async toggleUseHost(userId, filename) {
     const toSaveFileName: string[] = [];
     forEach(this.userHostFilesMap[userId], (content, name) => {
-      if (content.name === filename && content.checked !== true) {
-        content.checked = true;
-        toSaveFileName.push(name);
-      } else if (content.name !== filename && content.checked !== false) {
-        content.checked = false;
+      if (content.name === filename) {
+        content.checked = !content.checked;
         toSaveFileName.push(name);
       }
     });
@@ -239,18 +233,19 @@ export class HostService extends EventEmitter {
       // 读文件加载host
       const hostMap = {};
       const globHostMap = {};
-      const findedUsingHost = find(this.userHostFilesMap[userId], content => {
-        return content.checked;
-      });
-      if (findedUsingHost) {
-        forEach(findedUsingHost.content, (ip, host) => {
+      Object.keys(this.userHostFilesMap[userId]).forEach(name => {
+        const file = this.userHostFilesMap[userId][name];
+        if (!file.checked) {
+          return;
+        }
+        forEach(file.content, (ip, host) => {
           if (host.startsWith('*')) {
             globHostMap[host.substr(1, host.length)] = ip;
           } else {
             hostMap[host] = ip;
           }
         });
-      }
+      });
       hosts = {
         globHostMap,
         hostMap,

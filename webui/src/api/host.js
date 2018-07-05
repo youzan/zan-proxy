@@ -23,8 +23,8 @@ var api = {
     deleteFile(name){
         return axios.get(`/host/deletefile?name=${name}`);
     },
-    useFile(name){
-        return axios.get(`/host/usefile?name=${name}`);
+    toggleFile(name){
+        return axios.get(`/host/togglefile?name=${name}`);
     },
     getFileContent(name){
         return axios.get(`/host/getfile?name=${name}`);
@@ -37,7 +37,7 @@ var api = {
     },
 };
 api.debouncedUseFile = _.debounce(function (name, callback) {
-    api.useFile(name).then((response) => {
+    api.toggleFile(name).then((response) => {
         callback(response)
     });
 }, 500);

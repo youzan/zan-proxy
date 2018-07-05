@@ -1,6 +1,6 @@
 import Router from 'koa-router';
 import { Inject, Service } from 'typedi';
-import { ProfileService, RuleService } from '../../services';
+import { ProfileService, RuleService, ErrNameExists } from '../../services';
 /**
  * Created by tsxuehu on 4/11/17.
  */
@@ -20,15 +20,27 @@ export class RuleController {
     });
     ruleRouter.post('/create', async ctx => {
       const userId = ctx.userId;
-      const result = await this.ruleService.createRuleFile(
-        userId,
-        ctx.request.body.name,
-        ctx.request.body.description,
-      );
-      ctx.body = {
-        code: result ? 0 : 1,
-        msg: result ? '' : '文件已存在',
-      };
+      try {
+        const result = await this.ruleService.createRuleFile(
+          userId,
+          ctx.request.body.name,
+          ctx.request.body.description,
+        );
+        ctx.body = {
+          code: 0,
+          msg: result,
+        };
+        return;
+      } catch (error) {
+        const msg =
+          error === ErrNameExists
+            ? '文件已存在'
+            : `未知错误: ${error.toString()}`;
+        ctx.body = {
+          code: 1,
+          msg,
+        };
+      }
     });
     // 获取规则文件列表
     // /rule/filelist
@@ -99,9 +111,27 @@ export class RuleController {
     });
 
     // 重命名规则文件
-    // /rule/changefilename?newName=${name}, body -> RuleFile
-    ruleRouter.post('/changefilename', async ctx => {
-      ctx.body = await this.ruleService.changeRuleFileName(ctx.userId, ctx.request.body, ctx.query.newName, ctx.query.newDescription);
+    // /rule/changefilename/:origin, body -> { name, description }
+    ruleRouter.post('/updatefileinfo/:origin', async ctx => {
+      const { userId, params, request } = ctx;
+      const { origin } = params;
+      const { name, description } = request.body;
+      try {
+        await this.ruleService.updateFileInfo(userId, origin, {
+          description,
+          name,
+        });
+        ctx.body = {
+          code: 0,
+        };
+      } catch (e) {
+        const msg =
+          e === ErrNameExists ? '有重复名字' : `未知错误: ${e.toString()}`;
+        ctx.body = {
+          code: 1,
+          msg,
+        };
+      }
     });
 
     // 导出规则文件
