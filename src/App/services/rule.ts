@@ -203,13 +203,17 @@ export class RuleService extends EventEmitter {
   }
 
   // 修改规则文件名称
-  public async updateFileInfo(userId, originName: string, {
-    name,
-    description,
-  }: {
-    name: string,
-    description: string,
-  }) {
+  public async updateFileInfo(
+    userId,
+    originName: string,
+    {
+      name,
+      description,
+    }: {
+      name: string;
+      description: string;
+    },
+  ) {
     const userRuleMap = this.rules[userId] || {};
     if (userRuleMap[name]) {
       throw ErrNameExists;

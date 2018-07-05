@@ -32,7 +32,10 @@ export class RuleController {
         };
         return;
       } catch (error) {
-        const msg = error === ErrNameExists ? '文件已存在' : `未知错误: ${error.toString()}`;
+        const msg =
+          error === ErrNameExists
+            ? '文件已存在'
+            : `未知错误: ${error.toString()}`;
         ctx.body = {
           code: 1,
           msg,
@@ -122,7 +125,8 @@ export class RuleController {
           code: 0,
         };
       } catch (e) {
-        const msg = e === ErrNameExists ? '有重复名字' : `未知错误: ${e.toString()}`;
+        const msg =
+          e === ErrNameExists ? '有重复名字' : `未知错误: ${e.toString()}`;
         ctx.body = {
           code: 1,
           msg,
