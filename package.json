@@ -1,6 +1,6 @@
 {
   "name": "zan-proxy",
-  "version": "4.0.15",
+  "version": "4.0.16",
   "description": "前端代理",
   "scripts": {
     "build": "tsc && cd ./webui && npm run build && cd ../",
