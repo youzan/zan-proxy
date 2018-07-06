@@ -47,6 +47,7 @@ Zan Proxy的管理页面会自动打开。
 
 ## 相关链接
 
+* [Vue UI](https://github.com/youzan/vant)
 * [React UI](https://www.youzanyun.com/zanui/zent)
 * [Weapp UI](https://github.com/youzan/zanui-weapp)
 

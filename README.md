@@ -50,6 +50,7 @@ The detailed documentation can be refered [here](https://youzan.github.io/zan-pr
 
 ## Links
 
+* [Vue UI](https://github.com/youzan/vant)
 * [React UI](https://www.youzanyun.com/zanui/zent)
 * [Weapp UI](https://github.com/youzan/zanui-weapp)
 
