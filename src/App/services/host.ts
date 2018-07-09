@@ -66,6 +66,9 @@ export class HostService extends EventEmitter {
     let ip;
     const inUsingHosts = this.getInUsingHosts(userId);
     ip = inUsingHosts.hostMap[hostname];
+    if (ip) {
+      return ip;
+    }
     // 配置 *开头的host  计算属性globHostMap已经将*去除
     ip = find(inUsingHosts.globHostMap, (_, host) => {
       return hostname.endsWith(host);
