@@ -58,4 +58,19 @@ URL特征为该请求是否被ZanProxy所转发的主要判定方式。其判定
 请求url为：https://b.yzcdn.cn/v2/build/wap/showcase/sku_58590c11af.js  
 要拦截的请求的url特征为：build/wap/(.*?)_[^_]*$  
 请求转发路径为：<%=wapproject%>/js/$1/main.js。  
-则最终请求路径中的$1将被替换为showcase/sku  
+则最终请求路径中的$1将被替换为showcase/sku
+
+#### 特别注意
+
+在使用正则写URL特征时，ZanProxy在处理时会对完整的请求路径**包括请求参数**进行处理。
+
+请求url为：https://b.yzcdn.cn/v2/build/wap/showcase/sku_58590c11af.js?date=12345
+
+要拦截的请求的url特征为：build/wap/(.*)
+
+请求转发路径为：/my/project/js/$1
+
+则最终实际的转发路径会是：/my/project/js/showcase/sku_58590c11af.js?date=12345
+
+**如需过滤请求参数，请使用正则进行过滤**。上述例子可以把url特征改为：`build/wap/(.*)(?:\?.*)`,
+这样实际的转发路径就会变成`/my/project/js/showcase/sku_58590c11af.js`，不再包含请求参数。
