@@ -45,6 +45,44 @@ Zan Proxy的管理页面会自动打开。
 
 详细文档可以参考[这里](https://youzan.github.io/zan-proxy/book/).
 
+## 从源码运行
+
+1. 安装依赖
+
+    ```shell
+    yarn
+    ```
+
+2. 安装ui依赖
+
+    ```shell
+    cd webui/ && yarn
+    ```
+
+3. 回到项目根目录
+
+    ```shell
+    cd ..
+    ```
+
+4. 构建
+
+    ```shell
+    yarn build
+    ```
+
+5. 运行
+
+    ```shell
+    node dist/bin/index.js
+    ```
+
+## 插件列表
+
+* [zp-print-url](https://www.npmjs.com/package/zp-print-url) 打印请求url
+
+(欢迎pr补充)
+
 ## 相关链接
 
 * [Vue UI](https://github.com/youzan/vant)

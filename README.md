@@ -48,6 +48,44 @@ The website for management will be opened atomatically.
 
 The detailed documentation can be refered [here](https://youzan.github.io/zan-proxy/book/).
 
+## Running From Source Code
+
+1. install dependencies
+
+    ```shell
+    yarn
+    ```
+
+2. install ui dependencies
+
+    ```shell
+    cd webui/ && yarn
+    ```
+
+3. back to the project root directory
+
+    ```shell
+    cd ..
+    ```
+
+4. build
+
+    ```shell
+    yarn build
+    ```
+
+5. run
+
+    ```shell
+    node dist/bin/index.js
+    ```
+
+## Plugins List
+
+* [zp-print-url](https://www.npmjs.com/package/zp-print-url) print the urls
+
+(PRs are welcomed to append the list)
+
 ## Links
 
 * [Vue UI](https://github.com/youzan/vant)
