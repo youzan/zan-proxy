@@ -156,7 +156,14 @@ export default class PluginManager {
       if (registry) {
         npmConfig.registry = registry;
       }
-      await this.add(name, npmConfig);
+      try {
+        await this.add(name, npmConfig);
+      } catch (err) {
+        ctx.status = 400;
+        ctx.body = err.message;
+        return;
+      }
+      console.log(55555);
       ctx.body = {
         message: 'ok',
         status: 200,
