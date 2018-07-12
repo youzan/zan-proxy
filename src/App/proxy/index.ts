@@ -8,6 +8,7 @@ import {
   ip,
   rule,
   user,
+  catchError,
 } from '../middleware';
 import PluginManager from '../plugin-manager';
 import {
@@ -33,6 +34,7 @@ export class Proxy {
   public async init() {
     this.server = await ProxyServer.create();
     this.ignorer = new Ignorer();
+    this.server.use(catchError());
     this.server.use(this.ignorer.middleware.bind(this.ignorer));
     this.server.use(ip());
     this.server.use(user(Container.get(ProfileService)));
