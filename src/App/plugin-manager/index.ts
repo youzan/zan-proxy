@@ -126,7 +126,18 @@ export default class PluginManager {
 
     Object.keys(this.plugins).forEach(name => {
       const plugin = this.plugins[name];
-      app.use(koaMount(`/${name}`, plugin.manage()));
+      if (plugin.manage) {
+        const pluginApp = plugin.manage();
+        if (
+          Object.prototype.toString.call(pluginApp) == '[object Object]' &&
+          pluginApp.__proto__.constructor.name === 'Application'
+        ) {
+          app.use(koaMount(`/${name}`, plugin.manage()));
+        } else {
+          console.error(`"${name}" 插件的 manage() 方法需要返回 koa 实例`);
+          process.exit(-1);
+        }
+      }
     });
 
     const router = new Router();
