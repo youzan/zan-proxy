@@ -47,6 +47,9 @@ export default class PluginManager {
       const install = () => {
         npm.install(pluginName, this.getDir(), err => {
           if (err) {
+            if (err.code === 'E404') {
+              return reject(Error(`插件不存在 ${err.uri}`))
+            }
             return reject(err);
           }
           const plugins = uniqWith(
