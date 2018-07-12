@@ -236,6 +236,15 @@ export class HostService extends EventEmitter {
       // 读文件加载host
       const hostMap = {};
       const globHostMap = {};
+
+      // 判空处理
+      if (this.userHostFilesMap[userId] === undefined) {
+        return {
+          globHostMap,
+          hostMap,
+        };
+      }
+
       Object.keys(this.userHostFilesMap[userId]).forEach(name => {
         const file = this.userHostFilesMap[userId][name];
         if (!file.checked) {
