@@ -177,7 +177,6 @@ export default class PluginManager {
         ctx.body = err.message;
         return;
       }
-      console.log(55555);
       ctx.body = {
         message: 'ok',
         status: 200,
