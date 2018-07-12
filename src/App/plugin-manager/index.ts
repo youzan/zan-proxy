@@ -6,6 +6,7 @@ import { remove, uniqWith } from 'lodash';
 import npm from 'npm';
 import path from 'path';
 import { Service } from 'typedi';
+import fs from 'fs';
 import { AppInfoService } from '../services';
 import Storage from './storage';
 
@@ -28,10 +29,15 @@ export default class PluginManager {
       .filter(p => !p.disabled)
       .reduce((prev, curr) => {
         try {
-          const pluginClass = require(this.getPluginDir(curr.name));
+          const pluginPath = this.getPluginDir(curr.name);
+          if (!fs.existsSync(pluginPath)) {
+            throw Error(`plugin ${curr.name} not found`);
+          }
+          const pluginClass = require(pluginPath);
           prev[curr.name] = new pluginClass();
         } catch (error) {
-          throw new Error(`plugin ${curr.name} not found`);
+          console.error(`plugin "${curr.name}" has a runtime error. please check it.\n${error.stack}`);
+          process.exit(-1);
         }
         return prev;
       }, {});
