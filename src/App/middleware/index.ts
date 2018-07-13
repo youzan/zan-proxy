@@ -4,4 +4,3 @@ export * from './monitor';
 export * from './rule';
 export * from './user';
 export * from './ignore';
-export * from './catchError';
