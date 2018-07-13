@@ -83,6 +83,7 @@ The detailed documentation can be refered [here](https://youzan.github.io/zan-pr
 ## Plugins List
 
 * [zp-print-url](https://www.npmjs.com/package/zp-print-url) print the urls
+* [zp-debug-tool](https://www.npmjs.com/package/zp-debug-tool) web debug tool
 
 (PRs are welcomed to append the list)
 
