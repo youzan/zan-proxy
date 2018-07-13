@@ -36,7 +36,11 @@ export default class PluginManager {
           const pluginClass = require(pluginPath);
           prev[curr.name] = new pluginClass();
         } catch (error) {
-          console.error(`plugin "${curr.name}" has a runtime error. please check it.\n${error.stack}`);
+          console.error(
+            `plugin "${curr.name}" has a runtime error. please check it.\n${
+              error.stack
+            }`,
+          );
           process.exit(-1);
         }
         return prev;
