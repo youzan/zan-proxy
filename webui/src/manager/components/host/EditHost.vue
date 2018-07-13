@@ -12,12 +12,12 @@
             </el-table-column>
             <el-table-column prop="key" label="域名" align="center">
                 <template scope='scope'>
-                    <el-input v-model="scope.row.key" size="small" placeholder="请输入内容"></el-input>
+                    <el-input v-model.trim="scope.row.key" size="small" placeholder="请输入内容"></el-input>
                 </template>
             </el-table-column>
             <el-table-column prop="value" label="ip地址" align="center" width="400">
                 <template scope='scope'>
-                    <el-input v-model="scope.row.value" size="small" placeholder="请输入内容"></el-input>
+                    <el-input v-model.trim="scope.row.value" size="small" placeholder="请输入内容"></el-input>
                 </template>
             </el-table-column>
             <el-table-column label="操作" :width="80" align="center" :context="_self">

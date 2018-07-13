@@ -1,5 +1,18 @@
 # Github Change Log
 
+## zan-proxy@4.0.15 ~ 4.0.18 (2018-07-13)
+
+**Implemented enhancements:**
+
+- [插件功能优化](https://github.com/youzan/zan-proxy/pull/43)
+- host和转发规则过滤用户输入的收尾空格
+
+**Fixed bugs:**
+
+- [没有创建任何host文件的情况下, 没命中http转发规则的请求将会无响应](https://github.com/youzan/zan-proxy/issues/45)
+- [更改Host失效](https://github.com/youzan/zan-proxy/issues/40)
+- 代理请求不能被正常判断请求体结束
+
 ## zan-proxy@4.0.14 (2018-07-05)
 
 **Implemented enhancements:**
