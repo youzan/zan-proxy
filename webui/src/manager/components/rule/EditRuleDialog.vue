@@ -8,7 +8,7 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="URL特征" :label-width="formLabelWidth">
-               <el-input v-model="rule.match" auto-complete="off" placeholder="填写要拦截的url中部分连续的字符串，或者匹配要拦截url的正则表达式"></el-input>
+               <el-input v-model.trim="rule.match" auto-complete="off" placeholder="填写要拦截的url中部分连续的字符串，或者匹配要拦截url的正则表达式"></el-input>
             </el-form-item>
             <el-form-item label="规则描述" :label-width="formLabelWidth">
                <el-input v-model="rule.name" auto-complete="off" placeholder="规则说明，写一段文字，方便记忆这个规则的作用"></el-input>
