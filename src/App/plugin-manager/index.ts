@@ -1,3 +1,4 @@
+import fs from 'fs';
 import koa from 'koa';
 import koaBodyParser from 'koa-bodyparser';
 import koaMount from 'koa-mount';
@@ -6,7 +7,6 @@ import { remove, uniqWith } from 'lodash';
 import npm from 'npm';
 import path from 'path';
 import { Service } from 'typedi';
-import fs from 'fs';
 import { AppInfoService } from '../services';
 import Storage from './storage';
 
@@ -48,7 +48,7 @@ export default class PluginManager {
         npm.install(pluginName, this.getDir(), err => {
           if (err) {
             if (err.code === 'E404') {
-              return reject(Error(`插件不存在 ${err.uri}`))
+              return reject(Error(`插件不存在 ${err.uri}`));
             }
             return reject(err);
           }
@@ -129,10 +129,10 @@ export default class PluginManager {
       if (plugin.manage) {
         const pluginApp = plugin.manage();
         if (
-          Object.prototype.toString.call(pluginApp) == '[object Object]' &&
+          Object.prototype.toString.call(pluginApp) === '[object Object]' &&
           pluginApp.__proto__.constructor.name === 'Application'
         ) {
-          app.use(koaMount(`/${name}`, plugin.manage()));
+          app.use(koaMount(`/${name}`, pluginApp));
         } else {
           console.error(`"${name}" 插件的 manage() 方法需要返回 koa 实例`);
           process.exit(-1);
