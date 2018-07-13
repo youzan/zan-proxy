@@ -13,7 +13,7 @@
         <!-- 参数设置- 请求转发 -->
         <div v-if="action.type == 'redirect'" class="inline-block right-panel">
             <div class="action-data">
-                <el-input v-model="action.data.target" size="small" :disabled="remote"
+                <el-input v-model.trim="action.data.target" size="small" :disabled="remote"
                           placeholder="远程地址(以http/https开头)、本地地址">
                 </el-input>
             </div>

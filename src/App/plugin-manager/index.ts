@@ -1,3 +1,4 @@
+import fs from 'fs';
 import koa from 'koa';
 import koaBodyParser from 'koa-bodyparser';
 import koaMount from 'koa-mount';
@@ -28,10 +29,19 @@ export default class PluginManager {
       .filter(p => !p.disabled)
       .reduce((prev, curr) => {
         try {
-          const pluginClass = require(this.getPluginDir(curr.name));
+          const pluginPath = this.getPluginDir(curr.name);
+          if (!fs.existsSync(pluginPath)) {
+            throw Error(`plugin ${curr.name} not found`);
+          }
+          const pluginClass = require(pluginPath);
           prev[curr.name] = new pluginClass();
         } catch (error) {
-          throw new Error(`plugin ${curr.name} not found`);
+          console.error(
+            `plugin "${curr.name}" has a runtime error. please check it.\n${
+              error.stack
+            }`,
+          );
+          process.exit(-1);
         }
         return prev;
       }, {});
@@ -41,6 +51,9 @@ export default class PluginManager {
       const install = () => {
         npm.install(pluginName, this.getDir(), err => {
           if (err) {
+            if (err.code === 'E404') {
+              return reject(Error(`插件不存在 ${err.uri}`));
+            }
             return reject(err);
           }
           const plugins = uniqWith(
@@ -117,7 +130,18 @@ export default class PluginManager {
 
     Object.keys(this.plugins).forEach(name => {
       const plugin = this.plugins[name];
-      app.use(koaMount(`/${name}`, plugin.manage()));
+      if (plugin.manage) {
+        const pluginApp = plugin.manage();
+        if (
+          Object.prototype.toString.call(pluginApp) === '[object Object]' &&
+          pluginApp.__proto__.constructor.name === 'Application'
+        ) {
+          app.use(koaMount(`/${name}`, pluginApp));
+        } else {
+          console.error(`"${name}" 插件的 manage() 方法需要返回 koa 实例`);
+          process.exit(-1);
+        }
+      }
     });
 
     const router = new Router();
@@ -150,7 +174,13 @@ export default class PluginManager {
       if (registry) {
         npmConfig.registry = registry;
       }
-      await this.add(name, npmConfig);
+      try {
+        await this.add(name, npmConfig);
+      } catch (err) {
+        ctx.status = 400;
+        ctx.body = err.message;
+        return;
+      }
       ctx.body = {
         message: 'ok',
         status: 200,

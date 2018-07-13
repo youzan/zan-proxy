@@ -80,7 +80,13 @@ export default {
       .then(res => {
         loading.close()
         if (res.status !== 200) {
-          return Promise.reject('server error')
+          res.text().then(message => {
+            this.$message({
+              message,
+              type: 'error'
+            });
+          });
+          return;
         }
         this.$message({
           message: '添加成功，重启后生效',

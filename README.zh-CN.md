@@ -80,6 +80,7 @@ Zan Proxy的管理页面会自动打开。
 ## 插件列表
 
 * [zp-print-url](https://www.npmjs.com/package/zp-print-url) 打印请求url
+* [zp-debug-tool](https://www.npmjs.com/package/zp-debug-tool) web调试工具
 
 (欢迎pr补充)
 
