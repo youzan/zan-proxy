@@ -20,6 +20,9 @@ export class Forwarder implements IForwarder {
       if (options.protocol && options.protocol.startsWith('https')) {
         client = https;
       }
+      if (req.body && req.body.length) {
+        options.headers['content-length'] = req.body.length;
+      }
       const proxyReq = client.request(options, proxyRes => {
         res.statusCode = proxyRes.statusCode;
         Object.keys(proxyRes.headers).forEach(k => {
