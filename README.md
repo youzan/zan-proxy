@@ -1,8 +1,11 @@
-<p  align="center">
-    <img src="https://github.com/teneresa/zan-proxy/blob/master/New_Logo_files/PNG_files/Zan_Proxy_Logo_low_res.png">
+<p  align="left">
+    <a href="https://github.com/youzan/"><img alt="logo" width="36" height="36" src="https://img.yzcdn.cn/public_files/2017/02/09/e84aa8cbbf7852688c86218c1f3bbf17.png" alt="youzan">
     </a>
 </p>
-<h1 align="center"></h1>
+
+<p  align="center">
+<img src="https://img.yzcdn.cn/public_files/2018/07/16/78d4c3e8ac0cb627f57628b9e2c89346.png">
+</p>
 
 <p align="center" style="margin: 30px 0 35px;">A proxy for your debug environment</p>
 
@@ -95,7 +98,7 @@ The detailed documentation can be refered [here](https://youzan.github.io/zan-pr
 
 Scan the qrcode to join our wechat discussion group, please note that you want to join ZanProxy discussion group.
 
-<img src="https://github.com/teneresa/zan-proxy/blob/master/New_Logo_files/new_wechat.png" width="220" height="292" >
+<img src="https://img.yzcdn.cn/vant/wechat_20180606.png" width="220" height="292" >
 
 ## LICENSE
 

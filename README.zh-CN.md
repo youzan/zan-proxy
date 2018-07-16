@@ -1,10 +1,11 @@
-<p>
+<p  align="left">
     <a href="https://github.com/youzan/"><img alt="logo" width="36" height="36" src="https://img.yzcdn.cn/public_files/2017/02/09/e84aa8cbbf7852688c86218c1f3bbf17.png" alt="youzan">
     </a>
 </p>
-<h1 align="center">
-    Zan Proxy
-</h1>
+
+<p  align="center">
+<img src="https://img.yzcdn.cn/public_files/2018/07/16/78d4c3e8ac0cb627f57628b9e2c89346.png">
+</p>
 
 <p align="center" style="margin: 30px 0 35px;">本地代码调试线上页面，环境再也不是问题</p>
 
