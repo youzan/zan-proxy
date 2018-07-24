@@ -1,5 +1,18 @@
 # Github Change Log
 
+## zan-proxy@4.0.19 (2018-07-24)
+
+**Implemented enhancements:**
+
+- 远程Host增加编辑提示
+- 监控样式优化
+- 启动时过滤不合法数据
+
+**Fixed bugs:**
+
+- [Mock数据过大无法保存](https://github.com/youzan/zan-proxy/issues/49)
+- 工程路径包含非法字符仍可保存
+
 ## zan-proxy@4.0.15 ~ 4.0.18 (2018-07-13)
 
 **Implemented enhancements:**
