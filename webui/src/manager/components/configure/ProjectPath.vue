@@ -82,6 +82,13 @@ export default {
       forEach(this.$dc.projectPathArray, obj => {
         projectPathMap[obj.key] = obj.value;
       });
+      const projectNames = Object.keys(projectPathMap)
+      for(const k of projectNames) {
+        if (k.includes('-')) {
+          this.$message.error(`工程名${k}包含非法字符"-"`);
+          return
+        }
+      }
       this.$dc.profile.projectPath = projectPathMap;
       let response = await profileApi.saveFile(this.$dc.profile);
       let serverData = response.data;
