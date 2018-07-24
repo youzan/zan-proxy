@@ -1,6 +1,7 @@
 <template>
     <div>
         <div class="main-content__title">编辑Host文件{{ loaded ? ': ' + filecontent.name : '' }}</div>
+        <span class="save-tip" v-if="loaded && filecontent.meta && !filecontent.meta.local">该Host文件为远程Host文件，重启同步后相关配置会被覆盖。如需永久保存修改，请新建Host文件。</span>
         <el-row :gutter="20" style="margin-bottom: 10px">
             <el-col :span="6" :offset="18">
                 <el-button size="small" @click='addRow'>新增Host Entry</el-button>
@@ -111,3 +112,10 @@
     }
 
 </script>
+
+<style scoped>
+  .save-tip {
+    font-size: 14px;
+    color: #999999;
+  }
+</style>

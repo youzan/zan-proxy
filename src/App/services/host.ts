@@ -41,7 +41,11 @@ export class HostService extends EventEmitter {
       .readdirSync(this.hostSaveDir)
       .filter(name => name.endsWith('.json'))
       .reduce((prev, curr) => {
-        prev[curr] = jsonfile.readFileSync(path.join(this.hostSaveDir, curr));
+        try {
+          prev[curr] = jsonfile.readFileSync(path.join(this.hostSaveDir, curr));
+        } catch (e) {
+          // ignore
+        }
         return prev;
       }, {});
     forEach(contentMap, (content, fileName) => {
