@@ -68,7 +68,11 @@ export class RuleService extends EventEmitter {
       .readdirSync(this.ruleSaveDir)
       .filter(name => name.endsWith('.json'))
       .reduce((prev, curr) => {
-        prev[curr] = jsonfile.readFileSync(path.join(this.ruleSaveDir, curr));
+        try {
+          prev[curr] = jsonfile.readFileSync(path.join(this.ruleSaveDir, curr));
+        } catch (e) {
+          // ignore
+        }
         return prev;
       }, {});
     forEach(contentMap, (content, fileName) => {
@@ -215,7 +219,7 @@ export class RuleService extends EventEmitter {
     },
   ) {
     const userRuleMap = this.rules[userId] || {};
-    if (userRuleMap[name]) {
+    if (userRuleMap[name] && name !== originName) {
       throw ErrNameExists;
     }
     const ruleFile = userRuleMap[originName];

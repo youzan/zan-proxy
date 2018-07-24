@@ -47,7 +47,13 @@ export class Manager {
     // query string
     koaQs(this.app);
     // body解析
-    this.app.use(koaBodyParser());
+    this.app.use(
+      koaBodyParser({
+        formLimt: '5mb',
+        jsonLimit: '5mb',
+        textLimit: '5mb',
+      }),
+    );
     // 路由
     this.app.use(async (ctx, next) => {
       // 取用户Id
