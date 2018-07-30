@@ -22,7 +22,7 @@
           <rule-detail :rule="scope.row" :remote="filecontent.meta.remote"></rule-detail>
         </template>
       </el-table-column> -->
-      <el-table-column label="请求方法">
+      <el-table-column label="请求方法" :width="100">
         <template scope='scope'>
           <span v-if="scope.row.method">{{ scope.row.method }}</span>
           <span v-else>所有</span>
@@ -37,7 +37,7 @@
           }}
         </template>
       </el-table-column>
-      <el-table-column label="操作" :width="200" align="center" :context="_self">
+      <el-table-column label="操作" :width="240" align="center" :context="_self">
         <template scope='scope'>
           <div class="actions-container">
             <el-tooltip class="item" effect="dark" content="编辑" placement="left">
@@ -58,6 +58,12 @@
             <el-tooltip class="item" effect="dark" content="测试规则" placement="left">
               <el-button type="blue" icon='search' size="mini"
                          @click='testMatchRuleRequest(scope.row)'>
+              </el-button>
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="提高优先级" placement="left">
+              <el-button type="blue" icon='caret-top' size="mini"
+                         :disabled="scope.$index === 0"
+                         @click='onMoveUpRule(scope.$index)'>
               </el-button>
             </el-tooltip>
           </div>
@@ -322,6 +328,20 @@
             message: '修改规则集名称成功!'
           });
         }
+      },
+      onMoveUpRule(index) {
+        if (index === 0) {
+          return
+        }
+        const rules = this.filecontent.content || []
+        if (rules.length < 2 || index >= rules.length) {
+          return
+        }
+        const temp = rules[index]
+        rules[index] = rules[index - 1]
+        rules[index - 1] = temp
+        this.filecontent.content = rules
+        this.saveFileRightNow()
       }
     },
     mounted() {
