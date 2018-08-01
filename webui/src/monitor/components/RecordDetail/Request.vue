@@ -2,7 +2,13 @@
     <el-collapse v-model="activeNames">
   <el-collapse-item title="General" name="general">
     <div>
-        <kv k="Request URL" :v="href"></kv>
+        <kv k="Request URL" :v="href">
+            <a class="copy-as-curl"
+                v-clipboard:copy="curl"
+                v-clipboard:success="onCopySuccess"
+                v-clipboard:error="onCopyFail"
+            >Copy as cURL</a>
+        </kv>
         <kv k="Request Method" :v="method"></kv>
         <kv k="Protocol" :v="protocol"></kv>
         <kv k="HTTP Version" :v="httpVersion"></kv>
@@ -31,8 +37,9 @@
 
 <script>
 
-import KeyValue from "./KeyValue";
+import KeyValue from "./KeyValue"
 import ObjKV from './ObjKV'
+import makeCURL from './makeCURL'
 
 export default {
     data() {
@@ -58,16 +65,36 @@ export default {
         httpVersion() {
             return this.$dc.currentRow.originRequest && this.$dc.currentRow.originRequest.httpVersion || ''
         },
+        curl() {
+            const data = this.$dc.currentRow
+            return makeCURL({
+                ...data.originRequest,
+                body: this.$dc.currentRequestBody || '',
+            })
+        }
     },
     methods: {
         toggleQueryMode(e) {
             e.stopPropagation();
             this.queryMode = this.queryMode === 'parsed' ? 'raw' : 'parsed'
+        },
+        onCopySuccess() {
+            this.$message({
+                type: 'success',
+                message: '已成功复制到粘贴板!'
+            });
+        },
+        onCopyFail() {
+            this.$message.error('复制失败，请重试')
         }
     }
 }
 </script>
 
 <style scoped>
-
+    .copy-as-curl {
+        cursor: pointer;
+        margin-left: 15px;
+        color: #20a0ff;
+    }
 </style>

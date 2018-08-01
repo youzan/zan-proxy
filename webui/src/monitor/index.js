@@ -6,8 +6,11 @@ import './index.pcss'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-default/index.css';
 
+import VueClipboard from 'vue-clipboard2'
+
 Vue.use(ElementUI);
 Vue.use(DataCenter);
+Vue.use(VueClipboard);
 
 new Vue({
   el: '#app',

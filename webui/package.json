@@ -22,9 +22,11 @@
     "qrcode-js": "0.0.2",
     "query-string": "^4.3.4",
     "regenerator-runtime": "^0.10.5",
+    "shell-escape": "^0.2.0",
     "url-search-params": "^0.6.1",
     "uuid": "^3.0.1",
     "vue": "2.5.13",
+    "vue-clipboard2": "^0.2.1",
     "vue-data-center": "^1.0.6",
     "vue-json-tree": "^0.3.3",
     "vue-router": "^3.0.1"
