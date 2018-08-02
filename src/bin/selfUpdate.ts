@@ -1,5 +1,6 @@
 import childProcess from 'child_process';
 import { promisify } from 'es6-promisify';
+import fs from 'fs';
 import { prompt } from 'inquirer';
 import ora from 'ora';
 import selfupdate from 'selfupdate';
@@ -9,7 +10,38 @@ const update = promisify(selfupdate.update);
 const isUpdated = promisify(selfupdate.isUpdated);
 const exec = promisify(childProcess.exec);
 
+const lastCheckTime = {
+  encoding: 'utf-8',
+  file: '/tmp/zanproxy.last-update.tmp',
+  get: () => {
+    const { file, encoding } = lastCheckTime;
+    if (!fs.existsSync(file)) {
+      return null;
+    }
+    const content = fs.readFileSync(file, { encoding });
+    if (!content.length) {
+      return null;
+    }
+    try {
+      return parseInt(content, 10);
+    } catch (error) {
+      return null;
+    }
+  },
+  set: () => {
+    const { file, encoding } = lastCheckTime;
+    fs.writeFileSync(file, Date.now(), { encoding });
+    return;
+  },
+};
+
 export default async () => {
+  const lastTime = lastCheckTime.get();
+  const hasCheckedRecently = lastTime && Date.now() - lastTime < 24 * 3600 * 1000;
+  if (hasCheckedRecently) {
+    return;
+  }
+  lastCheckTime.set();
   const checkSpinner = ora('正在检查更新...').start();
   const isLatest = await isUpdated(packageInfo);
   checkSpinner.stop();
