@@ -5,8 +5,10 @@ import { AppInfoService } from './services';
 
 @Service()
 export default class App {
-  @Inject() private proxy: Proxy;
-  @Inject() private manager: Manager;
+  @Inject()
+  private proxy: Proxy;
+  @Inject()
+  private manager: Manager;
 
   public async start(proxyPort: number = 8001, managerPort: number = 40001) {
     const appInfoService: AppInfoService = Container.get(AppInfoService);
