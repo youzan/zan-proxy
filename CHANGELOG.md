@@ -1,5 +1,13 @@
 # Github Change Log
 
+## zan-proxy@4.0.20 (2018-08-02)
+
+**Implemented enhancements:**
+
+- 支持转发规则优先级调整
+- 支持复制cURL请求到粘贴板
+- 检查更新后24小时内不再检查
+
 ## zan-proxy@4.0.19 (2018-07-24)
 
 **Implemented enhancements:**
