@@ -30,18 +30,22 @@ export class ConnectHandler implements IConnectHandler {
     }
     let IPKey;
     // 和远程建立链接 并告诉客户端
-    const conn = net.connect(proxyPort, proxyHost, () => {
-      IPKey = this._getIPKey(conn.address().port);
-      this.cache.set(IPKey, socket.remoteAddress);
-      socket.write(
-        'HTTP/' + req.httpVersion + ' 200 OK\r\n\r\n',
-        'UTF-8',
-        () => {
-          conn.pipe(socket);
-          socket.pipe(conn);
-        },
-      );
-    });
+    const conn = net.connect(
+      proxyPort,
+      proxyHost,
+      () => {
+        IPKey = this._getIPKey(conn.address().port);
+        this.cache.set(IPKey, socket.remoteAddress);
+        socket.write(
+          'HTTP/' + req.httpVersion + ' 200 OK\r\n\r\n',
+          'UTF-8',
+          () => {
+            conn.pipe(socket);
+            socket.pipe(conn);
+          },
+        );
+      },
+    );
 
     conn.on('error', e => {
       console.error(e);

@@ -3,7 +3,8 @@ import { HttpTrafficService } from '../../services';
 
 @Service()
 export class HttpTrafficController {
-  @Inject() private httpTrafficService: HttpTrafficService;
+  @Inject()
+  private httpTrafficService: HttpTrafficService;
   public regist(router) {
     // 获取响应body
     router.get('/traffic/getResponseBody', async ctx => {

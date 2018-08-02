@@ -3,7 +3,8 @@ import { ConfigureService } from '../../services';
 
 @Service()
 export class ConfigController {
-  @Inject() private confService: ConfigureService;
+  @Inject()
+  private confService: ConfigureService;
   public regist(router) {
     router.post('/configure/savefile', async ctx => {
       const userId = ctx.userId;

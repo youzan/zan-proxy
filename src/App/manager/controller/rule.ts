@@ -6,8 +6,10 @@ import { ProfileService, RuleService, ErrNameExists } from '../../services';
  */
 @Service()
 export class RuleController {
-  @Inject() private ruleService: RuleService;
-  @Inject() private profileService: ProfileService;
+  @Inject()
+  private ruleService: RuleService;
+  @Inject()
+  private profileService: ProfileService;
 
   public regist(router) {
     // 创建规则

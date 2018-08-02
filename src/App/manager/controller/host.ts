@@ -3,7 +3,8 @@ import { HostService } from './../../services';
 
 @Service()
 export class HostController {
-  @Inject() private hostService: HostService;
+  @Inject()
+  private hostService: HostService;
   public regist(router) {
     // {
     //    name:name,

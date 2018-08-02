@@ -10,8 +10,10 @@ import { HttpTrafficService, MockDataService } from '../../services';
  */
 @Service()
 export class MockDataController {
-  @Inject() private mockDataService: MockDataService;
-  @Inject() private httpTrafficService: HttpTrafficService;
+  @Inject()
+  private mockDataService: MockDataService;
+  @Inject()
+  private httpTrafficService: HttpTrafficService;
 
   public regist(router) {
     // 获取mock数据列表

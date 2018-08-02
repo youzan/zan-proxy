@@ -37,7 +37,8 @@ const lastCheckTime = {
 
 export default async () => {
   const lastTime = lastCheckTime.get();
-  const hasCheckedRecently = lastTime && Date.now() - lastTime < 24 * 3600 * 1000;
+  const hasCheckedRecently =
+    lastTime && Date.now() - lastTime < 24 * 3600 * 1000;
   if (hasCheckedRecently) {
     return;
   }

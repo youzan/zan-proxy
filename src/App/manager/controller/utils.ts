@@ -11,9 +11,12 @@ import {
 
 @Service()
 export class UtilsController {
-  @Inject() private appInfoService: AppInfoService;
-  @Inject() private hostService: HostService;
-  @Inject() private ruleService: RuleService;
+  @Inject()
+  private appInfoService: AppInfoService;
+  @Inject()
+  private hostService: HostService;
+  @Inject()
+  private ruleService: RuleService;
 
   public regist(router) {
     // 下载证书
