@@ -1,7 +1,7 @@
 <template>
   <div class="kv-pair">
       <label>{{ k }}: </label>
-      <span>{{ v }}</span>
+      <span>{{ v }}<slot></slot></span>
   </div>
 </template>
 
