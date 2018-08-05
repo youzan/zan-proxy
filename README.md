@@ -41,7 +41,7 @@ npm i -g zan-proxy
 zan-proxy
 ```
 
-The website for management will be opened atomatically.
+The website for management will be opened automatically.
 
 <img src="https://img.yzcdn.cn/public_files/2018/03/29/538c49fa295df7dc7184d75fc1c1ab99.png" />
 
