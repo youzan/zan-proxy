@@ -2,12 +2,13 @@ import chai from "chai";
 import ip from "ip";
 import "mocha";
 import path from "path";
+import os from "os";
 import { AppInfoService } from "./../../../src/App/services";
 
 describe("AppInfoService", () => {
     const appInfo = new AppInfoService(false);
     it("should get the correct data directory", (done) => {
-        appInfo.getProxyDataDir().should.equal(path.join(process.env.HOME, ".front-end-proxy"));
+        appInfo.getProxyDataDir().should.equal(path.join(os.homedir(), ".front-end-proxy"));
         done();
     });
     it("should get the correct ip", (done) => {

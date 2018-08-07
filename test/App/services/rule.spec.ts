@@ -2,6 +2,7 @@ import chai from "chai";
 import fs from "fs";
 import "mocha";
 import path from "path";
+import os from "os";
 import rimraf from "rimraf";
 import URL from "url";
 import { AppInfoService, RuleFile, RuleService } from "../../../src/App/services";
@@ -12,10 +13,10 @@ describe("RuleService", () => {
     const appInfoService = new AppInfoService();
     let ruleService: RuleService = null;
     before(() => {
-        if (!fs.existsSync(process.env.HOME)) {
-            fs.mkdirSync(process.env.HOME);
+        if (!fs.existsSync(os.homedir())) {
+            fs.mkdirSync(os.homedir());
         }
-        const dataDir = path.join(process.env.HOME, ".front-end-proxy");
+        const dataDir = path.join(os.homedir(), ".front-end-proxy");
         fs.mkdirSync(dataDir);
         const dir = path.join(dataDir, "rule");
         fs.mkdirSync(dir);
@@ -53,7 +54,7 @@ describe("RuleService", () => {
         fs.writeFileSync(path.join(dir, "root_test.json"), JSON.stringify(resetRule), { encoding: "utf-8" });
         ruleService = new RuleService(appInfoService);
     });
-    after(() => rimraf.sync(process.env.HOME));
+    after(() => rimraf.sync(os.homedir()));
 
     it("should get the correct rule file list", (done) => {
         ruleService.getRuleFileList("root").should.not.empty;

@@ -2,6 +2,7 @@ import chai from "chai";
 import fs from "fs";
 import "mocha";
 import path from "path";
+import os from "os";
 import rimraf from "rimraf";
 import uuid from "uuid/v4";
 
@@ -12,10 +13,10 @@ describe("MockDataService", () => {
     let mockDataService: MockDataService = null;
     const dataID = uuid();
     before(() => {
-        if (!fs.existsSync(process.env.HOME)) {
-            fs.mkdirSync(process.env.HOME);
+        if (!fs.existsSync(os.homedir())) {
+            fs.mkdirSync(os.homedir());
         }
-        const dataDir = path.join(process.env.HOME, ".front-end-proxy");
+        const dataDir = path.join(os.homedir(), ".front-end-proxy");
         fs.mkdirSync(dataDir);
         const listDir = path.join(dataDir, "mock-list");
         fs.mkdirSync(listDir);
@@ -33,7 +34,7 @@ describe("MockDataService", () => {
             { encoding: "utf-8" });
         mockDataService = new MockDataService(appInfoService);
     });
-    after(() => rimraf.sync(process.env.HOME));
+    after(() => rimraf.sync(os.homedir()));
 
     it("should get the content type correctly", async () => {
         const ct = await mockDataService.getDataFileContentType("root", dataID);
