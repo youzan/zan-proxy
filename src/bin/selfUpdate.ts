@@ -3,6 +3,7 @@ import { promisify } from 'es6-promisify';
 import fs from 'fs';
 import { prompt } from 'inquirer';
 import ora from 'ora';
+import path from 'path';
 import selfupdate from 'selfupdate';
 
 const packageInfo = require('../../package');
@@ -12,7 +13,7 @@ const exec = promisify(childProcess.exec);
 
 const lastCheckTime = {
   encoding: 'utf-8',
-  file: '/tmp/zanproxy.last-update.tmp',
+  file: path.join(__dirname, 'zanproxy.last-check.tmp'),
   get: () => {
     const { file, encoding } = lastCheckTime;
     if (!fs.existsSync(file)) {
