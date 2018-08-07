@@ -16,15 +16,15 @@
             <el-form-item label="请求动作" :label-width="formLabelWidth">
                 <div class="action-container" v-for="(action, index) in rule.actionList" :key="index">
                     <action-detail :action="action" />
-                    <el-tooltip class="item" effect="dark" content="删除" placement="right" v-if="index < rule.actionList.length - 1">
+                    <el-tooltip class="item" effect="dark" content="删除" placement="right">
                          <el-button type="danger" icon='minus' size="mini" @click="removeAction(index)">
                         </el-button>
                     </el-tooltip>
-                    <el-tooltip class="item" effect="dark" content="添加" placement="right" v-else>
-                         <el-button type="primary" icon='plus' size="mini" @click="addAction">
-                        </el-button>
-                    </el-tooltip>
                 </div>
+                <el-button type="primary" icon='plus' size="mini" @click="addAction">
+                    添加请求动作
+                </el-button>
+            
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -74,7 +74,7 @@ export default {
       const roleToClone = this.initRule || newRule
       return {
           rule: cloneDeep(roleToClone),
-          formLabelWidth: '120px',
+          formLabelWidth: '80px',
           methodlist: [
                     { value: '', label: '所有' },
                     { value: 'get', label: 'GET' },
@@ -91,6 +91,9 @@ export default {
       },
       removeAction: function(index) {
           this.rule.actionList.splice(index, 1)
+          if (!this.rule.actionList.length) {
+            this.addAction() 
+          }
       },
       saveRule: function() {
           this.save(this.rule);
