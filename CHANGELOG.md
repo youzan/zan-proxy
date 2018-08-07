@@ -1,5 +1,13 @@
 # Github Change Log
 
+## zan-proxy@4.0.21 (2018-08-07)
+
+**Fixed bugs:**
+
+- [修复windows下最近检查时间路径问题](https://github.com/youzan/zan-proxy/issues/61)
+- [编辑规则时, 请求动作新增和删除功能不合理](https://github.com/youzan/zan-proxy/issues/60)
+
+
 ## zan-proxy@4.0.20 (2018-08-02)
 
 **Implemented enhancements:**
