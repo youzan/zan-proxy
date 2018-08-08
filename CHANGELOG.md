@@ -1,5 +1,11 @@
 # Github Change Log
 
+## zan-proxy@4.0.22 (2018-08-08)
+
+**Fixed bug:**
+
+- [windows下设置HOME环境变量后, postinstall和zan-proxy的HOME目录不一致](https://github.com/youzan/zan-proxy/issues/66)
+
 ## zan-proxy@4.0.21 (2018-08-07)
 
 **Fixed bugs:**
