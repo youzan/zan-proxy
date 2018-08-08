@@ -78,10 +78,7 @@ export class ProxyServer {
       maxAge: 1000 * 60 * 60,
     });
     const certStorage = new CertificateStorage(
-      path.join(
-        os.homedir(),
-        '.front-end-proxy/certificate',
-      ),
+      path.join(os.homedir(), '.front-end-proxy/certificate'),
     );
     const certService = new CertificateService(certStorage, this.cache);
     this.cert = {
