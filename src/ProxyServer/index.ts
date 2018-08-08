@@ -1,8 +1,8 @@
 import getPort from 'get-port';
 import compose from 'koa-compose';
 import LRU from 'lru-cache';
-import path from 'path';
 import os from 'os';
+import path from 'path';
 import {
   CertificateService,
   CertificateStorage,
