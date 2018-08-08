@@ -2,6 +2,7 @@ import getPort from 'get-port';
 import compose from 'koa-compose';
 import LRU from 'lru-cache';
 import path from 'path';
+import os from 'os';
 import {
   CertificateService,
   CertificateStorage,
@@ -78,7 +79,7 @@ export class ProxyServer {
     });
     const certStorage = new CertificateStorage(
       path.join(
-        process.env.HOME || process.env.USERPROFILE || '~/',
+        os.homedir(),
         '.front-end-proxy/certificate',
       ),
     );

@@ -2,6 +2,7 @@ import chai from "chai";
 import fs from "fs";
 import "mocha";
 import path from "path";
+import os from "os";
 import rimraf from "rimraf";
 import { AppInfoService, HostService } from "./../../../src/App/services";
 
@@ -9,10 +10,10 @@ describe("HostService", () => {
     const appInfoService = new AppInfoService();
     let hostService: HostService = null;
     before(() => {
-        if (!fs.existsSync(process.env.HOME)) {
-            fs.mkdirSync(process.env.HOME);
+        if (!fs.existsSync(os.homedir())) {
+            fs.mkdirSync(os.homedir());
         }
-        const dataDir = path.join(process.env.HOME, ".front-end-proxy");
+        const dataDir = path.join(os.homedir(), ".front-end-proxy");
         fs.mkdirSync(dataDir);
         const dir = path.join(dataDir, "host");
         fs.mkdirSync(dir);
@@ -30,7 +31,7 @@ describe("HostService", () => {
         fs.writeFileSync(path.join(dir, "root_test.json"), JSON.stringify(resetHost), { encoding: "utf-8" });
         hostService = new HostService(appInfoService);
     });
-    after(() => rimraf.sync(process.env.HOME));
+    after(() => rimraf.sync(os.homedir()));
     it("should get the host file", async () => {
         hostService.getHostFile("root", "test").should.not.be.undefined;
     });
@@ -52,7 +53,7 @@ describe("HostService", () => {
 
     it("should create a host file successfully", async () => {
         await hostService.createHostFile("root", "test2", "mytest");
-        const filePath = path.join(process.env.HOME, ".front-end-proxy/host/root_test2.json");
+        const filePath = path.join(os.homedir(), ".front-end-proxy/host/root_test2.json");
         const f = hostService.getHostFile("root", "test2");
         f.should.not.be.undefined;
         fs.existsSync(filePath).should.be.true;
@@ -62,7 +63,7 @@ describe("HostService", () => {
     it("should delete a host file successfully", async () => {
         await hostService.createHostFile("root", "test2", "mytest");
         await hostService.deleteHostFile("root", "test2");
-        const filePath = path.join(process.env.HOME, ".front-end-proxy/host/root_test2.json");
+        const filePath = path.join(os.homedir(), ".front-end-proxy/host/root_test2.json");
         fs.existsSync(filePath).should.be.false;
         rimraf.sync(filePath);
     });

@@ -3,7 +3,8 @@
 const fs = require("fs");
 const jsonfile = require("jsonfile");
 const path = require("path");
-const proxyDataDir = path.join(process.env.HOME || process.env.USERPROFILE || "/", '.front-end-proxy');
+const os = require("os");
+const proxyDataDir = path.join(os.homedir(), '.front-end-proxy');
 /**
  * 初始化脚本
  * @param force

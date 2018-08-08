@@ -2,6 +2,7 @@ import EventEmitter from 'events';
 import ip from 'ip';
 import { assign } from 'lodash';
 import path from 'path';
+import os from 'os';
 import { Service } from 'typedi';
 
 export interface AppInfo {
@@ -19,7 +20,7 @@ export class AppInfoService extends EventEmitter {
   constructor(single = true) {
     super();
     // 用户home目录
-    const userHome = process.env.HOME || process.env.USERPROFILE || '/';
+    const userHome = os.homedir();
     // proxy data存放目录
     this.proxyDataDir = path.join(userHome, '.front-end-proxy');
     // app信息
