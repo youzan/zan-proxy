@@ -2,6 +2,7 @@ import shellEscape from 'shell-escape';
 import { isObject, isArray } from 'lodash'
 
 const makeCURL = ({
+    proxy,
     method,
     headers,
     body,
@@ -9,6 +10,12 @@ const makeCURL = ({
     auth
 }) => {
     const args = ['curl']
+    
+    // proxy
+    if (proxy.host) {
+        args.push('-x');
+        args.push(`http://${proxy.host}` + (proxy.port ? `:${proxy.port}` : ''));
+    }
     
     // method
     args.push('-X')
