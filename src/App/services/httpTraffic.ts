@@ -20,6 +20,7 @@ export class HttpTrafficService extends EventEmitter {
   private trafficDir: string;
   private filterMap: object;
   private stopRecord: object;
+  private appInfoService: AppInfoService;
   constructor(appInfoService: AppInfoService) {
     super();
     // http请求缓存数据 userId - > [{record}，{record}，{record}]
@@ -29,6 +30,7 @@ export class HttpTrafficService extends EventEmitter {
     // 记录用户的监视窗数量
     this.userMonitorCount = {};
 
+    this.appInfoService = appInfoService;
     const proxyDataDir = appInfoService.getProxyDataDir();
     // 监控数据缓存目录
     this.trafficDir = path.join(proxyDataDir, 'traffic');
@@ -229,6 +231,16 @@ export class HttpTrafficService extends EventEmitter {
       const bodyPath = this.getResponseBodyPath(userId, id);
       await fsWriteFile(bodyPath, body, { encoding: 'utf-8' });
     }
+  }
+
+  /**
+   * 获取proxy的设置
+   */
+  public getProxyConfig() {
+    return {
+      host: this.appInfoService.getPcIp(),
+      port: this.appInfoService.getHttpProxyPort()
+    };
   }
 
   /**
