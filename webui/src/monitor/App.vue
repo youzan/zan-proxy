@@ -50,7 +50,11 @@
                     stopRecord: false, // 停止记录
                     overflow: false // 打到最大记录数显示
                 },
-                filter: ''
+                filter: '',
+                proxyServer: {
+                    host: '',
+                    port: ''
+                }
             };
         },
         computed: {
@@ -236,12 +240,20 @@
                 deep: true
             }
         },
-        created() {
+        async created() {
             this.calcSize();
 
             $(window).resize(_.debounce(this.calcSize, 200));
 
             if (!window.io) return;
+
+            try {
+                this.proxyServer = await trafficApi.getProxyConfig();
+                console.log(this.proxyServer)
+            } catch (e) {
+                console.error(e);
+            }
+            
             let socket = io('/httptrafic');
             socket.on('rows', this.receiveTraffic);
             socket.on('filter', filter => {
