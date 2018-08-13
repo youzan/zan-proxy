@@ -67,8 +67,9 @@ export default {
         },
         curl() {
             const data = this.$dc.currentRow
+            const proxy = this.$dc.proxyServer
             return makeCURL({
-                ...data.originRequest,
+                ...data.originRequest, proxy,
                 body: this.$dc.currentRequestBody || '',
             })
         }
