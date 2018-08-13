@@ -1,5 +1,14 @@
 import axios from "axios";
 import queryString from "query-string";
+export async function getProxyConfig() {
+  try{
+    let result = await axios.get(`/traffic/getProxyConfig`);
+    return result.data;
+  }catch (e){
+    return '';
+  }
+
+}
 export async function getResponseBody(id) {
   try{
     let result = await axios.get(`/traffic/getResponseBody?id=${id}`);
