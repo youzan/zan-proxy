@@ -6,6 +6,11 @@ export class HttpTrafficController {
   @Inject()
   private httpTrafficService: HttpTrafficService;
   public regist(router) {
+    // 获取proxy设置
+    router.get('/traffic/getProxyConfig', ctx => {
+      const content = this.httpTrafficService.getProxyConfig();
+      ctx.body = content;
+    });
     // 获取响应body
     router.get('/traffic/getResponseBody', async ctx => {
       const userId = ctx.userId;
