@@ -120,7 +120,7 @@ export class RuleService extends EventEmitter {
     const rulesLocal: any[] = [];
     const rulesRemote: any[] = [];
     forEach(ruleMap, content => {
-      if (content.meta.remote) {
+      if (content.meta&&content.meta.remote) {
         rulesRemote.push({
           checked: content.checked,
           description: content.description,
@@ -346,7 +346,7 @@ export class RuleService extends EventEmitter {
         }
         const copy = cloneDeep(rule);
         copy.ruleFileName = filename;
-        if (file.meta.remote) {
+        if (file.meta&&file.meta.remote) {
           rulesRemote.push(copy);
         } else {
           rulesLocal.push(copy);
