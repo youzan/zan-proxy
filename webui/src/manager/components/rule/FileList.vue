@@ -28,11 +28,12 @@
             v-if="scope.row.meta.remote"
           />
           <span v-else>/</span>
-        </template> 
+        </template>
       </el-table-column>-->
       <el-table-column prop="name" label="名字" width="200">
         <template scope="scope">
-          <el-tooltip class="item" effect="dark" content="远程规则" placement="right" v-if="scope.row.meta.remote">
+          <el-tooltip class="item" effect="dark" content="远程规则" placement="right"
+                      v-if="scope.row.meta&&scope.row.meta.remote">
             <span class="file-tag remote">R</span>
           </el-tooltip>
           <el-tooltip class="item" effect="dark" content="本地规则" placement="right" v-else >
@@ -113,7 +114,7 @@ export default {
       });
     },
     onShareFile(row, index) {
-      if (!row.meta.remote) {
+      if (row.meta&&!row.meta.remote) {
         window.location = '/rule/download?name=' + row.name;
       } else {
         this.$alert(row.meta.url, '规则URL', {

@@ -256,7 +256,7 @@ export class RuleService extends EventEmitter {
   }
 
   public async importRemoteRuleFile(userId, url): Promise<RuleFile> {
-    const ruleFile = await this.fetchRemoteRuleFile(url);
+    const ruleFile = await this.fetchRemoteRuleFile (url);
     ruleFile.content.forEach(rule => {
       if (rule.action && !rule.actionList) {
         rule.actionList = [rule.action];
