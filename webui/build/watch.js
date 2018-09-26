@@ -1,23 +1,34 @@
-require('./check-versions')()
+require('./check-versions')();
 
-process.env.NODE_ENV = 'development'
+process.env.NODE_ENV = 'development';
 
-var ora = require('ora')
-var rm = require('rimraf')
-var path = require('path')
-var chalk = require('chalk')
-var webpack = require('webpack')
-var config = require('../config')
-var webpackConfig = require('./webpack.watch.conf')
+const rm = require('rimraf');
+const path = require('path');
+const webpack = require('webpack');
+const config = require('../config');
+const webpackConfig = require('./webpack.watch.conf');
+const chalk = require('chalk');
 
-var spinner = ora('building for production...')
-spinner.start()
-
-rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
-  if (err) throw err
-  var compiler = webpack(webpackConfig);
-  var watching = compiler.watch({
-  }, function(err, stats) {
-
-  });
-});
+rm(
+  path.join(
+    config.build.assetsRoot,
+    config.build.assetsSubDirectory,
+  ),
+  err => {
+    if (err) throw err;
+    const compiler = webpack(webpackConfig);
+    compiler.watch(
+      {},
+      function(err, stats) {
+        if (err) console.log(chalk.red(
+          'error in watching',
+          err,
+        ));
+        console.log(chalk.green(
+          new Date(),
+          'detected changing...',
+        ));
+      },
+    );
+  },
+);
