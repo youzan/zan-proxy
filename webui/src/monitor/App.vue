@@ -139,6 +139,22 @@
           return {};
         }
       },
+      responseHeaderList() {
+        try {
+          const headers = Object.assign(
+            {},
+            this.currentRow.response.headers,
+          );
+          const setCookie = headers['set-cookie'];
+          delete headers['set-cookie'];
+          return Object.keys(headers)
+            .map(key => [key, headers[key]])
+            .concat(setCookie.map(scValue => ['set-cookie', scValue]));
+        }
+        catch (e) {
+          return {};
+        }
+      },
       setCookies() {
         try {
           return this.currentRow.response.headers['set-cookie'] || [];
