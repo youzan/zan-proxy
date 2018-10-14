@@ -8,7 +8,7 @@
     </div>
   </el-collapse-item>
   <el-collapse-item title="Headers" name="headers">
-    <obj-kv :obj="$dc.responseHeader"></obj-kv>
+    <kv-list :list="$dc.responseHeaderList"/>
   </el-collapse-item>
   <el-collapse-item name="body" v-if="$dc.currentResponseBody">
       <template slot="title">
@@ -27,7 +27,7 @@
 <script>
 
 import KeyValue from "./KeyValue";
-import ObjKV from './ObjKV'
+import KVList from './KVList';
 import JsonTree from 'vue-json-tree'
 export default {
     data() {
@@ -38,7 +38,7 @@ export default {
     },
     components: {
         'kv': KeyValue,
-        'obj-kv': ObjKV,
+        'kv-list': KVList,
         'json-tree': JsonTree
     },
     computed: {
