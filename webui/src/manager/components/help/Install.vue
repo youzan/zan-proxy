@@ -16,7 +16,7 @@
 
     <ol>
       <li>安装完插件后请设置插件代理地址为<code>127.0.0.1</code>，代理协议: http，端口为<code>zanProxy</code>代理端口(默认8001)。</li>
-      <li>如不清楚如何配置 SwitchyOmega，请参考 <a href="/help/chrome/" target="_blank">chrome 代理设置指南</a></li>
+      <li>如不清楚如何配置 SwitchyOmega，请参考 <a href="https://youzan.github.io/zan-proxy/book/usage/chrome.html" target="_blank">chrome 代理设置指南</a></li>
     </ol>
 
     <h2 id="toc_3">三、证书安装</h2>
