@@ -156,10 +156,10 @@ export class HostService extends EventEmitter {
   public async toggleUseHost(userId, filename) {
     const toSaveFileName: string[] = [];
     forEach(this.userHostFilesMap[userId], (content, name) => {
-      if (content.name === filename) {
-        content.checked = !content.checked;
-        toSaveFileName.push(name);
-      }
+      content.checked = content.name === filename
+        ? !content.checked
+        : false;
+      toSaveFileName.push(name);
     });
     // 保存文件
     for (const name of toSaveFileName) {
