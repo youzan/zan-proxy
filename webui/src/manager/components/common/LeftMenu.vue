@@ -16,7 +16,7 @@
               <span class='menu-name'>{{item.name}}</span>
             </template>
             <!-- 子菜单 -->
-            <el-menu-item 
+            <el-menu-item
               v-for='(child,cindex) in item.children'
               :style="{'padding-left':'40px'}"
               :index='index+"-"+cindex'
@@ -49,11 +49,6 @@ const menuList = [
     link: 'helpinstall'
   },
   {
-    name: '工程路径配置',
-    icon: 'icon-layers',
-    link: 'projectpath'
-  },
-  {
     name: 'Host 管理',
     icon: 'icon-box',
     link: 'hostfilelist'
@@ -62,6 +57,11 @@ const menuList = [
     name: 'Http 转发',
     icon: 'icon-skip',
     link: 'rulefilelist'
+  },
+  {
+    name: '转发变量配置',
+    icon: 'icon-layers',
+    link: 'projectpath'
   },
   {
     name: '自定义 mock 数据',

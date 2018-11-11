@@ -249,7 +249,7 @@ export default {
             content.name
           },引用变量【${varNameList.join(
             '; '
-          )}】请确保变量已经在工程路径配置中设置过值`;
+          )}】请确保变量已经在转发变量配置中设置过值`;
         } else {
           infoStr = `导入规则文件名为${content.name}`;
         }
