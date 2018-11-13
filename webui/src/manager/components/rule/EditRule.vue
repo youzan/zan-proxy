@@ -1,6 +1,7 @@
 <template>
   <div>
-    <div class="main-content__title">编辑规则集{{ loaded ? ': ' + (filecontent.name || '拼命加载中') : ': 拼命加载中' }}</div>
+    <div class="main-content__title">
+      <router-link class="main-content__title-link" to="/rulefilelist">规则集列表</router-link> / 编辑规则集{{ loaded ? ': ' + (filecontent.name || '拼命加载中') : ': 拼命加载中' }}</div>
     <span class="save-tip" v-if="loaded && filecontent.meta && filecontent.meta.remote">该规则集为远程规则集，重启同步后相关配置会被覆盖。如需永久保存修改，则可以复制该规则集成本地规则集。</span>
     <el-row :gutter="20" style="margin-bottom: 10px;text-align: right;">
       <el-col :span="6" :offset="18">
@@ -117,7 +118,7 @@
   import Vue from 'vue';
   import EditDialog from './EditRuleDialog';
   import EditRuleConfigDialog from './EditRuleConfigDialog.vue';
-  
+
   Vue.component(RuleDetail.name, RuleDetail);
 
   export default {
@@ -372,6 +373,10 @@
 </script>
 
 <style scoped>
+  .main-content__title-link {
+    color: #20a0ff;
+    text-decoration: none;
+  }
   .save-tip {
     font-size: 14px;
     color: #999999;

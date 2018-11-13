@@ -153,7 +153,7 @@
                     projectPath: [],
                     enableRule: false
                 },
-                // 将工程路径配置转换为数组格式 方便编辑
+                // 将转发变量配置转换为数组格式 方便编辑
                 projectPathArray: [],
                 // 关联的ip
                 mappedClientIps: [],
@@ -206,7 +206,7 @@
             selectedRuleFiles() {
                 return this.ruleFileList.filter(f => f.checked).map(f => f.name)
             }
-            
+
         },
         methods: {
             async switchHost(value){
@@ -523,7 +523,7 @@
             // 强制dialog渲染body部分, 对ele dialog hack的初始化方式，原始的dialog不提供mouted后的事件
             this.$refs.mockDataDialg.rendered = true;
         },
-        
+
         watch: {
             profile() {
                 if (this.profile.enableHost && this.selectedHost) {
