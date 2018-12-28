@@ -36,9 +36,9 @@ var api = {
         return axios.get(`/host/import?url=${encodeURIComponent(url)}`)
     },
 };
-api.debouncedUseFile = _.debounce(function (name, callback) {
+api.debouncedUseFile = function (name, callback) {
     api.toggleFile(name).then((response) => {
         callback(response)
     });
-}, 500);
+}
 export default  api;
