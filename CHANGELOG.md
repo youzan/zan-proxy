@@ -1,6 +1,6 @@
 # Github Change Log
 
-## zan-proxy@4.0.23 ~ 4.0.25 (2019-01-20)
+## zan-proxy@4.0.23 ~ 4.0.27 (2019-01-20)
 
 **Fixed bug:**
 - 修复返回内容使用br算法压缩导致的解析出错（accept-encoding暂时改为'gzip, defalte'）
