@@ -1,5 +1,20 @@
 # Github Change Log
 
+## zan-proxy@4.0.23 ~ 4.0.25 (2019-01-20)
+
+**Fixed bug:**
+- 修复返回内容使用br算法压缩导致的解析出错（accept-encoding暂时改为'gzip, defalte'）
+- 修复同步远程规则失败后无法再导入本地规则的问题
+- 修复rule.meta 为undefined 时导致 zan-proxy 不可用的问题
+- 修复请求监控-content-type非json或form-data的时候对request的body没有进行显示
+- 修复使用说明页面，'chrome 代理设置指南' 链接错误的问题
+
+**Implemented enhancements:**
+- 将“工程路径”重命名为“转发变量”，满足更多的需求
+- 转发规则编辑页增加返回列表按钮
+- 调整目录结构，优化交互体验
+- monitor 增加对在 response 中显示 set-cookie header 的支持
+
 ## zan-proxy@4.0.22 (2018-08-08)
 
 **Fixed bug:**
