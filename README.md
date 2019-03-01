@@ -21,6 +21,7 @@ The proxy server can be easily configured by a user-friendly interface. In addit
 
 ## Features
 
+* Clean and user-friendly interface
 * Support HTTP, HTTPS and websocket
 * Support remote redirect rules
 * Modify the request target
@@ -31,17 +32,11 @@ The proxy server can be easily configured by a user-friendly interface. In addit
 
 ## Installation
 
-```shell
-npm i -g zan-proxy
-```
+Download from [Github](https://github.com/youzan/zan-proxy/releases).
 
-## Usage
+## Interface
 
-```shell
-zan-proxy
-```
-
-The website for management will be opened automatically.
+<img src="https://img.yzcdn.cn/public_files/2019/03/01/b101dc19661fda0341aaff08239ac528.png" />
 
 <img src="https://img.yzcdn.cn/public_files/2018/03/29/538c49fa295df7dc7184d75fc1c1ab99.png" />
 

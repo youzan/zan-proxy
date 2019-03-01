@@ -19,26 +19,22 @@
 
 ## 主要特性
 
+* 简洁易用的图形化操作界面
 * 支持HTTP，HTTPS和Websocket代理
 * 支持自定义请求转发，可转发到本地文件
 * 支持远程规则，可以在项目内共享规则
 * 支持mock响应数据
 * 支持自定义DNS解析
-* 支持自定义插件，可定制代
+* 支持自定义插件
 
 ## 安装
 
-```shell
-npm i -g zan-proxy
-```
+从 [Github](https://github.com/youzan/zan-proxy/releases) 下载已经编译好的安装包。
 
-## 启动
 
-```shell
-zan-proxy
-```
+## 界面
 
-Zan Proxy的管理页面会自动打开。
+<img src="https://img.yzcdn.cn/public_files/2019/03/01/b101dc19661fda0341aaff08239ac528.png" />
 
 <img src="https://img.yzcdn.cn/public_files/2018/03/29/538c49fa295df7dc7184d75fc1c1ab99.png" />
 
