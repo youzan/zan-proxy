@@ -5,8 +5,8 @@ import { prompt } from 'inquirer';
 import ora from 'ora';
 import path from 'path';
 import selfupdate from 'selfupdate';
+import packageInfo from '../../package.json';
 
-const packageInfo = require('../../package');
 const update = promisify(selfupdate.update);
 const isUpdated = promisify(selfupdate.isUpdated);
 const exec = promisify(childProcess.exec);
@@ -38,8 +38,7 @@ const lastCheckTime = {
 
 export default async () => {
   const lastTime = lastCheckTime.get();
-  const hasCheckedRecently =
-    lastTime && Date.now() - lastTime < 24 * 3600 * 1000;
+  const hasCheckedRecently = lastTime && Date.now() - lastTime < 24 * 3600 * 1000;
   if (hasCheckedRecently) {
     return;
   }

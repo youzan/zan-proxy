@@ -7,8 +7,7 @@ import { ProfileService } from '../../services';
 
 @Service()
 export class ProfileController {
-  @Inject()
-  private profileService: ProfileService;
+  @Inject() private profileService: ProfileService;
 
   public regist(router) {
     router.post('/profile/savefile', async ctx => {

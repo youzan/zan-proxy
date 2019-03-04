@@ -34,9 +34,7 @@ export class HttpsServer {
   }
 
   private async init() {
-    const serverCrt = await this.certService.getCertificationForHost(
-      'internal_https_server',
-    );
+    const serverCrt = await this.certService.getCertificationForHost('internal_https_server');
     this.server = https.createServer({
       SNICallback: (servername, cb) => {
         this.certService.getCertificationForHost(servername).then(crt => {

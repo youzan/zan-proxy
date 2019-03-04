@@ -40,13 +40,7 @@ export class CertificateService implements ICertificateService {
       const subdomainList = parsed.subdomain.split('.');
       subdomainList.shift();
       if (subdomainList.length > 0) {
-        domain =
-          '*.' +
-          subdomainList.join('.') +
-          '.' +
-          parsed.domain +
-          '.' +
-          parsed.tld;
+        domain = '*.' + subdomainList.join('.') + '.' + parsed.domain + '.' + parsed.tld;
       }
     }
 

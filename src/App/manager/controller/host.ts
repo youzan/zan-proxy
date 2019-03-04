@@ -3,8 +3,7 @@ import { HostService } from './../../services';
 
 @Service()
 export class HostController {
-  @Inject()
-  private hostService: HostService;
+  @Inject() private hostService: HostService;
   public regist(router) {
     // {
     //    name:name,
@@ -51,10 +50,7 @@ export class HostController {
     // /host/getfile?name=${name}
     router.get('/host/getfile', async ctx => {
       const userId = ctx.userId;
-      const hostFile = await this.hostService.getHostFile(
-        userId,
-        ctx.query.name,
-      );
+      const hostFile = await this.hostService.getHostFile(userId, ctx.query.name);
       ctx.body = {
         code: 0,
         data: hostFile,
@@ -63,11 +59,7 @@ export class HostController {
     // /host/savefile?name=${name} ,content
     router.post('/host/savefile', async ctx => {
       const userId = ctx.userId;
-      await this.hostService.saveHostFile(
-        userId,
-        ctx.query.name,
-        ctx.request.body,
-      );
+      await this.hostService.saveHostFile(userId, ctx.query.name, ctx.request.body);
       ctx.body = {
         code: 0,
       };
@@ -77,10 +69,7 @@ export class HostController {
       const userId = ctx.userId;
       const name = ctx.query.name;
       const content = await this.hostService.getHostFile(userId, name);
-      ctx.set(
-        'Content-disposition',
-        `attachment;filename=${encodeURI(name)}.json`,
-      );
+      ctx.set('Content-disposition', `attachment;filename=${encodeURI(name)}.json`);
       ctx.body = content;
     });
 
@@ -88,10 +77,7 @@ export class HostController {
       const { userId, query } = ctx;
       const hostFileUrl = query.url;
       try {
-        const hostFile = await this.hostService.importRemoteHostFile(
-          userId,
-          hostFileUrl,
-        );
+        const hostFile = await this.hostService.importRemoteHostFile(userId, hostFileUrl);
         ctx.body = {
           code: 0,
           data: hostFile,

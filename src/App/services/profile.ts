@@ -43,18 +43,13 @@ export class ProfileService extends EventEmitter {
 
     const proxyDataDir = appInfoService.getProxyDataDir();
     this.profileSaveDir = path.join(proxyDataDir, 'profile');
-    this.clientIpUserMapSaveFile = path.join(
-      proxyDataDir,
-      'clientIpUserMap.json',
-    );
+    this.clientIpUserMapSaveFile = path.join(proxyDataDir, 'clientIpUserMap.json');
 
     const profileMap = fs
       .readdirSync(this.profileSaveDir)
       .filter(name => name.endsWith('.json'))
       .reduce((prev, curr) => {
-        prev[curr] = jsonfile.readFileSync(
-          path.join(this.profileSaveDir, curr),
-        );
+        prev[curr] = jsonfile.readFileSync(path.join(this.profileSaveDir, curr));
         return prev;
       }, {});
     forEach(profileMap, (profile, fileName) => {
@@ -148,22 +143,16 @@ export class ProfileService extends EventEmitter {
     const originUserId = this.clientIpUserMap[clientIp];
     this.clientIpUserMap[clientIp] = userId;
 
-    await jsonfileWriteFile(
-      this.clientIpUserMapSaveFile,
-      this.clientIpUserMap,
-      { encoding: 'utf-8' },
-    );
+    await jsonfileWriteFile(this.clientIpUserMapSaveFile, this.clientIpUserMap, {
+      encoding: 'utf-8',
+    });
 
     const clientIpList = this.getClientIpsMappedToUserId(userId);
     this.emit('data-change-clientIpUserMap', userId, clientIpList);
 
     if (originUserId) {
       const originClientIpList = this.getClientIpsMappedToUserId(originUserId);
-      this.emit(
-        'data-change-clientIpUserMap',
-        originUserId,
-        originClientIpList,
-      );
+      this.emit('data-change-clientIpUserMap', originUserId, originClientIpList);
     }
   }
 

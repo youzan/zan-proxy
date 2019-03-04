@@ -3,8 +3,7 @@ import { HttpTrafficService } from '../../services';
 
 @Service()
 export class HttpTrafficController {
-  @Inject()
-  private httpTrafficService: HttpTrafficService;
+  @Inject() private httpTrafficService: HttpTrafficService;
   public regist(router) {
     // 获取响应body
     router.get('/traffic/getResponseBody', async ctx => {
@@ -24,10 +23,7 @@ export class HttpTrafficController {
     router.get('/traffic/stopRecord', async ctx => {
       const userId = ctx.userId;
       const stopRecord = ctx.query.stop;
-      await this.httpTrafficService.setStopRecord(
-        userId,
-        stopRecord.toString() === 'true',
-      );
+      await this.httpTrafficService.setStopRecord(userId, stopRecord.toString() === 'true');
       ctx.body = {
         code: 0,
       };

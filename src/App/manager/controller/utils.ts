@@ -2,21 +2,13 @@ import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
 import { Inject, Service } from 'typedi';
-import {
-  AppInfoService,
-  HostService,
-  RuleFile,
-  RuleService,
-} from '../../services';
+import { AppInfoService, HostService, RuleFile, RuleService } from '../../services';
 
 @Service()
 export class UtilsController {
-  @Inject()
-  private appInfoService: AppInfoService;
-  @Inject()
-  private hostService: HostService;
-  @Inject()
-  private ruleService: RuleService;
+  @Inject() private appInfoService: AppInfoService;
+  @Inject() private hostService: HostService;
+  @Inject() private ruleService: RuleService;
 
   public regist(router) {
     // 下载证书
@@ -43,9 +35,7 @@ export class UtilsController {
         );
         for (const ruleFile of userRuleFiles) {
           for (const rule of ruleFile.content) {
-            matchScripts.push(
-              `if (url.indexOf("${rule.match}") > -1) { return zProxy; }`,
-            );
+            matchScripts.push(`if (url.indexOf("${rule.match}") > -1) { return zProxy; }`);
             matchScripts.push(
               `try {
                 if ((new RegExp("${rule.match}")).test(url)) { return zProxy; }
@@ -66,10 +56,7 @@ export class UtilsController {
             matchScripts.push(`if ( host == "${host}" ) { return zProxy; }`);
             if (host.startsWith('*')) {
               matchScripts.push(
-                `if ( host.indexOf("${host.substr(
-                  1,
-                  host.length,
-                )}") > -1 ) { return zProxy; } `,
+                `if ( host.indexOf("${host.substr(1, host.length)}") > -1 ) { return zProxy; } `,
               );
             }
           }

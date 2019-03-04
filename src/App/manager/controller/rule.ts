@@ -6,10 +6,8 @@ import { ProfileService, RuleService, ErrNameExists } from '../../services';
  */
 @Service()
 export class RuleController {
-  @Inject()
-  private ruleService: RuleService;
-  @Inject()
-  private profileService: ProfileService;
+  @Inject() private ruleService: RuleService;
+  @Inject() private profileService: ProfileService;
 
   public regist(router) {
     // 创建规则
@@ -34,10 +32,7 @@ export class RuleController {
         };
         return;
       } catch (error) {
-        const msg =
-          error === ErrNameExists
-            ? '文件已存在'
-            : `未知错误: ${error.toString()}`;
+        const msg = error === ErrNameExists ? '文件已存在' : `未知错误: ${error.toString()}`;
         ctx.body = {
           code: 1,
           msg,
@@ -93,10 +88,7 @@ export class RuleController {
     // /rule/getfile?name=${name}
     ruleRouter.get('/getfile', async ctx => {
       const userId = ctx.userId;
-      const content = await this.ruleService.getRuleFile(
-        userId,
-        ctx.query.name,
-      );
+      const content = await this.ruleService.getRuleFile(userId, ctx.query.name);
       ctx.body = {
         code: 0,
         data: content,
@@ -127,8 +119,7 @@ export class RuleController {
           code: 0,
         };
       } catch (e) {
-        const msg =
-          e === ErrNameExists ? '有重复名字' : `未知错误: ${e.toString()}`;
+        const msg = e === ErrNameExists ? '有重复名字' : `未知错误: ${e.toString()}`;
         ctx.body = {
           code: 1,
           msg,
@@ -142,10 +133,7 @@ export class RuleController {
       const userId = ctx.userId;
       const name = ctx.query.name;
       const content = await this.ruleService.getRuleFile(userId, name);
-      ctx.set(
-        'Content-disposition',
-        `attachment;filename=${encodeURI(name)}.json`,
-      );
+      ctx.set('Content-disposition', `attachment;filename=${encodeURI(name)}.json`);
       ctx.body = content;
     });
     // 测试规则
@@ -168,12 +156,7 @@ export class RuleController {
       }
 
       const targetTpl = ctx.request.body.targetTpl;
-      const targetRlt = await this.profileService.calcPath(
-        userId,
-        url,
-        match,
-        targetTpl,
-      );
+      const targetRlt = await this.profileService.calcPath(userId, url, match, targetTpl);
 
       // 测试规则
       ctx.body = {
@@ -189,10 +172,7 @@ export class RuleController {
       const { userId, query } = ctx;
       const ruleFileUrl = query.url;
       try {
-        const ruleFile = await this.ruleService.importRemoteRuleFile(
-          userId,
-          ruleFileUrl,
-        );
+        const ruleFile = await this.ruleService.importRemoteRuleFile(userId, ruleFileUrl);
         ctx.body = {
           code: 0,
           data: ruleFile,

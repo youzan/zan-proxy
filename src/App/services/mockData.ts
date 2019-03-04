@@ -132,13 +132,7 @@ export class MockDataService extends EventEmitter {
   /**
    * 用户从监控窗保存一个数据文件
    */
-  public async saveDataEntryFromTraffic(
-    userId,
-    dataFileId,
-    fileName,
-    contentType,
-    content,
-  ) {
+  public async saveDataEntryFromTraffic(userId, dataFileId, fileName, contentType, content) {
     const dataList = this.mockDataList[userId] || [];
     dataList.push({
       contenttype: contentType,

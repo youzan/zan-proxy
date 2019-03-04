@@ -29,11 +29,7 @@ export class ConfigureService extends EventEmitter {
     super();
     const proxyDataDir = appInfoService.getProxyDataDir();
     this.configureFile = path.join(proxyDataDir, 'configure.json');
-    this.configure = assign(
-      {},
-      defaultConfigure,
-      jsonfile.readFileSync(this.configureFile),
-    );
+    this.configure = assign({}, defaultConfigure, jsonfile.readFileSync(this.configureFile));
   }
 
   // 获取配置

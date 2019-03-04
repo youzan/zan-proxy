@@ -8,9 +8,7 @@ export const ip = () => {
     }
     const req: IncomingMessage = ctx.req;
     ctx.clientIP =
-      req.headers['x-forwarded-for'] ||
-      req.connection.remoteAddress ||
-      req.socket.remoteAddress;
+      req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress;
     await next();
   };
 };

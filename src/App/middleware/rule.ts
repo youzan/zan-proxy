@@ -47,14 +47,8 @@ export const rule = ({
       switch (action.type) {
         case 'mockData':
           const { dataId } = data;
-          const content = await mockDataService.getDataFileContent(
-            userID,
-            dataId,
-          );
-          const contentType = await mockDataService.getDataFileContentType(
-            userID,
-            dataId,
-          );
+          const content = await mockDataService.getDataFileContent(userID, dataId);
+          const contentType = await mockDataService.getDataFileContentType(userID, dataId);
           ctx.res.body = content;
           ctx.res.setHeader('Content-Type', contentType);
           break;

@@ -10,7 +10,7 @@ import start from './start';
 import syncHost from './syncHost';
 import syncRule from './syncRule';
 
-const packageInfo = require('../../package');
+import packageInfo from '../../package.json';
 
 program
   .version(packageInfo.version)

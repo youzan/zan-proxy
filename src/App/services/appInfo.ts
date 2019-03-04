@@ -117,8 +117,6 @@ export class AppInfoService extends EventEmitter {
 
   public printRuntimeInfo() {
     console.log(`Proxy Port: ${this.appInfo.proxyPort}`);
-    console.log(
-      `Manager: http://${this.appInfo.pcIp}:${this.appInfo.realUiPort}`,
-    );
+    console.log(`Manager: http://${this.appInfo.pcIp}:${this.appInfo.realUiPort}`);
   }
 }

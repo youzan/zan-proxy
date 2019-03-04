@@ -8,9 +8,7 @@ const syncRemoteRules = async () => {
   const userIDs = Object.keys(ruleService.rules);
   for (const userID of userIDs) {
     const userRuleFilesMap = ruleService.rules[userID];
-    const userRuleFiles: RuleFile[] = Object.keys(userRuleFilesMap).map(
-      k => userRuleFilesMap[k],
-    );
+    const userRuleFiles: RuleFile[] = Object.keys(userRuleFilesMap).map(k => userRuleFilesMap[k]);
     for (const ruleFile of userRuleFiles) {
       if (ruleFile.meta && ruleFile.meta.remote && !ruleFile.disableSync) {
         const spinner = ora(`同步规则集${ruleFile.name}`).start();

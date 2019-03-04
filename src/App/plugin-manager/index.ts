@@ -37,9 +37,7 @@ export default class PluginManager {
           prev[curr.name] = new pluginClass();
         } catch (error) {
           console.error(
-            `plugin "${curr.name}" has a runtime error. please check it.\n${
-              error.stack
-            }`,
+            `plugin "${curr.name}" has a runtime error. please check it.\n${error.stack}`,
           );
           process.exit(-1);
         }
@@ -159,10 +157,7 @@ export default class PluginManager {
           return Object.assign(
             {},
             plugin,
-            require(path.join(
-              this.getPluginDir(plugin.name),
-              './package.json',
-            )),
+            require(path.join(this.getPluginDir(plugin.name), './package.json')),
           );
         }),
         status: 200,

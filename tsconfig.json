@@ -12,14 +12,11 @@
     "esModuleInterop": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "resolveJsonModule": true,
     "module": "commonjs",
     "outDir": "dist",
     "lib": ["dom", "es2017"]
   },
-  "include": [
-    "src"
-  ],
-  "exclude": [
-    "test/**/*.spec.ts"
-  ]
+  "include": ["src/**/*.ts"],
+  "exclude": ["test/**/*.spec.ts"]
 }

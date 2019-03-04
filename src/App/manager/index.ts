@@ -64,9 +64,11 @@ export class Manager {
     });
     this.app.use(router());
     // 静态资源服务
-    this.app.use(koaStatic(path.join(__dirname, '../../../site'), {
-      index: 'manager.html',
-    }));
+    this.app.use(
+      koaStatic(path.join(__dirname, '../../../site'), {
+        index: 'manager.html',
+      }),
+    );
     this.app.use(koaFavicon(path.join(__dirname, '../../../site/favicon.ico')));
     this.app.use(koaMount('/plugins', this.pluginManager.getUIApp()));
     // 创建server
@@ -140,9 +142,7 @@ export class Manager {
       // 个人配置
       const profile = await this.profileService.getProfile(userId);
       client.emit('profile', profile);
-      const mappedClientIps = await this.profileService.getClientIpsMappedToUserId(
-        userId,
-      );
+      const mappedClientIps = await this.profileService.getClientIpsMappedToUserId(userId);
       client.emit('mappedClientIps', mappedClientIps);
       // host文件列表
       const hostFileList = await this.hostService.getHostFileList(userId);
@@ -162,12 +162,9 @@ export class Manager {
     this.profileService.on('data-change-profile', (userId, profile) => {
       socket.to(userId).emit('profile', profile);
     });
-    this.profileService.on(
-      'data-change-clientIpUserMap',
-      (userId, clientIpList) => {
-        socket.to(userId).emit('mappedClientIps', clientIpList);
-      },
-    );
+    this.profileService.on('data-change-clientIpUserMap', (userId, clientIpList) => {
+      socket.to(userId).emit('mappedClientIps', clientIpList);
+    });
     // host文件变化
     this.hostService.on('data-change', (userId, hostFilelist) => {
       socket.to(userId).emit('hostfilelist', hostFilelist);
@@ -184,9 +181,7 @@ export class Manager {
 
   // 通用函数，获取web socket连接中的用户id
   private _getUserId(socketIOConn) {
-    const cookies = cookieParser.parse(
-      socketIOConn.request.headers.cookie || '',
-    );
+    const cookies = cookieParser.parse(socketIOConn.request.headers.cookie || '');
     return cookies.userId || 'root';
   }
 }

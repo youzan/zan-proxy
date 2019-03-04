@@ -1,14 +1,6 @@
 import { Container, Service } from 'typedi';
 import { ProxyServer } from '../../ProxyServer';
-import {
-  actualRequest,
-  endPoint,
-  host,
-  Ignorer,
-  ip,
-  rule,
-  user,
-} from '../middleware';
+import { actualRequest, endPoint, host, Ignorer, ip, rule, user } from '../middleware';
 import PluginManager from '../plugin-manager';
 import {
   HostService,
@@ -46,9 +38,7 @@ export class Proxy {
     );
     const pluginManager: PluginManager = Container.get(PluginManager);
     pluginManager.loadProxyMiddleware(this.server);
-    this.server.use(
-      host(Container.get(HostService), Container.get(ProfileService)),
-    );
+    this.server.use(host(Container.get(HostService), Container.get(ProfileService)));
     this.server.use(actualRequest(Container.get(HttpTrafficService)));
   }
 }

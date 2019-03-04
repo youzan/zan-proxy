@@ -142,15 +142,7 @@ export class HttpTrafficService extends EventEmitter {
   }
 
   // 记录请求
-  public async requestBegin({
-    id,
-    userId,
-    clientIp,
-    method,
-    httpVersion,
-    urlObj,
-    headers,
-  }) {
+  public async requestBegin({ id, userId, clientIp, method, httpVersion, urlObj, headers }) {
     const queue = this.cache[userId] || [];
     // 原始请求信息
     queue.push({
@@ -257,10 +249,7 @@ export class HttpTrafficService extends EventEmitter {
   }
 
   private getOriginRequestBodyPath(userId, requestId) {
-    return path.join(
-      this.trafficDir,
-      userId + '_' + requestId + '_req_body_origin',
-    );
+    return path.join(this.trafficDir, userId + '_' + requestId + '_req_body_origin');
   }
 
   // 获取响应记录path

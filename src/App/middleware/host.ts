@@ -2,10 +2,7 @@ import { isNull, isUndefined } from 'lodash';
 import URL from 'url';
 import { HostService, ProfileService } from '../services';
 
-export const host = (
-  hostService: HostService,
-  profileService: ProfileService,
-) => {
+export const host = (hostService: HostService, profileService: ProfileService) => {
   return async (ctx, next) => {
     if (ctx.ignore) {
       await next();

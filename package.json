@@ -3,13 +3,12 @@
   "version": "4.0.27",
   "description": "前端代理",
   "scripts": {
-    "build": "tsc && cd ./webui && npm run build && cd ../",
-    "test": "HOME=/tmp/proxy-test nyc mocha -r ts-node/register -c --recursive 'test/**/**/*.spec.ts'",
-    "watch": "tsc --watch",
     "dev": "ts-node -P tsconfig.json src/bin/index.ts",
-    "postinstall": "node ./scripts/resetDataFile.js",
-    "lint": "tslint 'src/**/**/*.ts' --force",
-    "pretty": "prettier 'src/**/**/*.ts' --write"
+    "dev:site": "cd ./webui && npm run serve",
+    "build": "tsc && cd ./webui && npm run build",
+    "test":
+      "HOME=/tmp/proxy-test nyc mocha -r ts-node/register -c --recursive 'test/**/*.spec.ts'",
+    "postinstall": "node ./scripts/resetDataFile.js"
   },
   "dependencies": {
     "axios": "^0.18.0",
@@ -49,21 +48,27 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
+    "@commitlint/cli": "^7.5.2",
+    "@commitlint/config-conventional": "^7.5.0",
     "@types/chai": "^4.1.7",
     "@types/lru-cache": "^5.1.0",
     "@types/mocha": "^5.2.6",
     "@types/node": "<=9.6.13",
     "chai": "^4.1.2",
     "chai-events": "^0.0.1",
+    "husky": "^1.3.1",
     "mocha": "^5.1.0",
     "nyc": "^11.6.0",
     "prettier": "^1.12.1",
-    "ts-node": "^5.0.1",
-    "tslint": "^5.9.1",
+    "ts-node": "^8.0.2",
+    "tslint": "^5.13.1",
     "tslint-config-prettier": "^1.18.0",
     "tslint-eslint-rules": "^5.4.0",
     "tslint-plugin-prettier": "^2.0.1",
-    "typescript": "^2.7.2"
+    "typescript": "3.3.3333"
+  },
+  "gitHooks": {
+    "pre-commit": "npm run lint"
   },
   "repository": {
     "type": "git",
@@ -80,15 +85,8 @@
       "src/App/services/**/**/*.ts",
       "src/ProxyServer/impl/**/**/*.ts"
     ],
-    "extension": [
-      "ts"
-    ]
+    "extension": ["ts"]
   },
-  "keywords": [
-    "proxy",
-    "redirect",
-    "host",
-    "mock"
-  ],
+  "keywords": ["proxy", "redirect", "host", "mock"],
   "license": "MIT"
 }

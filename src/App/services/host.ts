@@ -50,10 +50,7 @@ export class HostService extends EventEmitter {
       }, {});
     forEach(contentMap, (content, fileName) => {
       const hostName = content.name;
-      const userId = fileName.substr(
-        0,
-        this._getUserIdLength(fileName, hostName),
-      );
+      const userId = fileName.substr(0, this._getUserIdLength(fileName, hostName));
       this.userHostFilesMap[userId] = this.userHostFilesMap[userId] || {};
       this.userHostFilesMap[userId][hostName] = content;
     });
@@ -208,10 +205,7 @@ export class HostService extends EventEmitter {
     if (!f.name) {
       f.name = url.split('/').slice(-1)[0] || url;
     }
-    if (
-      this.getHostFile(userId, f.name) &&
-      this.getHostFile(userId, f.name).checked
-    ) {
+    if (this.getHostFile(userId, f.name) && this.getHostFile(userId, f.name).checked) {
       f.checked = true;
     } else {
       f.checked = false;

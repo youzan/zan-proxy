@@ -77,10 +77,7 @@ export class RuleService extends EventEmitter {
       }, {});
     forEach(contentMap, (content, fileName) => {
       const ruleName = content.name;
-      const userId = fileName.substr(
-        0,
-        this._getUserIdLength(fileName, ruleName),
-      );
+      const userId = fileName.substr(0, this._getUserIdLength(fileName, ruleName));
       this.rules[userId] = this.rules[userId] || {};
       this.rules[userId][ruleName] = content;
     });
@@ -120,7 +117,7 @@ export class RuleService extends EventEmitter {
     const rulesLocal: any[] = [];
     const rulesRemote: any[] = [];
     forEach(ruleMap, content => {
-      if (content.meta&&content.meta.remote) {
+      if (content.meta && content.meta.remote) {
         rulesRemote.push({
           checked: content.checked,
           description: content.description,
@@ -244,10 +241,7 @@ export class RuleService extends EventEmitter {
     const inusingRules = this._getInuseRules(userId);
     for (const rule of inusingRules) {
       // 捕获规则
-      if (
-        this._isUrlMatch(urlObj.href, rule.match) &&
-        this._isMethodMatch(method, rule.method)
-      ) {
+      if (this._isUrlMatch(urlObj.href, rule.match) && this._isMethodMatch(method, rule.method)) {
         candidateRule = rule;
         break;
       }
@@ -256,7 +250,7 @@ export class RuleService extends EventEmitter {
   }
 
   public async importRemoteRuleFile(userId, url): Promise<RuleFile> {
-    const ruleFile = await this.fetchRemoteRuleFile (url);
+    const ruleFile = await this.fetchRemoteRuleFile(url);
     ruleFile.content.forEach(rule => {
       if (rule.action && !rule.actionList) {
         rule.actionList = [rule.action];
@@ -346,7 +340,7 @@ export class RuleService extends EventEmitter {
         }
         const copy = cloneDeep(rule);
         copy.ruleFileName = filename;
-        if (file.meta&&file.meta.remote) {
+        if (file.meta && file.meta.remote) {
           rulesRemote.push(copy);
         } else {
           rulesLocal.push(copy);
@@ -372,19 +366,13 @@ export class RuleService extends EventEmitter {
   private _isMethodMatch(reqMethod, ruleMethod) {
     const loweredReqMethod = lowerCase(reqMethod);
     const loweredRuleMethod = lowerCase(ruleMethod);
-    return (
-      loweredReqMethod === loweredRuleMethod ||
-      !ruleMethod ||
-      loweredReqMethod === 'option'
-    );
+    return loweredReqMethod === loweredRuleMethod || !ruleMethod || loweredReqMethod === 'option';
   }
 
   // 请求的url是否匹配规则
   private _isUrlMatch(reqUrl, ruleMatchStr) {
     return (
-      ruleMatchStr &&
-      (reqUrl.indexOf(ruleMatchStr) >= 0 ||
-        new RegExp(ruleMatchStr).test(reqUrl))
+      ruleMatchStr && (reqUrl.indexOf(ruleMatchStr) >= 0 || new RegExp(ruleMatchStr).test(reqUrl))
     );
   }
 }

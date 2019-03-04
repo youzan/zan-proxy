@@ -10,10 +10,8 @@ import { HttpTrafficService, MockDataService } from '../../services';
  */
 @Service()
 export class MockDataController {
-  @Inject()
-  private mockDataService: MockDataService;
-  @Inject()
-  private httpTrafficService: HttpTrafficService;
+  @Inject() private mockDataService: MockDataService;
+  @Inject() private httpTrafficService: HttpTrafficService;
 
   public regist(router) {
     // 获取mock数据列表
@@ -37,10 +35,7 @@ export class MockDataController {
     // 读取数据文件
     router.get('/data/getdatafile', async ctx => {
       const userId = ctx.userId;
-      const content = await this.mockDataService.getDataFileContent(
-        userId,
-        ctx.query.id,
-      );
+      const content = await this.mockDataService.getDataFileContent(userId, ctx.query.id);
       ctx.body = {
         code: 0,
         data: content,
@@ -62,10 +57,7 @@ export class MockDataController {
     router.post('/data/savedatafromtraffic', async ctx => {
       const userId = ctx.userId;
 
-      const content = await this.httpTrafficService.getResponseBody(
-        userId,
-        ctx.request.body.reqid,
-      );
+      const content = await this.httpTrafficService.getResponseBody(userId, ctx.request.body.reqid);
       // 获取数据文件内容 在保存
       await this.mockDataService.saveDataEntryFromTraffic(
         userId,

@@ -8,11 +8,7 @@ export class Forwarder implements IForwarder {
   public async forward(ctx): Promise<any> {
     return new Promise((resolve, reject) => {
       const { req, res } = ctx;
-      if (
-        !res.writable ||
-        res.finished ||
-        !(isUndefined(res.body) || isNull(res.body))
-      ) {
+      if (!res.writable || res.finished || !(isUndefined(res.body) || isNull(res.body))) {
         return resolve(false);
       }
       const options = convert(req);

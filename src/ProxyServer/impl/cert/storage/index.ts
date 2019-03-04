@@ -1,10 +1,7 @@
 import { promisify } from 'es6-promisify';
 import fs from 'fs';
 import path from 'path';
-import {
-  CertificateModel,
-  CertificateStorage as ICertificateStorage,
-} from '../../../interfaces';
+import { CertificateModel, CertificateStorage as ICertificateStorage } from '../../../interfaces';
 
 const fsReadFile = promisify(fs.readFile);
 const fsWriteFile = promisify(fs.writeFile);
