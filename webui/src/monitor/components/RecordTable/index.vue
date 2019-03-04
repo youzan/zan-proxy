@@ -98,7 +98,7 @@ const contentTypeText = {
   'json': 'JSON',
   'png': 'PNG',
   'jpg': 'JPEG',
-  'gif': 'GIF'              
+  'gif': 'GIF'
 }
 
 export default {
@@ -165,7 +165,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
   .record-selected td {
     color: #fff;
     background-color: #20a0ff !important;
@@ -178,7 +178,7 @@ export default {
   }
 </style>
 
-<style scoped>
+<style lang="scss" scoped>
   .text {
     width: 100%;
     white-space: nowrap;

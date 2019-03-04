@@ -136,7 +136,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
   .manager {
     height: 100%;
   }

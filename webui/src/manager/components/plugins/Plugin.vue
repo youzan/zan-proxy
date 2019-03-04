@@ -66,7 +66,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
   .plugin {
     display: flex;
     flex-direction: column;

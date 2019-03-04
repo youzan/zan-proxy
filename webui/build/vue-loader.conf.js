@@ -10,9 +10,8 @@ module.exports = {
     extract: isProduction
   }),
   postcss: [
-    require("postcss-nested")(),
     require('autoprefixer')({
-      browsers: ['last 2 versions']
+      browsers: ['last 50 versions']
     })
   ]
 }

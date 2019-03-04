@@ -24,7 +24,7 @@
                 <el-button type="primary" icon='plus' size="mini" @click="addAction">
                     添加请求动作
                 </el-button>
-            
+
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -92,7 +92,7 @@ export default {
       removeAction: function(index) {
           this.rule.actionList.splice(index, 1)
           if (!this.rule.actionList.length) {
-            this.addAction() 
+            this.addAction()
           }
       },
       saveRule: function() {
@@ -128,7 +128,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
     .action-container {
         display: flex;
         align-items: center;

@@ -6,6 +6,7 @@
     "build": "tsc && cd ./webui && npm run build && cd ../",
     "test": "HOME=/tmp/proxy-test nyc mocha -r ts-node/register -c --recursive 'test/**/**/*.spec.ts'",
     "watch": "tsc --watch",
+    "dev": "ts-node -P tsconfig.json src/bin/index.ts",
     "postinstall": "node ./scripts/resetDataFile.js",
     "lint": "tslint 'src/**/**/*.ts' --force",
     "pretty": "prettier 'src/**/**/*.ts' --write"
@@ -24,6 +25,7 @@
     "koa": "^2.3.0",
     "koa-bodyparser": "^2.3.0",
     "koa-compose": "^4.0.0",
+    "koa-favicon": "^2.0.1",
     "koa-mount": "^2.0.0",
     "koa-qs": "^2.0.0",
     "koa-router": "^7.2.1",

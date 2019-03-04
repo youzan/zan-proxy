@@ -113,7 +113,7 @@
 
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
   .save-tip {
     font-size: 14px;
     color: #999999;

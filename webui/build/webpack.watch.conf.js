@@ -38,7 +38,7 @@ var webpackConfig = merge(baseWebpackConfig, {
     // you can customize output by editing /index.html
     // see https://github.com/ampedandwired/html-webpack-plugin
     new HtmlWebpackPlugin({
-      filename: config.build.manager,
+      filename: 'manager.html',
       template: 'index.html',
       inject: true,
       chunks: ['manager'],
@@ -46,18 +46,10 @@ var webpackConfig = merge(baseWebpackConfig, {
       chunksSortMode: 'dependency'
     }),
     new HtmlWebpackPlugin({
-      filename: config.build.monitor,
+      filename: 'monitor.html',
       template: 'index.html',
       inject: true,
       chunks: ['monitor'],
-      // necessary to consistently work with multiple chunks via CommonsChunkPlugin
-      chunksSortMode: 'dependency'
-    }),
-    new HtmlWebpackPlugin({
-      filename: config.build.wsmock,
-      template: 'index.html',
-      inject: true,
-      chunks: ['wsmock'],
       // necessary to consistently work with multiple chunks via CommonsChunkPlugin
       chunksSortMode: 'dependency'
     }),

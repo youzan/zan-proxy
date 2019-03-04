@@ -67,7 +67,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
   .add-btn {
     align-items: center;
     justify-content: center;

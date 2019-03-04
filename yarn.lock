@@ -2370,6 +2370,13 @@ koa-convert@^1.2.0:
     co "^4.6.0"
     koa-compose "^3.0.0"
 
+koa-favicon@^2.0.1:
+  version "2.0.1"
+  resolved "http://registry.npm.taobao.org/koa-favicon/download/koa-favicon-2.0.1.tgz#cfae363e5fd00bd5dd67c1150fbef31e0b5d6f4d"
+  integrity sha1-z642Pl/QC9XdZ8EVD77zHgtdb00=
+  dependencies:
+    mz "^2.7.0"
+
 koa-is-json@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/koa-is-json/-/koa-is-json-1.0.0.tgz#273c07edcdcb8df6a2c1ab7d59ee76491451ec14"
@@ -2892,7 +2899,7 @@ mute-stream@0.0.7, mute-stream@~0.0.4:
   version "0.0.7"
   resolved "https://registry.npmjs.org/mute-stream/-/mute-stream-0.0.7.tgz#3075ce93bc21b8fab43e1bc4da7e8115ed1e7bab"
 
-mz@^2.3.1:
+mz@^2.3.1, mz@^2.7.0:
   version "2.7.0"
   resolved "https://registry.npmjs.org/mz/-/mz-2.7.0.tgz#95008057a56cafadc2bc63dde7f9ff6955948e32"
   dependencies:

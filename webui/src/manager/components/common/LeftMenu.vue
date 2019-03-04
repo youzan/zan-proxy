@@ -12,28 +12,24 @@
           <el-submenu :index="index + ''" v-if="item.children">
             <!-- 菜单标题 -->
             <template slot="title">
-              <i class="iconfont" :class="item.icon" />
-              <span class='menu-name'>{{item.name}}</span>
+              <i class="iconfont" :class="item.icon"/>
+              <span class="menu-name">{{item.name}}</span>
             </template>
             <!-- 子菜单 -->
             <el-menu-item
-              v-for='(child,cindex) in item.children'
+              v-for="(child,cindex) in item.children"
               :style="{'padding-left':'40px'}"
-              :index='index+"-"+cindex'
+              :index="index+'-'+cindex"
               :key="cindex"
             >
-              <i class="iconfont" :class="child.icon" />
-              <span class='menu-name'>
-                {{ child.name }}
-              </span>
+              <i class="iconfont" :class="child.icon"/>
+              <span class="menu-name">{{ child.name }}</span>
             </el-menu-item>
           </el-submenu>
           <!-- 子菜单 -->
           <el-menu-item :index="index + ''" v-else>
-            <i class="iconfont" :class="item.icon" />
-            <span class='menu-name'>
-              {{ item.name }}
-            </span>
+            <i class="iconfont" :class="item.icon"/>
+            <span class="menu-name">{{ item.name }}</span>
           </el-menu-item>
         </div>
       </template>
@@ -46,45 +42,45 @@ const menuList = [
   {
     name: '使用说明',
     icon: 'icon-search',
-    link: 'helpinstall'
+    link: 'helpinstall',
   },
   {
     name: 'Host 管理',
     icon: 'icon-box',
-    link: 'hostfilelist'
+    link: 'hostfilelist',
   },
   {
     name: 'Http 转发',
     icon: 'icon-skip',
-    link: 'rulefilelist'
+    link: 'rulefilelist',
   },
   {
     name: '转发变量配置',
     icon: 'icon-layers',
-    link: 'projectpath'
+    link: 'projectpath',
   },
   {
     name: '自定义 mock 数据',
     icon: 'icon-suoding',
-    link: 'datalist'
+    link: 'datalist',
   },
   {
     name: '请求监控',
     icon: 'icon-bargraph',
     link: '/monitor.html',
-    targetBlank: true
+    targetBlank: true,
   },
   {
     name: '帮助中心',
     icon: 'icon-security',
     link: 'https://youzan.github.io/zan-proxy/',
-    targetBlank: true
+    targetBlank: true,
   },
   {
     name: '插件管理',
     icon: 'icon-layers',
-    link: 'plugins'
-  }
+    link: 'plugins',
+  },
   // {
   //   name: '断点',
   //   icon: 'icon-remind',
@@ -105,7 +101,7 @@ export default {
   data() {
     return {
       defaultActive: this.getDefaultActive(),
-      menuList
+      menuList,
     };
   },
 
@@ -115,7 +111,6 @@ export default {
       let defaultActive = '';
       menuList.forEach((item, index1) => {
         if (Array.isArray(item)) {
-
         } else if (hash.indexOf(item.link) !== -1) {
           defaultActive = index1 + '';
         }
@@ -138,12 +133,12 @@ export default {
       } else {
         this.$router.push(item['link']);
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .left-menu {
   z-index: 1;
   width: 230px;
@@ -175,7 +170,7 @@ export default {
   .icon-set,
   .icon-skip,
   .icon-box {
-    opacity: .8;
+    opacity: 0.8;
   }
 
   .el-menu {

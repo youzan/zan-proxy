@@ -9,13 +9,13 @@
         />
       </el-form-item>
       <el-form-item label="超时时间">
-        <el-input 
+        <el-input
           v-model="$dc.configure.requestTimeoutTime"
           placeholder="远程服务器响应超时，proxy会终止请求"
         />
       </el-form-item>
       <el-form-item label="Gitlab Token">
-        <el-input 
+        <el-input
           v-model="$dc.configure.gitlabToken"
           placeholder="请填写你在 Gitlab 上的 token (proxy 访问 Gitlab 上的文件需要 token)"
         />
@@ -53,7 +53,7 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
 .view-configure {
   .el-button {
     margin-top: 15px;

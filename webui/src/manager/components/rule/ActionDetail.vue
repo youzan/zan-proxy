@@ -154,7 +154,7 @@
     };
 
 </script>
-<style scoped>
+<style lang="scss" scoped>
     .inline-block {
         display: inline-block;
     }

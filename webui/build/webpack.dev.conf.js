@@ -37,12 +37,6 @@ module.exports = merge(baseWebpackConfig, {
       template: 'index.html',
       inject: true
     }),
-    new HtmlWebpackPlugin({
-      filename: 'wsmock.html',
-      chunks: ['wsmock'],
-      template: 'index.html',
-      inject: true
-    }),
     new FriendlyErrorsPlugin()
   ]
 })

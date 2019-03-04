@@ -33,7 +33,7 @@
   }
 
 </script>
-<style>
+<style lang="scss" scoped>
   .addhost-btn-wrap {
     text-align: right;
   }

@@ -42,7 +42,7 @@ export class Proxy {
         mockDataService: Container.get(MockDataService),
         profileService: Container.get(ProfileService),
         ruleService: Container.get(RuleService),
-      })
+      }),
     );
     const pluginManager: PluginManager = Container.get(PluginManager);
     pluginManager.loadProxyMiddleware(this.server);

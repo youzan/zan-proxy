@@ -30,7 +30,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
     .record-detail {
         background-color: #fff;
         height: 100%;

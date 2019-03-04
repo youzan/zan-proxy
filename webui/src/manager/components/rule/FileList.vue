@@ -89,7 +89,6 @@
 </template>
 <script>
 import ruleApi from '../../../api/rule';
-import utilsApi from '../../../api/utils';
 import _ from 'lodash';
 export default {
   name: 'rulefilelist',
@@ -279,7 +278,7 @@ export default {
   }
 };
 </script>
-<style>
+<style lang="scss" scoped>
 .addrule-btn-wrap {
   text-align: right;
   float: right;

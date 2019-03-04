@@ -1,7 +1,8 @@
 import cookieParser from 'cookie';
 import http from 'http';
-import koa from 'koa';
+import Koa from 'koa';
 import koaBodyParser from 'koa-bodyparser';
+import koaFavicon from 'koa-favicon';
 import koaMount from 'koa-mount';
 import koaQs from 'koa-qs';
 import koaStatic from 'koa-static';
@@ -30,7 +31,7 @@ export class Manager {
 
   private pluginManager: PluginManager;
 
-  private app: koa;
+  private app: Koa;
   private server: http.Server;
   private io: SocketIO;
 
@@ -43,7 +44,7 @@ export class Manager {
     this.ruleService = Container.get(RuleService);
     this.pluginManager = Container.get(PluginManager);
     // 初始化koa
-    this.app = new koa();
+    this.app = new Koa();
     // query string
     koaQs(this.app);
     // body解析
@@ -63,7 +64,10 @@ export class Manager {
     });
     this.app.use(router());
     // 静态资源服务
-    this.app.use(koaStatic(path.join(__dirname, '../../../site')));
+    this.app.use(koaStatic(path.join(__dirname, '../../../site'), {
+      index: 'manager.html',
+    }));
+    this.app.use(koaFavicon(path.join(__dirname, '../../../site/static/favicon.ico')));
     this.app.use(koaMount('/plugins', this.pluginManager.getUIApp()));
     // 创建server
     this.server = http.createServer(this.app.callback());
