@@ -1,10 +1,10 @@
-var VueContextMenu = require('./index.vue')
+var VueContextMenu = require('./index.vue');
 
 VueContextMenu.install = function install(Vue) {
-  var component = Vue.component('context-menu', VueContextMenu)
-  return component
-}
+  var component = Vue.component('context-menu', VueContextMenu);
+  return component;
+};
 
-window.VueContextMenu = VueContextMenu
+window.VueContextMenu = VueContextMenu;
 
-module.exports = module.exports.default = VueContextMenu
+module.exports = module.exports.default = VueContextMenu;

@@ -67,7 +67,7 @@ export class Manager {
     this.app.use(koaStatic(path.join(__dirname, '../../../site'), {
       index: 'manager.html',
     }));
-    this.app.use(koaFavicon(path.join(__dirname, '../../../site/static/favicon.ico')));
+    this.app.use(koaFavicon(path.join(__dirname, '../../../site/favicon.ico')));
     this.app.use(koaMount('/plugins', this.pluginManager.getUIApp()));
     // 创建server
     this.server = http.createServer(this.app.callback());

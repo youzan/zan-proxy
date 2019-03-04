@@ -19,3 +19,6 @@ dist
 site/static
 .nyc_output
 docs/_book
+
+.vscode
+site

@@ -8,28 +8,30 @@ var api = {
   /**
    * 创建规则文件
    */
-  createFile(name, description){
+  createFile(name, description) {
     return axios.post('/rule/create', {
       name: name,
-      description: description
+      description: description,
     });
   },
   /**
    * 获取规则文件列表
    */
-  getFileList(){
+  getFileList() {
     return axios.get('/rule/filelist');
   },
-  deleteFile(name){
+  deleteFile(name) {
     return axios.get(`/rule/deletefile?name=${encodeURIComponent(name)}`);
   },
-  setFileCheckStatus(name, checked){
-    return axios.get(`/rule/setfilecheckstatus?name=${name}&checked=${checked ? 1 : 0}`);
+  setFileCheckStatus(name, checked) {
+    return axios.get(
+      `/rule/setfilecheckstatus?name=${name}&checked=${checked ? 1 : 0}`,
+    );
   },
-  getFileContent(name){
+  getFileContent(name) {
     return axios.get(`/rule/getfile?name=${name}`);
   },
-  saveFile(name, content){
+  saveFile(name, content) {
     return axios.post(`/rule/savefile?name=${name}`, content);
   },
 
@@ -40,20 +42,23 @@ var api = {
    * @param {String} description 新描述
    */
   updateFileInfo(origin, { name, description }) {
-    return axios.post(`/rule/updatefileinfo/${encodeURIComponent(origin)}`, { name, description });
+    return axios.post(`/rule/updatefileinfo/${encodeURIComponent(origin)}`, {
+      name,
+      description,
+    });
   },
 
-  testRule(content){
+  testRule(content) {
     return axios.post('/rule/test', content);
   },
 
-  getRemoteRuleFile(url){
+  getRemoteRuleFile(url) {
     return axios.get(`/utils/getGitlabFile?url=${encodeURIComponent(url)}`);
   },
 
   getReferenceVar(content) {
     var contentStr = JSON.stringify(content);
-    var reg = RegExp("<%=(.+?)%>", 'g');
+    var reg = RegExp('<%=(.+?)%>', 'g');
     var result;
     var varObj = {};
     while ((result = reg.exec(contentStr)) != null) {
@@ -63,7 +68,7 @@ var api = {
   },
 
   importRemote(url) {
-    return axios.get(`/rule/import?url=${encodeURIComponent(url)}`)
+    return axios.get(`/rule/import?url=${encodeURIComponent(url)}`);
   },
 
   copyFile(name) {
@@ -71,15 +76,16 @@ var api = {
   },
 
   setFileDisableSync(name, disable) {
-    return axios.get(`/rule/setfiledisablesync?name=${name}&disable=${disable ? 1 : 0}`)
+    return axios.get(
+      `/rule/setfiledisablesync?name=${name}&disable=${disable ? 1 : 0}`,
+    );
   },
-
 };
 
 // 构造debounce函数
-api.debouncedSaveFile = _.debounce(function (name, content, callback) {
-    api.saveFile(name, content).then((response) => {
-        callback(response)
-    });
+api.debouncedSaveFile = _.debounce(function(name, content, callback) {
+  api.saveFile(name, content).then(response => {
+    callback(response);
+  });
 }, 3000);
 export default api;
