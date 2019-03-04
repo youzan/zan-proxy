@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
     "moduleResolution": "node",
-    "target": "es2015",
+    "target": "esnext",
+    "module": "commonjs",
     "sourceRoot": "./src",
     "sourceMap": true,
     "strictNullChecks": true,
@@ -13,7 +14,6 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "resolveJsonModule": true,
-    "module": "commonjs",
     "outDir": "dist",
     "lib": ["dom", "es2017"]
   },

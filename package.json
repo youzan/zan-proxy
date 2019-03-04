@@ -6,8 +6,7 @@
     "dev": "ts-node -P tsconfig.json src/bin/index.ts",
     "dev:site": "cd ./webui && npm run serve",
     "build": "tsc && cd ./webui && npm run build",
-    "test":
-      "HOME=/tmp/proxy-test nyc mocha -r ts-node/register -c --recursive 'test/**/*.spec.ts'",
+    "test": "HOME=/tmp/proxy-test nyc mocha -r ts-node/register -c --recursive 'test/**/*.spec.ts'",
     "postinstall": "node ./scripts/resetDataFile.js"
   },
   "dependencies": {
@@ -15,6 +14,7 @@
     "commander": "^2.19.0",
     "cookie": "^0.3.1",
     "es6-promisify": "^6.0.1",
+    "fs-extra": "^7.0.1",
     "get-port": "^3.2.0",
     "http-proxy": "^1.17.0",
     "inflation": "^2.0.0",
@@ -85,8 +85,15 @@
       "src/App/services/**/**/*.ts",
       "src/ProxyServer/impl/**/**/*.ts"
     ],
-    "extension": ["ts"]
+    "extension": [
+      "ts"
+    ]
   },
-  "keywords": ["proxy", "redirect", "host", "mock"],
+  "keywords": [
+    "proxy",
+    "redirect",
+    "host",
+    "mock"
+  ],
   "license": "MIT"
 }
