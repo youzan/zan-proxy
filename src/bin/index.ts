@@ -1,16 +1,29 @@
 #!/usr/bin/env node
-
 import 'reflect-metadata';
 
 import program from 'commander';
 import ip from 'ip';
 import open from 'open';
 import selfUpdate from './selfUpdate';
-import start from './start';
-import syncHost from './syncHost';
-import syncRule from './syncRule';
+import start from '../cmds/start';
+import syncHost from '../cmds/syncHost';
+import syncRule from '../cmds/syncRule';
 
 import packageInfo from '../../package.json';
+
+process.on('unhandledRejection', (reason, p) => {
+  if (process.env.DEBUG) {
+    console.error('Unhandled Rejection at: Promise ', p, ' reason: ', reason);
+  }
+});
+process.on('SIGINT', () => {
+  process.exit();
+});
+process.on('uncaughtException', err => {
+  if (process.env.DEBUG) {
+    console.error(err);
+  }
+});
 
 program
   .version(packageInfo.version)

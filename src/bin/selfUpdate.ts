@@ -50,7 +50,9 @@ export default async () => {
     console.log('当前已是最新版本');
     return;
   }
-  const ans = await prompt([
+  const ans = await prompt<{
+    shouldUpdate: boolean;
+  }>([
     {
       message: '检测到新版本，是否更新？',
       name: 'shouldUpdate',

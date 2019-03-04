@@ -12,8 +12,8 @@ import Storage from './storage';
 
 export interface Plugin {
   name: string;
-  manage();
-  proxy();
+  manage: () => koa;
+  proxy: () => koa;
 }
 
 @Service()
@@ -47,7 +47,7 @@ export default class PluginManager {
   public add(pluginName, npmConfig = {}) {
     return new Promise((resolve, reject) => {
       const install = () => {
-        npm.install(pluginName, this.getDir(), err => {
+        npm.commands.install([pluginName, this.getDir()], (err: any) => {
           if (err) {
             if (err.code === 'E404') {
               return reject(Error(`插件不存在 ${err.uri}`));
@@ -85,7 +85,7 @@ export default class PluginManager {
   public remove(pluginName) {
     return new Promise((resolve, reject) => {
       const uninstall = () => {
-        npm.uninstall(pluginName, this.getDir(), err => {
+        npm.commands.uninstall([pluginName, this.getDir()], err => {
           if (err) {
             return reject(err);
           }
