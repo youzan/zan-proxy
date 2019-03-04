@@ -1,12 +1,5 @@
 <template lang="html">
-  <div
-    ref="contextMenu"
-    @click.stop
-    @contextmenu.stop
-    :id="id"
-    :style="ctxStyle"
-    class="ctx-menu-container"
-  >
+  <div ref="contextMenu" @click.stop @contextmenu.stop :id="id" :style="ctxStyle" class="ctx-menu-container">
     <div style="background-color:transparent" class="ctx open">
       <ul
         role="menu"

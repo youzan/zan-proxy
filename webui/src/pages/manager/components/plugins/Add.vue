@@ -10,14 +10,10 @@
     >
       <el-form :model="plugin">
         <el-form-item label="包名" :label-width="formLabelWidth">
-          <el-input v-model="plugin.name" auto-complete="off" placeholder="插件包名"/>
+          <el-input v-model="plugin.name" auto-complete="off" placeholder="插件包名" />
         </el-form-item>
         <el-form-item label="registry" :label-width="formLabelWidth">
-          <el-input
-            v-model="plugin.registry"
-            auto-complete="off"
-            placeholder="https://registry.npmjs.org/"
-          ></el-input>
+          <el-input v-model="plugin.registry" auto-complete="off" placeholder="https://registry.npmjs.org/"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">

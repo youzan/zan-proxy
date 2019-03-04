@@ -4,10 +4,9 @@
       <router-link class="main-content__title-link" to="/rulefilelist">规则集列表</router-link>
       / 编辑规则集{{ loaded ? ': ' + (filecontent.name || '拼命加载中') : ': 拼命加载中' }}
     </div>
-    <span
-      class="save-tip"
-      v-if="loaded && filecontent.meta && filecontent.meta.remote"
-    >该规则集为远程规则集，重启同步后相关配置会被覆盖。如需永久保存修改，则可以复制该规则集成本地规则集。</span>
+    <span class="save-tip" v-if="loaded && filecontent.meta && filecontent.meta.remote"
+      >该规则集为远程规则集，重启同步后相关配置会被覆盖。如需永久保存修改，则可以复制该规则集成本地规则集。</span
+    >
     <el-row :gutter="20" style="margin-bottom: 10px;text-align: right;">
       <el-col :span="6" :offset="18">
         <el-button size="small" @click="openEditRuleInfoDialog">编辑名字/描述</el-button>
@@ -15,14 +14,7 @@
         <!-- <el-button size="small" type="primary" @click='saveFileRightNow'>保存规则集</el-button> -->
       </el-col>
     </el-row>
-    <el-table
-      border
-      style="width: 100%"
-      row-key="key"
-      :stripe="true"
-      align="center"
-      :data="filecontent.content"
-    >
+    <el-table border style="width: 100%" row-key="key" :stripe="true" align="center" :data="filecontent.content">
       <el-table-column prop="checked" label="启用" align="center" width="80">
         <template scope="scope">
           <el-tooltip class="item" effect="dark" content="勾选后启动这条规则" placement="left">
@@ -41,12 +33,14 @@
           <span v-else>所有</span>
         </template>
       </el-table-column>
-      <el-table-column prop="match" label="URL特征"/>
-      <el-table-column prop="name" label="描述"/>
+      <el-table-column prop="match" label="URL特征" />
+      <el-table-column prop="name" label="描述" />
       <el-table-column label="转发地址">
         <template slot-scope="scope">
           {{
-          scope.row.actionList.filter(a => a.type === 'redirect')[0] ? scope.row.actionList.filter(a => a.type === 'redirect')[0].data.target : '--'
+            scope.row.actionList.filter(a => a.type === 'redirect')[0]
+              ? scope.row.actionList.filter(a => a.type === 'redirect')[0].data.target
+              : '--'
           }}
         </template>
       </el-table-column>
@@ -61,23 +55,18 @@
                 type="danger"
                 icon="delete"
                 size="mini"
-                @click="onDeleteRow(scope.row,scope.$index,filecontent.content)"
+                @click="onDeleteRow(scope.row, scope.$index, filecontent.content)"
               ></el-button>
             </el-tooltip>
             <el-tooltip class="item" effect="dark" content="复制" placement="left">
               <el-button
                 icon="document"
                 size="mini"
-                @click="onDuplicateRow(scope.row,scope.$index,filecontent.content)"
+                @click="onDuplicateRow(scope.row, scope.$index, filecontent.content)"
               ></el-button>
             </el-tooltip>
             <el-tooltip class="item" effect="dark" content="测试规则" placement="left">
-              <el-button
-                type="blue"
-                icon="search"
-                size="mini"
-                @click="testMatchRuleRequest(scope.row)"
-              ></el-button>
+              <el-button type="blue" icon="search" size="mini" @click="testMatchRuleRequest(scope.row)"></el-button>
             </el-tooltip>
             <el-tooltip class="item" effect="dark" content="提高优先级" placement="left">
               <el-button
@@ -284,8 +273,7 @@ export default {
        */
     testMatchRuleRequest(row) {
       this.testMatchRuleForm.match = row.match;
-      this.testMatchRuleForm.targetTpl =
-        (row.actionList[0] && row.actionList[0].data.target) || '';
+      this.testMatchRuleForm.targetTpl = (row.actionList[0] && row.actionList[0].data.target) || '';
       this.testMatchRuleForm.url = '';
       this.testMatchRuleForm.matchRlt = '';
       this.testMatchRuleForm.targetRlt = '';
@@ -332,13 +320,10 @@ export default {
       if (newName === '') {
         errMessage = '规则集名称不能为空!';
       } else {
-        const { status, data } = await ruleApi.updateFileInfo(
-          this.filecontent.name,
-          {
-            name: newName,
-            description: newDescription,
-          },
-        );
+        const { status, data } = await ruleApi.updateFileInfo(this.filecontent.name, {
+          name: newName,
+          description: newDescription,
+        });
         if (status !== 200) {
           errMessage = '请求失败';
         } else if (data.code !== 0) {

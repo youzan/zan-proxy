@@ -1,5 +1,5 @@
 <template>
-  <div class="plugin grid" :class="{deleted: isDeleted}" @click="toPlugin">
+  <div class="plugin grid" :class="{ deleted: isDeleted }" @click="toPlugin">
     <div class="header">
       <span class="name">{{ plugin.name }}</span>
       <span class="version">{{ plugin.version }}</span>
@@ -9,11 +9,7 @@
     </div>
     <div class="footer">
       <el-dropdown @command="onSetDisabled">
-        <el-button
-          type="primary"
-          icon="setting"
-          @click="e => e.stopPropagation()"
-        >
+        <el-button type="primary" icon="setting" @click="e => e.stopPropagation()">
           {{ disabledText }}
         </el-button>
         <el-dropdown-menu slot="dropdown">

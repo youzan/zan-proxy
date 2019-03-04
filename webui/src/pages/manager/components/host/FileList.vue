@@ -3,7 +3,7 @@
     <div class="main-content__title">Host 文件列表</div>
     <el-row :gutter="20" style="margin-bottom: 10px">
       <el-col class="addhost-btn-wrap">
-        <input type="file" ref="fileimport" @change="importHostFile" style="display:none;">
+        <input type="file" ref="fileimport" @change="importHostFile" style="display:none;" />
         <el-button size="small" @click="importHostFileBtnClick">导入 Host 文件</el-button>
         <el-button size="small" type="primary" @click="importRemoteHostFile">导入远程 Host 文件</el-button>
         <el-button size="small" @click="addNewHostFile">新增 Host 文件</el-button>
@@ -12,28 +12,24 @@
     <el-table border align="center" :data="$dc.hostFileList">
       <el-table-column prop="checked" label="启用" width="85">
         <template scope="scope">
-          <el-checkbox
-            :checked="scope.row.checked"
-            @change="toggleFile(scope.row.name)"
-            :disabled="!$dc.hostState"
-          />
+          <el-checkbox :checked="scope.row.checked" @change="toggleFile(scope.row.name)" :disabled="!$dc.hostState" />
         </template>
       </el-table-column>
       <el-table-column prop="name" label="名字" width="150"></el-table-column>
-      <el-table-column prop="description" label="描述"/>
+      <el-table-column prop="description" label="描述" />
       <el-table-column label="操作" :width="136" :context="_self">
         <template scope="scope">
-          <a :href="'#/edithost?name='+scope.row.name">
+          <a :href="'#/edithost?name=' + scope.row.name">
             <el-button type="info" icon="edit" size="mini"></el-button>
           </a>
-          <a :href="'/host/download?name='+scope.row.name" target="_blank">
+          <a :href="'/host/download?name=' + scope.row.name" target="_blank">
             <el-button type="info" icon="share" size="mini"></el-button>
           </a>
           <el-button
             type="danger"
             icon="delete"
             size="mini"
-            @click="onDeleteFile(scope.row,scope.$index,user_list)"
+            @click="onDeleteFile(scope.row, scope.$index, user_list)"
           />
         </template>
       </el-table-column>
@@ -100,14 +96,10 @@ export default {
     },
     // 导入远程文件
     async importRemoteHostFile() {
-      let result = await this.$prompt(
-        '请输入远程Host文件的url',
-        '导入远程Host文件',
-        {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-        },
-      );
+      let result = await this.$prompt('请输入远程Host文件的url', '导入远程Host文件', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+      });
 
       let url = result.value;
       try {

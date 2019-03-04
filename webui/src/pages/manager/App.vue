@@ -6,9 +6,7 @@
       <el-dropdown menu-align="start" :hide-on-click="false" @command="selectHostFile">
         <el-button type="text">
           {{ hostState ? selectedHost.join('，') : '禁用' }}
-          <i
-            class="el-icon-caret-bottom el-icon--right"
-          />
+          <i class="el-icon-caret-bottom el-icon--right" />
         </el-button>
         <el-dropdown-menu slot="dropdown">
           <!-- host文件 -->
@@ -266,15 +264,11 @@ export default {
     },
 
     deleteDataFile(entry, index) {
-      this.$confirm(
-        `此操作将永久删除该数据文件: ${entry.name}, 是否继续?`,
-        '提示',
-        {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning',
-        },
-      ).then(() => {
+      this.$confirm(`此操作将永久删除该数据文件: ${entry.name}, 是否继续?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }).then(() => {
         this.dataList.splice(index, 1);
         dataApi.saveDataList(this.dataList).then(res => {
           var serverData = res.data;
@@ -387,16 +381,13 @@ export default {
       } else {
         this.$nextTick(() => {
           window.$ = $;
-          window.editor = editor = new CodeMirror(
-            document.getElementById('content-editor'),
-            {
-              value: this.mockDataFileForm.content,
-              mode: this.mockDataFileForm.contenttype,
-              lineNumbers: true,
-              matchBrackets: true,
-              autofocus: true,
-            },
-          );
+          window.editor = editor = new CodeMirror(document.getElementById('content-editor'), {
+            value: this.mockDataFileForm.content,
+            mode: this.mockDataFileForm.contenttype,
+            lineNumbers: true,
+            matchBrackets: true,
+            autofocus: true,
+          });
         });
       }
     },
@@ -453,28 +444,25 @@ export default {
         });
         await dataApi.saveDataList(this.dataList);
       }
-      dataApi
-        .saveDataFile(this.mockDataFileForm.id, editor.getValue())
-        .then(response => {
-          var serverData = response.data;
-          if (serverData.code == 0) {
-            this.$message({
-              type: 'success',
-              message: '保存成功!',
-            });
-            this.mockDataFileForm.callback &&
-              this.mockDataFileForm.callback(this.mockDataFileForm.id);
-            this.mockDataFileForm.name = '';
-            this.mockDataFileForm.id = null;
-            this.mockDataFileForm.contenttype = '';
-            this.mockDataFileForm.content = '';
-            this.mockDataFileForm.visible = false;
-            this.mockDataFileForm.callback = null;
-            editor.setValue('');
-          } else {
-            this.$message.error(`出错了，${serverData.msg}`);
-          }
-        });
+      dataApi.saveDataFile(this.mockDataFileForm.id, editor.getValue()).then(response => {
+        var serverData = response.data;
+        if (serverData.code == 0) {
+          this.$message({
+            type: 'success',
+            message: '保存成功!',
+          });
+          this.mockDataFileForm.callback && this.mockDataFileForm.callback(this.mockDataFileForm.id);
+          this.mockDataFileForm.name = '';
+          this.mockDataFileForm.id = null;
+          this.mockDataFileForm.contenttype = '';
+          this.mockDataFileForm.content = '';
+          this.mockDataFileForm.visible = false;
+          this.mockDataFileForm.callback = null;
+          editor.setValue('');
+        } else {
+          this.$message.error(`出错了，${serverData.msg}`);
+        }
+      });
     },
   },
 

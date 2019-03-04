@@ -23,13 +23,7 @@
         ></record>
       </template>
     </list>
-    <context-menu
-      id="testingctx"
-      ref="ctx"
-      :ctxOpen="onCtxOpen"
-      :ctxCancel="resetCtxLocals"
-      :ctxClose="onCtxClose"
-    >
+    <context-menu id="testingctx" ref="ctx" :ctxOpen="onCtxOpen" :ctxCancel="resetCtxLocals" :ctxClose="onCtxClose">
       <li class="ctx-item" @click="saveData">保存为mock数据</li>
       <li class="ctx-item" @click="copyUrl">复制url</li>
     </context-menu>
@@ -67,9 +61,7 @@ export default {
           .saveDataEntryFromTraffic(
             this.$dc.rightClickId,
             value,
-            this.$dc.rightClickRow.response.headers['content-type'].split(
-              ';',
-            )[0],
+            this.$dc.rightClickRow.response.headers['content-type'].split(';')[0],
           )
           .then(res => {
             var serverData = res.data;

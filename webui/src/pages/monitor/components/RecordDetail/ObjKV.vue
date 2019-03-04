@@ -1,18 +1,15 @@
 <template>
-    <div>
-        <kv v-for="(value, key) in obj" :k="key" :v="value" :key="key"></kv>
-    </div>
+  <div>
+    <kv v-for="(value, key) in obj" :k="key" :v="value" :key="key"></kv>
+  </div>
 </template>
 
 <script>
-
-import KeyValue from "./KeyValue";
+import KeyValue from './KeyValue';
 export default {
   components: {
-      'kv': KeyValue
-  }, 
+    kv: KeyValue,
+  },
   props: ['obj'],
-}
+};
 </script>
-
-

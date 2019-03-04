@@ -44,9 +44,7 @@ export default {
             trigger: 'blur',
           },
         ],
-        description: [
-          { required: true, message: '请填文件描述', trigger: 'blur' },
-        ],
+        description: [{ required: true, message: '请填文件描述', trigger: 'blur' }],
       },
     };
   },
@@ -54,24 +52,19 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          ruleApi
-            .createFile(
-              this.createFileForm.name,
-              this.createFileForm.description,
-            )
-            .then(response => {
-              var serverData = response.data;
-              if (serverData.code == 0) {
-                // 判断创建成功还是失败
-                this.$message({
-                  message: '恭喜你，创建成功',
-                  type: 'success',
-                });
-                this.$router.push(`editrule?name=${this.createFileForm.name}`);
-              } else {
-                this.$message.error(`出错了，${serverData.msg}`);
-              }
-            });
+          ruleApi.createFile(this.createFileForm.name, this.createFileForm.description).then(response => {
+            var serverData = response.data;
+            if (serverData.code == 0) {
+              // 判断创建成功还是失败
+              this.$message({
+                message: '恭喜你，创建成功',
+                type: 'success',
+              });
+              this.$router.push(`editrule?name=${this.createFileForm.name}`);
+            } else {
+              this.$message.error(`出错了，${serverData.msg}`);
+            }
+          });
         } else {
           console.log('error submit!!');
           return false;

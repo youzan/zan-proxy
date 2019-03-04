@@ -1,25 +1,13 @@
 <template>
   <div class="response">
     <div class="response__header">
-      <div
-        class="response__tab"
-        :class="{ active: activeName == 'Header' }"
-        @click="tabClick('Header')"
-      >
+      <div class="response__tab" :class="{ active: activeName == 'Header' }" @click="tabClick('Header')">
         Header
       </div>
-      <div
-        class="response__tab"
-        :class="{ active: activeName == 'Set Cookies' }"
-        @click="tabClick('Set Cookies')"
-      >
+      <div class="response__tab" :class="{ active: activeName == 'Set Cookies' }" @click="tabClick('Set Cookies')">
         Set Cookies
       </div>
-      <div
-        class="response__tab"
-        :class="{ active: activeName == 'Body' }"
-        @click="tabClick('Body')"
-      >
+      <div class="response__tab" :class="{ active: activeName == 'Body' }" @click="tabClick('Body')">
         Body
       </div>
     </div>
@@ -28,11 +16,7 @@
         <key-value-list :data="$dc.responseHeader"></key-value-list>
       </div>
       <div class="set-cookies" v-if="activeName == 'Set Cookies'">
-        <div
-          class="cookie-row"
-          v-for="(row, index) in $dc.setCookies"
-          :key="index"
-        >
+        <div class="cookie-row" v-for="(row, index) in $dc.setCookies" :key="index">
           {{ row }}
         </div>
       </div>

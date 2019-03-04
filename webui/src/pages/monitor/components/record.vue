@@ -59,10 +59,7 @@ export default {
     },
     duration() {
       try {
-        return (
-          this.row.response.remoteResponseEndTime -
-          this.row.response.remoteRequestBeginTime
-        );
+        return this.row.response.remoteResponseEndTime - this.row.response.remoteRequestBeginTime;
       } catch (e) {
         return '';
       }

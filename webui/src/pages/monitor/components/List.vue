@@ -1,9 +1,5 @@
 <template>
-  <div
-    :style="{ 'overflow-y': 'scroll', height: height + 'px' }"
-    ref="container"
-    @scroll.prevent="handleScroll"
-  >
+  <div :style="{ 'overflow-y': 'scroll', height: height + 'px' }" ref="container" @scroll.prevent="handleScroll">
     <div :style="{ height: contentHeight + 'px' }">
       <div :style="{ transform: 'translate3d(0,' + top + 'px,0)' }">
         <slot :ids="ids"></slot>

@@ -5,19 +5,8 @@
       <div class="el-form-item" style="margin-bottom:8px;">
         <!-- <label class="el-form-item__label">条件</label> -->
         <div class="el-form-item__content">
-          <el-select
-            v-model="rule.method"
-            style="width: 100px;"
-            size="small"
-            placeholder="请选择"
-            :disabled="remote"
-          >
-            <el-option
-              v-for="item in methodlist"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
+          <el-select v-model="rule.method" style="width: 100px;" size="small" placeholder="请选择" :disabled="remote">
+            <el-option v-for="item in methodlist" :key="item.value" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </div>
       </div>
@@ -39,7 +28,11 @@
     <div style="padding: 10px 0;">
       <span style="width: 85%;display: inline-block">
         <div>
-          <el-input v-model="rule.name" size="small" placeholder="规则说明，写一段文字，方便记忆这个规则的作用"></el-input>
+          <el-input
+            v-model="rule.name"
+            size="small"
+            placeholder="规则说明，写一段文字，方便记忆这个规则的作用"
+          ></el-input>
         </div>
       </span>
       <span style="width: 10%;display: inline-block">
@@ -51,9 +44,7 @@
         <span style="width: 85%;display: inline-block">
           <action-detail :action="action" :remote="remote"></action-detail>
         </span>
-        <span
-          style="width: 10%;display: inline-block;vertical-align: bottom;line-height: 107px;height: 107px;"
-        >
+        <span style="width: 10%;display: inline-block;vertical-align: bottom;line-height: 107px;height: 107px;">
           <el-button type="text" :disabled="remote" @click="deleteAction(index)">删除动作</el-button>
         </span>
       </div>

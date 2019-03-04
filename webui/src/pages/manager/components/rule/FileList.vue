@@ -3,7 +3,7 @@
     <div class="main-content__title">规则集列表</div>
     <el-row :gutter="20" style="margin-bottom: 10px">
       <el-col class="addrule-btn-wrap">
-        <input type="file" @change="fileUpload" class="importfile">
+        <input type="file" @change="fileUpload" class="importfile" />
         <el-button size="small">导入规则集</el-button>
         <el-button size="small" type="primary" @click="importRemoteRule">导入远程规则</el-button>
         <el-button size="small" type="primary" @click="addRuleCollection">新增规则集</el-button>
@@ -15,7 +15,7 @@
           <el-checkbox
             v-model="scope.row.checked"
             :disabled="!$dc.ruleState"
-            @change="onSelectionChange(scope.row.name,scope.row.checked)"
+            @change="onSelectionChange(scope.row.name, scope.row.checked)"
           />
         </template>
       </el-table-column>
@@ -37,7 +37,7 @@
             effect="dark"
             content="远程规则"
             placement="right"
-            v-if="scope.row.meta&&scope.row.meta.remote"
+            v-if="scope.row.meta && scope.row.meta.remote"
           >
             <span class="file-tag remote">R</span>
           </el-tooltip>
@@ -47,39 +47,24 @@
           {{ scope.row.name }}
         </template>
       </el-table-column>
-      <el-table-column prop="description" label="描述"/>
+      <el-table-column prop="description" label="描述" />
       <el-table-column label="操作" :width="180" :context="_self">
         <template scope="scope">
-          <a :href="'#/editrule?name='+scope.row.name">
+          <a :href="'#/editrule?name=' + scope.row.name">
             <el-tooltip class="item" effect="dark" content="编辑规则" placement="top-start">
               <el-button type="info" icon="edit" size="mini"></el-button>
             </el-tooltip>
           </a>
           <span>
             <el-tooltip class="item" effect="dark" content="导出规则" placement="top-start">
-              <el-button
-                type="info"
-                icon="share"
-                size="mini"
-                @click="onShareFile(scope.row,scope.$index)"
-              />
+              <el-button type="info" icon="share" size="mini" @click="onShareFile(scope.row, scope.$index)" />
             </el-tooltip>
           </span>
           <el-tooltip class="item" effect="dark" content="复制规则" placement="top-start">
-            <el-button
-              type="info"
-              icon="document"
-              size="mini"
-              @click="onCopyFile(scope.row,scope.$index)"
-            />
+            <el-button type="info" icon="document" size="mini" @click="onCopyFile(scope.row, scope.$index)" />
           </el-tooltip>
           <span>
-            <el-button
-              type="danger"
-              icon="delete"
-              size="mini"
-              @click="onDeleteFile(scope.row,scope.$index)"
-            />
+            <el-button type="danger" icon="delete" size="mini" @click="onDeleteFile(scope.row, scope.$index)" />
           </span>
           <!-- <span>
             <el-tooltip class="item" effect="dark" content="同步远程文件" placement="top-start">
@@ -182,14 +167,10 @@ export default {
     },
     // 导入远程文件
     async importRemoteRule() {
-      let result = await this.$prompt(
-        '请输入远程规则文件的url',
-        '导入远程规则',
-        {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-        },
-      );
+      let result = await this.$prompt('请输入远程规则文件的url', '导入远程规则', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+      });
 
       let url = result.value;
       try {
@@ -252,20 +233,14 @@ export default {
           return file.name == content.name;
         });
         if (finded) {
-          _this.$message.error(
-            `已经存在名为${
-              content.name
-            }的规则，请修改规则文件里的name字段,以及文件名`,
-          );
+          _this.$message.error(`已经存在名为${content.name}的规则，请修改规则文件里的name字段,以及文件名`);
           return;
         }
         // 查找引用的变量
         var varNameList = ruleApi.getReferenceVar(content);
         var infoStr;
         if (varNameList.length > 0) {
-          infoStr = `导入规则文件名为${
-            content.name
-          },引用变量【${varNameList.join(
+          infoStr = `导入规则文件名为${content.name},引用变量【${varNameList.join(
             '; ',
           )}】请确保变量已经在转发变量配置中设置过值`;
         } else {

@@ -3,7 +3,7 @@
     <div class="op-bar">
       <div class="buttons">
         <el-button @click="requestToggleRecordState" v-if="!state.stopRecord" type="danger">
-          <i class="icon-stop"></i>
+          <i class="icon-stop" />
           <span>停止</span>
         </el-button>
         <el-button @click="requestToggleRecordState" v-else type="primary" icon="caret-right">记录</el-button>
@@ -23,7 +23,6 @@
 import $ from 'jquery';
 import _ from 'lodash';
 import HttpTraffic from './components/HttpTraffic.vue';
-import Detail from './components/Detail.vue';
 import RecordTable from './components/RecordTable';
 import RecordDetail from './components/RecordDetail';
 import * as trafficApi from '../../api/traffic';
@@ -32,8 +31,8 @@ import io from 'socket.io-client';
 
 export default {
   components: {
-    HttpTraffic,
-    Detail,
+    // HttpTraffic,
+    // Detail,
     'record-table': RecordTable,
     'record-detail': RecordDetail,
   },
@@ -79,9 +78,7 @@ export default {
     },
     originRequestCookie() {
       try {
-        return trafficApi.parseCookie(
-          this.currentRow.originRequest.headers.cookie || '',
-        );
+        return trafficApi.parseCookie(this.currentRow.originRequest.headers.cookie || '');
       } catch (e) {
         return {};
       }
@@ -102,9 +99,7 @@ export default {
     },
     requestCookie() {
       try {
-        return trafficApi.parseCookie(
-          this.currentRow.requestData.headers.cookie || '',
-        );
+        return trafficApi.parseCookie(this.currentRow.requestData.headers.cookie || '');
       } catch (e) {
         return {};
       }
@@ -214,11 +209,7 @@ export default {
       }
       // 如果是html json数据 向后端请求拿数据
       try {
-        if (
-          /(text)|(javascript)|(json)/i.test(
-            currentRow.response.headers['content-type'],
-          )
-        ) {
+        if (/(text)|(javascript)|(json)/i.test(currentRow.response.headers['content-type'])) {
           // 请求后端 拿数据
           this.currentResponseBody = await trafficApi.getResponseBody(id);
         }

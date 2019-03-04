@@ -1,32 +1,16 @@
 <template>
   <div class="detail" :style="{ height: height + 'px' }">
     <div class="detail__header">
-      <div
-        class="detail__tab"
-        :class="{ active: activeName == 'Origin' }"
-        @click="tabClick('Origin')"
-      >
+      <div class="detail__tab" :class="{ active: activeName == 'Origin' }" @click="tabClick('Origin')">
         原始请求
       </div>
-      <div
-        class="detail__tab"
-        :class="{ active: activeName == 'Request' }"
-        @click="tabClick('Request')"
-      >
+      <div class="detail__tab" :class="{ active: activeName == 'Request' }" @click="tabClick('Request')">
         Request
       </div>
-      <div
-        class="detail__tab"
-        :class="{ active: activeName == 'Response' }"
-        @click="tabClick('Response')"
-      >
+      <div class="detail__tab" :class="{ active: activeName == 'Response' }" @click="tabClick('Response')">
         Response
       </div>
-      <div
-        class="detail__tab"
-        :class="{ active: activeName == 'Timeline' }"
-        @click="tabClick('Timeline')"
-      >
+      <div class="detail__tab" :class="{ active: activeName == 'Timeline' }" @click="tabClick('Timeline')">
         Timeline
       </div>
     </div>
@@ -48,7 +32,6 @@
 import RequestDetail from './RequestDetail.vue';
 import ResponseDetail from './ResponseDetail.vue';
 import Origin from './Origin.vue';
-import Timeline from './Timeline.vue';
 import './detail.scss';
 export default {
   props: ['height'],
@@ -56,7 +39,6 @@ export default {
     RequestDetail,
     ResponseDetail,
     Origin,
-    Timeline,
   },
   data() {
     return {

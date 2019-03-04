@@ -1,19 +1,19 @@
 <template>
   <div>
-    <kv v-for="(item, index) in list" :k="item[0]" :v="item[1]" :key="index"/>
+    <kv v-for="(item, index) in list" :k="item[0]" :v="item[1]" :key="index" />
   </div>
 </template>
 
 <script>
-import KeyValue from "./KeyValue";
+import KeyValue from './KeyValue';
 
 export default {
   name: 'kv-list',
 
   components: {
-    'kv': KeyValue
+    kv: KeyValue,
   },
 
-  props: ['list']
-}
+  props: ['list'],
+};
 </script>

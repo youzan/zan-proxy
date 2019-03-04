@@ -3,16 +3,10 @@
     <div class="main-content__title">基础配置修改</div>
     <el-form label-width="100px">
       <el-form-item label="代理端口">
-        <el-input
-          v-model="$dc.configure.proxyPort"
-          placeholder="proxy的代理端口"
-        />
+        <el-input v-model="$dc.configure.proxyPort" placeholder="proxy的代理端口" />
       </el-form-item>
       <el-form-item label="超时时间">
-        <el-input
-          v-model="$dc.configure.requestTimeoutTime"
-          placeholder="远程服务器响应超时，proxy会终止请求"
-        />
+        <el-input v-model="$dc.configure.requestTimeoutTime" placeholder="远程服务器响应超时，proxy会终止请求" />
       </el-form-item>
       <el-form-item label="Gitlab Token">
         <el-input
@@ -34,22 +28,20 @@ export default {
   name: 'configure',
   methods: {
     async saveFile() {
-      this.$dc.configure.requestTimeoutTime = parseInt(
-        this.$dc.configure.requestTimeoutTime
-      );
+      this.$dc.configure.requestTimeoutTime = parseInt(this.$dc.configure.requestTimeoutTime);
       this.$dc.configure.proxyPort = parseInt(this.$dc.configure.proxyPort);
       let response = await confApi.saveFile(this.$dc.configure);
       let serverData = response.data;
       if (serverData.code == 0) {
         this.$message({
           type: 'success',
-          message: '保存成功!'
+          message: '保存成功!',
         });
       } else {
         this.$message.error(`出错了，${serverData.msg}`);
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

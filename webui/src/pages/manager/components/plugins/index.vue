@@ -2,13 +2,7 @@
   <div class="manager">
     <div class="title">插件管理</div>
     <div class="grids">
-      <plugin
-        v-for="p in plugins"
-        :key="p.name"
-        :plugin="p"
-        :delete="deletePlugin"
-        :setDisabled="setPluginDisabled"
-      />
+      <plugin v-for="p in plugins" :key="p.name" :plugin="p" :delete="deletePlugin" :setDisabled="setPluginDisabled" />
       <add :add="addPlugin"></add>
     </div>
   </div>

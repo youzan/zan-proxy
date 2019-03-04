@@ -1,25 +1,13 @@
 <template>
   <div class="origin">
     <div class="request__header">
-      <div
-        class="request__tab"
-        :class="{ active: activeName == 'Header' }"
-        @click="tabClick('Header')"
-      >
+      <div class="request__tab" :class="{ active: activeName == 'Header' }" @click="tabClick('Header')">
         Header
       </div>
-      <div
-        class="request__tab"
-        :class="{ active: activeName == 'Cookie' }"
-        @click="tabClick('Cookie')"
-      >
+      <div class="request__tab" :class="{ active: activeName == 'Cookie' }" @click="tabClick('Cookie')">
         Cookie
       </div>
-      <div
-        class="request__tab"
-        :class="{ active: activeName == 'Query Params' }"
-        @click="tabClick('Query Params')"
-      >
+      <div class="request__tab" :class="{ active: activeName == 'Query Params' }" @click="tabClick('Query Params')">
         Query Params
       </div>
     </div>

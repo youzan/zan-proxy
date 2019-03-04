@@ -25,7 +25,7 @@
             type="danger"
             icon="delete"
             size="mini"
-            @click="deleteParam(scope.row,scope.$index,projectPathArray)"
+            @click="deleteParam(scope.row, scope.$index, projectPathArray)"
           />
         </template>
       </el-table-column>

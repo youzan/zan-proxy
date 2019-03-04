@@ -73,7 +73,7 @@ export class ProxyServer {
 
   private async init() {
     this.forwarder = new Forwarder();
-    this.cache = LRU({
+    this.cache = new LRU({
       max: 500,
       maxAge: 1000 * 60 * 60,
     });
