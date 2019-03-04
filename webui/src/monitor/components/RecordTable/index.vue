@@ -165,7 +165,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
   .record-selected td {
     color: #fff;
     background-color: #20a0ff !important;
@@ -178,7 +178,7 @@ export default {
   }
 </style>
 
-<style lang="scss" scoped>
+<style lang="scss">
   .text {
     width: 100%;
     white-space: nowrap;

@@ -49,7 +49,7 @@ var webpackConfig = merge(baseWebpackConfig, {
       filename: config.build.manager,
       template: 'index.html',
       inject: true,
-      chunks: ['manager'],
+      chunks: ['vendor', 'manager'],
       minify: {
         removeComments: true,
         collapseWhitespace: true,
@@ -64,7 +64,7 @@ var webpackConfig = merge(baseWebpackConfig, {
       filename: config.build.monitor,
       template: 'index.html',
       inject: true,
-      chunks: ['monitor'],
+      chunks: ['vendor', 'monitor'],
       minify: {
         removeComments: true,
         collapseWhitespace: true,

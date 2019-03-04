@@ -25,7 +25,7 @@
     import ResponseDetail from './ResponseDetail.vue';
     import Origin from './Origin.vue';
     import Timeline from './Timeline.vue';
-    import './detail.pcss';
+    import './detail.scss';
     export default {
         props: ['height'],
         components: {

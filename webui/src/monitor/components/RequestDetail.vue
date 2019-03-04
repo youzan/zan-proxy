@@ -23,7 +23,7 @@
 
 <script>
     import KeyValueList from './KeyValueList.vue';
-    import './requestdetail.pcss';
+    import './requestdetail.scss';
     export default {
         components: { KeyValueList },
         data(){

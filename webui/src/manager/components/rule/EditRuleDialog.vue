@@ -128,7 +128,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
     .action-container {
         display: flex;
         align-items: center;

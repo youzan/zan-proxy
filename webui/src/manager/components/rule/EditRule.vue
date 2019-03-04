@@ -402,7 +402,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .main-content__title-link {
   color: #20a0ff;
   text-decoration: none;

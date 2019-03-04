@@ -542,7 +542,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .el-dropdown-menu {
   max-height: 500px;
   overflow-y: auto;

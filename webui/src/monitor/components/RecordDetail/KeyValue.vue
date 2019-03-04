@@ -11,7 +11,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
     .kv-pair {
         overflow-x: auto;
         word-break: break-all;

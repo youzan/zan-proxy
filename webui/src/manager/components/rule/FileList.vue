@@ -278,7 +278,7 @@ export default {
   }
 };
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
 .addrule-btn-wrap {
   text-align: right;
   float: right;

@@ -4,7 +4,7 @@ import router from './router'
 import DataCenter from 'vue-data-center'
 import 'regenerator-runtime/runtime'
 import './iconfont.css';
-import './index.pcss';
+import './index.scss';
 
 // element-ui
 import ElementUI from 'element-ui';

@@ -21,7 +21,7 @@
 
 <script>
     import KeyValueList from './KeyValueList.vue';
-    import './responsedetail.pcss'
+    import './responsedetail.scss'
     export default {
         components: { KeyValueList },
         data(){

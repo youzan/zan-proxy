@@ -20,7 +20,7 @@
 </template>
 
 <script>
-    import './origin.pcss';
+    import './origin.scss';
     import KeyValueList from './KeyValueList.vue';
     export default {
         components: { KeyValueList },

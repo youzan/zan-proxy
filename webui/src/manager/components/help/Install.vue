@@ -84,7 +84,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .install-body {
   margin: -50px;
   padding: 50px;

@@ -10,7 +10,7 @@
 </template>
 
 <script>
-  import './keyvaluelist.pcss'
+  import './keyvaluelist.scss'
   export default {
     props: ["data"]
   }

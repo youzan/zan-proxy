@@ -112,7 +112,7 @@
   };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
     .copy-as-curl {
         cursor: pointer;
         margin-left: 15px;

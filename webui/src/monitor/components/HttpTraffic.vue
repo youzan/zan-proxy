@@ -35,7 +35,7 @@
     import copyToClipboard from 'copy-to-clipboard';
     import ContextMenu from '../../context-menu';
     import dataApi from '../../api/data';
-    import './httptraffic.pcss';
+    import './httptraffic.scss';
     import Record from './record.vue';
     export default {
         props: ['height'],

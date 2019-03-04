@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import App from './App'
 import DataCenter from 'vue-data-center'
-import './index.pcss'
+import './index.scss'
 // element-ui
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-default/index.css';
