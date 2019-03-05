@@ -1,10 +1,10 @@
 ## 插件 Manager 开发指南
 
-插件的 main 进程[入口文件](../../src/plugins/counter/manager/index.ts)导出一个含有 manager 属性的对象，该属性的值是 `BaseManager` 的子类的实例，一个 Manager 的雏形为：
+插件的 main 进程[入口文件](../../../src/gui/plugins/counter/manager/index.ts)导出一个含有 manager 属性的对象，该属性的值是 `BaseManager` 的子类的实例，一个 Manager 的雏形为：
 
 ```ts
 import { Container, Service } from 'typedi';
-import BaseManager from '@main/core/base-manager';
+import BaseManager from '@gui/main/core/base-manager';
 
 @Service()
 class MyManager extends BaseManager {}

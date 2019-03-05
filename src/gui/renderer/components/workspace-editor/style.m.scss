@@ -1,0 +1,33 @@
+.workspace-editor {
+  font-size: 14px;
+  background-color: #fff;
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+}
+
+.header {
+  padding: 3px 40px;
+  background-color: #fff;
+
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-between;
+  border-bottom: 1px solid #ddd;
+
+  .title {
+    font-size: 20px;
+    margin: 10px 0;
+    height: 36px;
+    line-height: 36px;
+  }
+}
+
+.content {
+  padding: 30px 40px;
+  height: calc(100vh - 63px);
+  overflow: auto;
+  position: relative;
+}
+

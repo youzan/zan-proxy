@@ -1,22 +1,41 @@
 {
   "compilerOptions": {
+    "target": "es6",
+    "lib": [
+      "dom",
+      "esnext"
+    ],
+    "jsx": "preserve",
     "moduleResolution": "node",
-    "target": "esnext",
-    "module": "commonjs",
-    "sourceRoot": "./src",
-    "sourceMap": true,
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
-    "allowSyntheticDefaultImports": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "module": "esnext",
+    "allowJs": true,
     "esModuleInterop": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
     "resolveJsonModule": true,
-    "outDir": "dist",
-    "lib": ["dom", "es2017"]
+    "skipLibCheck": true,
+    "alwaysStrict": true,
+    "noEmitHelpers": true,
+    "importHelpers": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "baseUrl": "./src",
+    "paths": {
+      "@core/*": ["core/*"],
+      "@cli/*": ["gui/*"],
+      "@gui/*": ["gui/*"]
+    },
+    "typeRoots": [
+      "./src/gui/types",
+      "./src/gui/main/managers",
+      "./src/gui/plugins"
+    ],
+    "sourceMap": true,
+    "strictBindCallApply": true,
+    "outDir": "./dist"
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["test/**/*.spec.ts"]
+  "files": [
+    "src/gui/global.d.ts"
+  ],
+  "include": [
+    "./src"
+  ]
 }

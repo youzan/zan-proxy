@@ -1,15 +1,18 @@
 #!/usr/bin/env node
 import 'reflect-metadata';
 
+import promiseFinally from 'promise.prototype.finally';
 import program from 'commander';
 import ip from 'ip';
 import open from 'open';
 import selfUpdate from './selfUpdate';
-import start from '../cmds/start';
-import syncHost from '../cmds/syncHost';
-import syncRule from '../cmds/syncRule';
+import start from '../core/start';
+import syncHost from '../core/syncHost';
+import syncRule from '../core/syncRule';
 
 import packageInfo from '../../package.json';
+
+promiseFinally.shim();
 
 process.on('unhandledRejection', (reason, p) => {
   if (process.env.DEBUG) {

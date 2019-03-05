@@ -1,5 +1,5 @@
 import ora from 'ora';
-import { AppInfoService, HostService } from '../App/services';
+import { AppInfoService, HostService } from './App/services';
 
 const syncRemoteHosts = async () => {
   console.log('开始同步远程Host文件');

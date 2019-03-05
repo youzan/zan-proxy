@@ -1,6 +1,6 @@
 ## 插件 Renderer 开发指南
 
-插件的 Renderer 进程[入口文件](../../src/plugins/counter/renderer/index.ts)通过将 `window.__plugins` 的对应插件名称的属性的值设置为一个对象，来告知应用这个插件在 Renderer 进程上提供的能力。
+插件的 Renderer 进程[入口文件](../../../src/gui/plugins/counter/renderer/index.ts)通过将 `window.__plugins` 的对应插件名称的属性的值设置为一个对象，来告知应用这个插件在 Renderer 进程上提供的能力。
 
 ```ts
 import init from './init';
@@ -36,7 +36,7 @@ zan-proxy-mac 的 Renderer 进程不会给这个自定义组件传递任何 prop
 ```tsx
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
-import { Stores, WorkspaceStore } from '@renderer/store';
+import { Stores, WorkspaceStore } from '@gui/renderer/store';
 
 interface IProps {
   workspaceStore: WorkspaceStore;

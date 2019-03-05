@@ -7,9 +7,9 @@ tsconfig.json 指定了类型文件的目录为:
 ```json
 {
   "typeRoots": [
-    "./src/types",
-    "./src/main/managers",
-    "./src/plugins"
+    "./src/gui/types",
+    "./src/gui/main/managers",
+    "./src/gui/plugins"
   ]
 }
 ```

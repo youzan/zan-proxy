@@ -6,7 +6,7 @@
     "tslint-eslint-rules"
   ],
   "linterOptions": {
-    "exclude": ["test/**/*.ts", "dist/**/*", "webui/**/*"]
+    "exclude": ["test/**/*.ts", "dist/**/*", "webui/**/*", "**/*.d.ts"]
   },
   "rules": {
     "interface-name": false,

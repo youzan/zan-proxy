@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import http from "http";
 import "mocha";
-import { HttpHandler } from "../../../src/ProxyServer/impl";
+import { HttpHandler } from "../../../src/core/ProxyServer/impl";
 
 describe("HttpHandler", () => {
     it("should invoke the middleware", (done) => {

@@ -16,7 +16,7 @@ WorkspaceStore 中存储了与工作区有关的一些信息和方法，是最�
 引入方法:
 
 ```ts
-import { WorkspaceStore } from '@renderer/store';
+import { WorkspaceStore } from '@gui/renderer/store';
 ```
 
 - `workspaces: ZanProxyMac.IWorkspace[]`: 工作区的列表数组，包括了所有可用的工作区信息
@@ -34,7 +34,7 @@ import { WorkspaceStore } from '@renderer/store';
   引入方法:
 
   ```ts
-  import { ipcSend } from '@renderer/utils';
+  import { ipcSend } from '@gui/renderer/utils';
   ```
 
   模拟 Ajax 与 Main 进程进行通信的封装函数，接收参数与 ipcRenderer.send 相同，返回一个 Promise，该 Promise 会等待 Main 进程中 `setIpcReplier` 设置的对应信道的处理函数执行完毕后 resolve 或 reject。

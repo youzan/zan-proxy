@@ -29,7 +29,7 @@
 引入方法:
 
 ```ts
-import BaseManager from '@main/core/base-manager';
+import BaseManager from '@gui/main/core/base-manager';
 ```
 
 所有 Manager 的继承父类，是一个继承了 Emittery.Typed 的 abstract 类，自身没有提供任何 API。
@@ -57,7 +57,7 @@ WorkspaceWindow 用于控制 Renderer 进程窗口的开启的信息发送
 引入方法:
 
 ```ts
-import { setIpcReplier } from '@main/utils';
+import { setIpcReplier } from '@gui/main/utils';
 ```
 
 对应 [`ipcSend`](./renderer.md#ipcSend) 的 Main 进程端处理函数的设置函数，该处理函数的正常返回值会被 `ipcSend` 当做成功响应 resolve，若处理函数中 throw 了一个 Error，`ipcSend` 则会 reject 这个 error 的 message.
@@ -70,15 +70,15 @@ import { setIpcReplier } from '@main/utils';
 
 | 事件名称 | 参数类型 | 作用 | 触发 or 监听 |
 | :------ | :------ | :-- | ---------- |
-| app-data:update-state | [IState](../../src/main/managers/app-data/index.d.ts) | 更新应用状态（在 afterInit 生命周期中取消监听）| 触发 |
-| host-and-rule-files:update-host | [IHostFile[]](../../src/main/managers/host-and-rule-files/index.d.ts) | 更新 host 信息 | 监听 |
-| host-and-rule-files:update-rule | [IRuleFile[]](../../src/main/managers/host-and-rule-files/index.d.ts) | 更新转发规则信息 | 监听 |
+| app-data:update-state | [IState](../../../src/gui/main/managers/app-data/index.d.ts) | 更新应用状态（在 afterInit 生命周期中取消监听）| 触发 |
+| host-and-rule-files:update-host | [IHostFile[]](../../../src/gui/main/managers/host-and-rule-files/index.d.ts) | 更新 host 信息 | 监听 |
+| host-and-rule-files:update-rule | [IRuleFile[]](../../../src/gui/main/managers/host-and-rule-files/index.d.ts) | 更新转发规则信息 | 监听 |
 | tray:get-options | MenuItemConstructorOptions[] | 获取 Tray 菜单展示项信息 | 监听 |
 | tray:render | void | 触发 Tray 菜单重新渲染 | 触发 |
-| zan-porxy-plugin.constructor:get-pre-install-plugins | [IPluginPkg[]](../../src/main/managers/zan-proxy-plugin/index.d.ts) | 需要在构造函数中监听该事件，用于获取预安装的 zan-proxy 插件 | 监听 |
-| workspace:create | [Partial\<IWorkspace\>](../../src/main/managers/workspace/index.d.ts) | 创建一个新的工作区预设时，设置这个工作区的默认属性 | 监听 |
-| workspace:activate | [IWorkspace](../../src/main/managers/workspace/index.d.ts) | 启用某个工作区时的处理事件 | 监听 |
-| workspace:deactivate | [IWorkspace](../../src/main/managers/workspace/index.d.ts) | 停用某个工作区时的处理事件 | 监听 |
-| workspace:update-list | [IWorkspace[]](../../src/main/managers/workspace/index.d.ts) | 工作区列表更新时的处理事件，保存、删除、复制工作区都会触发这个事件 | 监听 |
-| workspace:export | [IExportOrImportData](../../src/main/managers/workspace/index.d.ts) | 导出工作区时，扩展导出的文件内容 | 监听 |
-| workspace:import | [IExportOrImportData](../../src/main/managers/workspace/index.d.ts) | 导入工作区时，解析插件扩展部分的文件内容 | 监听 |
+| zan-porxy-plugin.constructor:get-pre-install-plugins | [IPluginPkg[]](../../../src/gui/main/managers/zan-proxy-plugin/index.d.ts) | 需要在构造函数中监听该事件，用于获取预安装的 zan-proxy 插件 | 监听 |
+| workspace:create | [Partial\<IWorkspace\>](../../../src/gui/main/managers/workspace/index.d.ts) | 创建一个新的工作区预设时，设置这个工作区的默认属性 | 监听 |
+| workspace:activate | [IWorkspace](../../../src/gui/main/managers/workspace/index.d.ts) | 启用某个工作区时的处理事件 | 监听 |
+| workspace:deactivate | [IWorkspace](../../../src/gui/main/managers/workspace/index.d.ts) | 停用某个工作区时的处理事件 | 监听 |
+| workspace:update-list | [IWorkspace[]](../../../src/gui/main/managers/workspace/index.d.ts) | 工作区列表更新时的处理事件，保存、删除、复制工作区都会触发这个事件 | 监听 |
+| workspace:export | [IExportOrImportData](../../../src/gui/main/managers/workspace/index.d.ts) | 导出工作区时，扩展导出的文件内容 | 监听 |
+| workspace:import | [IExportOrImportData](../../../src/gui/main/managers/workspace/index.d.ts) | 导入工作区时，解析插件扩展部分的文件内容 | 监听 |
