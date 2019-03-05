@@ -8,8 +8,8 @@ const del = require('del');
 const webpack = require('webpack');
 const Multispinner = require('multispinner');
 
-const mainConfig = require('./webpack.gui-main.config');
-const rendererConfig = require('./webpack.gui-renderer.config');
+const mainConfig = require('./webpack.main.config');
+const rendererConfig = require('./webpack.renderer.config');
 
 const doneLog = chalk.bgGreen.white(' DONE ') + ' ';
 const errorLog = chalk.bgRed.white(' ERROR ') + ' ';

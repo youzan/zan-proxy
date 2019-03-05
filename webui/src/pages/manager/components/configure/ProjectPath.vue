@@ -10,17 +10,17 @@
     <el-table border align="center" :data="$dc.projectPathArray">
       <el-table-column type="index" width="60"></el-table-column>
       <el-table-column prop="key" label="变量名" width="200">
-        <template scope="scope">
+        <template slot-scope="scope">
           <el-input v-model="scope.row.key" size="small" placeholder="请输入变量名"></el-input>
         </template>
       </el-table-column>
       <el-table-column prop="value" label="变量值">
-        <template scope="scope">
+        <template slot-scope="scope">
           <el-input v-model="scope.row.value" size="small" placeholder="请输入变量值"></el-input>
         </template>
       </el-table-column>
       <el-table-column label="操作" :width="136" :context="_self">
-        <template scope="scope">
+        <template slot-scope="scope">
           <el-button
             type="danger"
             icon="delete"

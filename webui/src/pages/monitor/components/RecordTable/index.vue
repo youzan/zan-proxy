@@ -1,7 +1,7 @@
 <template>
   <el-table :data="records" stripe border :row-class-name="tableRowClassName" @row-click="onRowClicked">
     <el-table-column label="Name">
-      <template scope="scope">
+      <template slot-scope="scope">
         <div class="name-container" :title="scope.row.originRequest.href">
           <div class="name text">
             {{ scope.row.name }}
@@ -13,7 +13,7 @@
       </template>
     </el-table-column>
     <el-table-column label="Status" width="180">
-      <template scope="scope">
+      <template slot-scope="scope">
         <div class="status-container">
           <div class="code text">
             {{ (scope.row.response && scope.row.response.statusCode) || '--' }}
@@ -26,7 +26,7 @@
     </el-table-column>
 
     <el-table-column label="Type" width="180">
-      <template scope="scope">
+      <template slot-scope="scope">
         <div class="type-container">
           <div class="type text">
             {{ (scope.row.response && scope.row.response.contentTypeText) || '--' }}
@@ -39,7 +39,7 @@
     </el-table-column>
     <el-table-column label="Method" width="180" prop="originRequest.method"> </el-table-column>
     <el-table-column label="Size" width="180">
-      <template scope="scope">
+      <template slot-scope="scope">
         <div class="size-container">
           <div class="size text">
             {{ (scope.row.response && scope.row.response.size) || '--' }}
@@ -48,7 +48,7 @@
       </template>
     </el-table-column>
     <el-table-column label="Duration">
-      <template scope="scope">
+      <template slot-scope="scope">
         <div class="duration-container">
           <div class="duration text">
             {{ (scope.row.response && scope.row.response.duration) || '--' }}

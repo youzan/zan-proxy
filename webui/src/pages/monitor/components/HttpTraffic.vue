@@ -13,7 +13,7 @@
     </div>
     <!-- 列表区域 优化后的列表展示组件，只展示显示区域 -->
     <list :total="$dc.total" :height="height - 28" :rowHeight="24">
-      <template scope="props">
+      <template slot-scope="props">
         <record
           v-for="index in props.ids"
           :index="index"

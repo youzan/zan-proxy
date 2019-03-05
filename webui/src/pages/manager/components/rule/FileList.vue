@@ -11,7 +11,7 @@
     </el-row>
     <el-table border :data="$dc.ruleFileList">
       <el-table-column prop="checked" label="启用" width="100">
-        <template scope="scope">
+        <template slot-scope="scope">
           <el-checkbox
             v-model="scope.row.checked"
             :disabled="!$dc.ruleState"
@@ -31,7 +31,7 @@
         </template>
       </el-table-column>-->
       <el-table-column prop="name" label="名字" width="200">
-        <template scope="scope">
+        <template slot-scope="scope">
           <el-tooltip
             class="item"
             effect="dark"
@@ -49,7 +49,7 @@
       </el-table-column>
       <el-table-column prop="description" label="描述" />
       <el-table-column label="操作" :width="180" :context="_self">
-        <template scope="scope">
+        <template slot-scope="scope">
           <a :href="'#/editrule?name=' + scope.row.name">
             <el-tooltip class="item" effect="dark" content="编辑规则" placement="top-start">
               <el-button type="info" icon="edit" size="mini"></el-button>

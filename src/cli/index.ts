@@ -1,18 +1,22 @@
-#!/usr/bin/env node
 import 'reflect-metadata';
 
 import promiseFinally from 'promise.prototype.finally';
 import program from 'commander';
+import path from 'path';
 import ip from 'ip';
 import open from 'open';
 import selfUpdate from './selfUpdate';
-import start from '../core/start';
-import syncHost from '../core/syncHost';
-import syncRule from '../core/syncRule';
+import start from '@core/start';
+import syncHost from '@core/syncHost';
+import syncRule from '@core/syncRule';
 
 import packageInfo from '../../package.json';
-
 promiseFinally.shim();
+
+if (process.env.NODE_ENV !== 'development') {
+  global.__root = path.resolve(__dirname, '..');
+  global.__site = path.resolve(__dirname, '../site');
+}
 
 process.on('unhandledRejection', (reason, p) => {
   if (process.env.DEBUG) {

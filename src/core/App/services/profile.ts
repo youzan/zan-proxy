@@ -84,7 +84,7 @@ export class ProfileService extends EventEmitter {
    * @param match
    * @param target
    */
-  public calcPath(userId, href, match, target) {
+  public calcPath(userId, href: string, match, target) {
     if (match) {
       const matchList = href.match(new RegExp(match));
       forEach(matchList, (value, index) => {

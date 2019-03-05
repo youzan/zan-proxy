@@ -31,7 +31,7 @@ export class AppInfoService extends EventEmitter {
       single,
     };
 
-    this.appDir = path.join(__dirname, '../../../');
+    this.appDir = __root;
   }
 
   public getAppDir() {

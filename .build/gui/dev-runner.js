@@ -9,8 +9,10 @@ const webpack = require('webpack')
 const WebpackDevServer = require('webpack-dev-server')
 const webpackHotMiddleware = require('webpack-hot-middleware')
 
-const guiMainConfig = require('./webpack.gui-main.config')
-const guiRendererConfig = require('./webpack.gui-renderer.config')
+const mainConfig = require('./webpack.main.config')
+const rendererConfig = require('./webpack.renderer.config')
+
+const { rootResolve } = require('../utils');
 
 let electronProcess = null
 let manualRestart = false
@@ -40,9 +42,9 @@ function logStats (proc, data) {
 
 function startRenderer () {
   return new Promise((resolve, reject) => {
-    guiRendererConfig.entry.renderer = [path.join(__dirname, 'dev-client')].concat(guiRendererConfig.entry.renderer)
-    guiRendererConfig.mode = 'development'
-    const compiler = webpack(guiRendererConfig)
+    rendererConfig.entry.renderer = [path.join(__dirname, 'dev-client')].concat(rendererConfig.entry.renderer)
+    rendererConfig.mode = 'development'
+    const compiler = webpack(rendererConfig)
     hotMiddleware = webpackHotMiddleware(compiler, {
       log: false,
       heartbeat: 2500
@@ -62,7 +64,7 @@ function startRenderer () {
     const server = new WebpackDevServer(
       compiler,
       {
-        contentBase: path.join(__dirname, '../'),
+        contentBase: rootResolve(''),
         quiet: true,
         before (app, ctx) {
           app.use(hotMiddleware)
@@ -79,9 +81,9 @@ function startRenderer () {
 
 function startMain () {
   return new Promise((resolve, reject) => {
-    guiMainConfig.entry.main = [path.join(__dirname, '../src/main/index.dev.ts')].concat(guiMainConfig.entry.main)
-    guiMainConfig.mode = 'development'
-    const compiler = webpack(guiMainConfig)
+    mainConfig.entry.main = [rootResolve('src/main/index.dev.ts')].concat(mainConfig.entry.main)
+    mainConfig.mode = 'development'
+    const compiler = webpack(mainConfig)
 
     compiler.hooks.watchRun.tapAsync('watch-run', (compilation, done) => {
       logStats('Main', chalk.white.bold('compiling...'))
@@ -116,7 +118,7 @@ function startMain () {
 function startElectron () {
   var args = [
     '--inspect=5858',
-    path.join(__dirname, '../dist/main.js')
+    rootResolve('dist/main.js'),
   ]
 
   // detect yarn or npm and process commandline args accordingly

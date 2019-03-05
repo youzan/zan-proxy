@@ -76,6 +76,7 @@ export class RuleService extends EventEmitter {
         return prev;
       }, {});
     forEach(contentMap, (content, fileName) => {
+      // @ts-ignore
       const ruleName = content.name;
       const userId = fileName.substr(0, this._getUserIdLength(fileName, ruleName));
       this.rules[userId] = this.rules[userId] || {};
@@ -263,7 +264,7 @@ export class RuleService extends EventEmitter {
   public async fetchRemoteRuleFile(url): Promise<any> {
     const response = await fetch(url);
     const responseData = await response.json();
-    const ETag = response.headers.etag || '';
+    const ETag = response.headers.get('etag') || '';
     const content = responseData.content.map(remoteRule => {
       if (remoteRule.action && !remoteRule.actionList) {
         remoteRule.actionList = [remoteRule.action];

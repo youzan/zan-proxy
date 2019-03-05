@@ -11,11 +11,13 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 
+const { rootResolve, runtimePathDefine, webpackAlias } = require('../utils');
+
 /**
  * 扫描插件 renderer 入口
  */
 function scanPluginsRenderer() {
-  const pluginRoot = path.resolve(__dirname, '../src/gui/plugins');
+  const pluginRoot = rootResolve('src/gui/plugins');
   const plugins = fs.readdirSync(pluginRoot);
   const entries = {};
   plugins.forEach(plugin => {
@@ -33,12 +35,12 @@ const styleLoader = [
   isDev
     ? {
         // dev style loader
-        loader: 'style-loader'
+        loader: 'style-loader',
       }
     : {
         // prod extract loader
-        loader: MiniCssExtractPlugin.loader
-      }
+        loader: MiniCssExtractPlugin.loader,
+      },
 ];
 
 const rendererConfig = {
@@ -48,21 +50,17 @@ const rendererConfig = {
   entry: {
     vendor: ['react', 'react-dom', 'lodash', 'mobx', 'mobx-react', 'antd'],
     ...scanPluginsRenderer(), // 插件先加载，将组件设置到 window.__plugins
-    renderer: path.join(__dirname, '../src/gui/renderer/main.tsx'),
+    renderer: rootResolve('src/gui/renderer/main.tsx'),
   },
   output: {
     filename: 'static/js/[name].js',
     chunkFilename: 'static/js/[name].js',
     libraryTarget: 'commonjs2',
-    path: path.join(__dirname, '../dist')
+    path: rootResolve('dist'),
   },
   resolve: {
-    alias: {
-      '@core': path.join(__dirname, '../src/core'),
-      '@gui': path.join(__dirname, '../src/gui'),
-      '@cli': path.join(__dirname, '../src/cli'),
-    },
-    extensions: ['.ts', '.tsx', '.js', 'jsx', '.json', '.css', 'scss', '.node']
+    alias: webpackAlias,
+    extensions: ['.ts', '.tsx', '.js', 'jsx', '.json', '.css', 'scss', '.node'],
   },
   module: {
     rules: [
@@ -75,19 +73,17 @@ const rendererConfig = {
               useBabel: true,
               babelCore: '@babel/core',
               getCustomTransformers: () => ({
-                before: [
-                  tsImportPluginFactory([])
-                ]
-              })
-            }
-          }
+                before: [tsImportPluginFactory([])],
+              }),
+            },
+          },
         ],
-        exclude: /node_modules/
+        exclude: /node_modules/,
       },
       {
         test: /\.js$/,
         use: 'babel-loader',
-        exclude: /node_modules/
+        exclude: /node_modules/,
       },
       // use css-module
       {
@@ -101,11 +97,11 @@ const rendererConfig = {
               sourceMap: true,
               importLoaders: 1,
               camelCase: true,
-              localIdentName: '[folder]__[local]__[hash:base64:5]'
-            }
+              localIdentName: '[folder]__[local]__[hash:base64:5]',
+            },
           },
-          'sass-loader'
-        ]
+          'sass-loader',
+        ],
       },
       {
         test: /^((?!\.m).)*\.scss$/,
@@ -114,19 +110,19 @@ const rendererConfig = {
           {
             loader: 'css-loader',
             options: {
-              sourceMap: true
-            }
+              sourceMap: true,
+            },
           },
-          'sass-loader'
-        ]
+          'sass-loader',
+        ],
       },
       {
         test: /\.css$/,
-        use: [...styleLoader, 'css-loader']
+        use: [...styleLoader, 'css-loader'],
       },
       {
         test: /\.node$/,
-        use: 'node-loader'
+        use: 'node-loader',
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
@@ -134,9 +130,9 @@ const rendererConfig = {
           loader: 'url-loader',
           options: {
             limit: 10000,
-            name: 'imgs/[name]--[folder].[ext]'
-          }
-        }
+            name: 'imgs/[name]--[folder].[ext]',
+          },
+        },
       },
       {
         test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
@@ -144,9 +140,9 @@ const rendererConfig = {
           loader: 'url-loader',
           options: {
             limit: 10000,
-            name: 'media/[name]--[folder].[ext]'
-          }
-        }
+            name: 'media/[name]--[folder].[ext]',
+          },
+        },
       },
       {
         test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
@@ -154,11 +150,11 @@ const rendererConfig = {
           loader: 'url-loader',
           options: {
             limit: 10000,
-            name: 'fonts/[name]--[folder].[ext]'
-          }
-        }
-      }
-    ]
+            name: 'fonts/[name]--[folder].[ext]',
+          },
+        },
+      },
+    ],
   },
   optimization: {
     splitChunks: {
@@ -167,30 +163,30 @@ const rendererConfig = {
           chunks: 'initial',
           test: 'vendor',
           name: 'vendor', // 使用 vendor 入口作为公共部分
-          enforce: true
-        }
-      }
-    }
+          enforce: true,
+        },
+      },
+    },
   },
   node: {
     __dirname: isDev,
-    __filename: isDev
+    __filename: isDev,
   },
   plugins: [
     new MiniCssExtractPlugin({
       filename: 'static/css/[name].css',
-      chunkFilename: '[id].css'
+      chunkFilename: '[id].css',
     }),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     new HtmlWebpackPlugin({
       filename: 'index.html',
-      template: path.resolve(__dirname, '../src/gui/index.ejs'),
-      nodeModules: isDev ? path.resolve(__dirname, '../node_modules') : false
+      template: rootResolve('src/gui/index/.ejs'),
+      nodeModules: isDev ? rootResolve('node_modules') : false,
     }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
-    new ProgressBarPlugin()
-  ]
+    new ProgressBarPlugin(),
+  ],
 };
 
 if (isDev) {
@@ -199,8 +195,8 @@ if (isDev) {
    */
   rendererConfig.plugins.push(
     new webpack.DefinePlugin({
-      __static: `"${path.join(__dirname, '../static').replace(/\\/g, '\\\\')}"`
-    })
+      ...runtimePathDefine,
+    }),
   );
 } else {
   /**
@@ -211,23 +207,23 @@ if (isDev) {
   rendererConfig.plugins.push(
     new CopyWebpackPlugin([
       {
-        from: path.join(__dirname, '../static'),
-        to: path.join(__dirname, '../dist/static'),
-        ignore: ['.*']
-      }
+        from: rootResolve('static'),
+        to: rootResolve('dist/static'),
+        ignore: ['.*'],
+      },
     ]),
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': '"production"'
+      'process.env.NODE_ENV': '"production"',
     }),
     new webpack.LoaderOptionsPlugin({
-      minimize: true
-    })
+      minimize: true,
+    }),
   );
 }
 
 if (process.env.ANALYZER) {
   const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-  rendererConfig.plugins.push(new BundleAnalyzerPlugin())
+  rendererConfig.plugins.push(new BundleAnalyzerPlugin());
 }
 
 module.exports = rendererConfig;

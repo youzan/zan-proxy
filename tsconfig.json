@@ -24,6 +24,7 @@
       "@gui/*": ["gui/*"]
     },
     "typeRoots": [
+      "./node_modules/@types",
       "./src/gui/types",
       "./src/gui/main/managers",
       "./src/gui/plugins"
@@ -33,7 +34,8 @@
     "outDir": "./dist"
   },
   "files": [
-    "src/gui/global.d.ts"
+    "src/gui/global.d.ts",
+    "src/cli/global.d.ts"
   ],
   "include": [
     "./src"

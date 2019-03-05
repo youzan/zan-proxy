@@ -49,6 +49,7 @@ export class HostService extends EventEmitter {
         return prev;
       }, {});
     forEach(contentMap, (content, fileName) => {
+      // @ts-ignore
       const hostName = content.name;
       const userId = fileName.substr(0, this._getUserIdLength(fileName, hostName));
       this.userHostFilesMap[userId] = this.userHostFilesMap[userId] || {};

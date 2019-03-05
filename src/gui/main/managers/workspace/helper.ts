@@ -1,6 +1,6 @@
 import Container from 'typedi';
 
-import { HostService, ProfileService, RuleService } from 'zan-proxy/dist/App/services';
+import { HostService, ProfileService, RuleService } from '@core/App/services';
 
 const workspaceManagerHelper = {
   /**

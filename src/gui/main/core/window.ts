@@ -2,9 +2,10 @@ import * as path from 'path';
 import { BrowserWindow } from 'electron';
 import { Service } from 'typedi';
 
-const winURL = global.isDev
-  ? 'http://localhost:9080'
-  : `file://${path.resolve(global.__static, '../index.html')}`;
+const winURL =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:9080'
+    : `file://${path.resolve(global.__static, '../index.html')}`;
 
 @Service()
 export default class WorkspaceWindow {

@@ -2,19 +2,20 @@
 
 process.env.BABEL_ENV = 'main';
 
-const path = require('path');
-const { dependencies } = require('../package.json');
 const webpack = require('webpack');
+const nodeExternals = require('webpack-node-externals');
+const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
+const { rootResolve, runtimePathDefine, webpackAlias } = require('../utils');
 
 const isDev = process.env.NODE_ENV !== 'production';
 
 const mainConfig = {
   mode: process.env.NODE_ENV,
-  target: 'electron-main',
+  target: 'node',
   entry: {
-    main: path.join(__dirname, '../src/gui/main/index.ts'),
+    main: rootResolve('src/cli/index.ts'),
   },
-  externals: [...Object.keys(dependencies || {})],
+  externals: [nodeExternals()],
   module: {
     rules: [
       {
@@ -40,10 +41,11 @@ const mainConfig = {
   output: {
     filename: '[name].js',
     libraryTarget: 'commonjs2',
-    path: path.join(__dirname, '../dist'),
+    path: rootResolve('dist'),
   },
   plugins: [new webpack.NoEmitOnErrorsPlugin()],
   resolve: {
+    alias: webpackAlias,
     extensions: ['.js', '.ts', '.json', '.node'],
   },
 };
@@ -54,8 +56,9 @@ if (isDev) {
    */
   mainConfig.plugins.push(
     new webpack.DefinePlugin({
-      __static: `"${path.join(__dirname, '../static').replace(/\\/g, '\\\\')}"`,
+      ...runtimePathDefine,
     }),
+    new FriendlyErrorsWebpackPlugin(),
   );
 } else {
   /**

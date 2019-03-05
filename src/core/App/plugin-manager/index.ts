@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from 'fs-extra';
 import koa from 'koa';
 import koaBodyParser from 'koa-bodyparser';
 import koaMount from 'koa-mount';
@@ -33,7 +33,7 @@ export default class PluginManager {
           if (!fs.existsSync(pluginPath)) {
             throw Error(`plugin ${curr.name} not found`);
           }
-          const pluginClass = require(pluginPath);
+          const pluginClass = __non_webpack_require__(pluginPath);
           prev[curr.name] = new pluginClass();
         } catch (error) {
           console.error(
@@ -61,6 +61,7 @@ export default class PluginManager {
               },
             ]),
             (p1, p2) => {
+              // @ts-ignore
               return p1.name === p2.name;
             },
           );
@@ -90,6 +91,7 @@ export default class PluginManager {
             return reject(err);
           }
           const plugins = this.storage.get();
+          // @ts-ignore
           remove(plugins, p => p.name === pluginName);
           this.storage.set(plugins);
           return resolve(plugins);
@@ -157,7 +159,7 @@ export default class PluginManager {
           return Object.assign(
             {},
             plugin,
-            require(path.join(this.getPluginDir(plugin.name), './package.json')),
+            fs.readJsonSync(path.join(this.getPluginDir(plugin.name), 'package.json')),
           );
         }),
         status: 200,

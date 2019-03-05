@@ -21,3 +21,6 @@ app.on('ready', () => {
     console.error('Unable to install devtools: \n', err);
   });
 });
+
+// Require `main` process to boot app
+import('./index');

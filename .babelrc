@@ -1,6 +1,13 @@
 {
   "comments": false,
   "env": {
+    "main": {
+      "presets": [
+        ["@babel/env", {
+          "targets": { "node": 8 }
+        }]
+      ]
+    },
     "renderer": {
       "presets": [
         [
