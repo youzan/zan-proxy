@@ -5,7 +5,7 @@ import "mocha";
 import path from "path";
 import os from "os";
 import rimraf from "rimraf";
-import { AppInfoService, ProfileService } from "./../../../src/App/services";
+import { AppInfoService, ProfileService } from "../../../src/core/App/services";
 
 describe("ProfileService", () => {
     const appInfoService = new AppInfoService();

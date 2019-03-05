@@ -3,7 +3,7 @@ import ip from "ip";
 import "mocha";
 import path from "path";
 import os from "os";
-import { AppInfoService } from "./../../../src/App/services";
+import { AppInfoService } from "../../../src/core/App/services";
 
 describe("AppInfoService", () => {
     const appInfo = new AppInfoService(false);

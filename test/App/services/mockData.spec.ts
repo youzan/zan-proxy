@@ -6,7 +6,7 @@ import os from "os";
 import rimraf from "rimraf";
 import uuid from "uuid/v4";
 
-import { AppInfoService, MockDataService } from "../../../src/App/services";
+import { AppInfoService, MockDataService } from "../../../src/core/App/services";
 
 describe("MockDataService", () => {
     const appInfoService = new AppInfoService();
