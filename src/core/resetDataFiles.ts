@@ -1,8 +1,6 @@
-#!/usr/bin/env node
-
-const fs = require('fs-extra');
-const path = require('path');
-const os = require('os');
+import fs from 'fs-extra';
+import path from 'path';
+import os from 'os';
 const proxyDataDir = path.join(os.homedir(), '.front-end-proxy');
 
 function resetFile(filePath, data, force) {
@@ -16,7 +14,8 @@ function resetFile(filePath, data, force) {
  * 初始化脚本
  * @param force
  */
-function resetData(force = false) {
+export default function resetDataFiles(force = false) {
+  console.log('开始初始化数据...');
   fs.ensureDirSync(proxyDataDir);
   fs.ensureDirSync(path.join(proxyDataDir, 'certificate'));
   fs.ensureDirSync(path.join(proxyDataDir, 'certificate/root'));
@@ -33,15 +32,7 @@ function resetData(force = false) {
   resetFile(path.join(proxyDataDir, 'configure.json'), {}, force);
   const rootTargetDir = path.join(proxyDataDir, 'certificate/root');
   ['zproxy.crt.pem', 'zproxy.key.pem'].forEach(f => {
-    fs.copyFileSync(
-      path.join(__dirname, '../certificate', f),
-      path.join(rootTargetDir, f),
-    );
+    fs.copyFileSync(path.join(__root, 'certificate', f), path.join(rootTargetDir, f));
   });
-}
-
-(() => {
-  console.log('开始初始化数据...');
-  resetData();
   console.log('初始化完成!');
-})();
+}

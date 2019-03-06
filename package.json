@@ -11,7 +11,7 @@
     "build:cli": "NODE_ENV=production webpack --config .build/cli/webpack.cli.config.js",
     "build:gui": "NODE_ENV=production node .build/gui/build.js && electron-builder",
     "test": "HOME=/tmp/proxy-test nyc mocha -r ts-node/register -c --recursive 'test/**/*.spec.ts'",
-    "postinstall": "node ./scripts/resetDataFile.js && electron-builder install-app-deps"
+    "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
     "axios": "^0.18.0",

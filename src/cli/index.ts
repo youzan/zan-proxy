@@ -9,6 +9,7 @@ import selfUpdate from './selfUpdate';
 import start from '@core/start';
 import syncHost from '@core/syncHost';
 import syncRule from '@core/syncRule';
+import resetDataFiles from '@core/resetDataFiles';
 
 import packageInfo from '../../package.json';
 promiseFinally.shim();
@@ -42,6 +43,7 @@ program
   .parse(process.argv);
 
 async function run() {
+  resetDataFiles();
   if (program.update) {
     await selfUpdate();
   }

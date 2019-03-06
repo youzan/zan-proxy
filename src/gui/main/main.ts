@@ -8,7 +8,7 @@ import { showNotify } from '@gui/main/utils';
 import Application from '@gui/main/core/application';
 import * as config from '../config';
 
-import 'zan-proxy/scripts/resetDataFile.js';
+import resetDataFiles from '@core/resetDataFiles';
 
 // 阻止程序退出
 app.on('window-all-closed', e => e.preventDefault());
@@ -17,6 +17,7 @@ app.on('ready', createMenus);
 
 app.on('ready', async () => {
   try {
+    resetDataFiles();
     // 异步初始化工作区信息
     const zanProxyApp = Container.get(Application);
     await zanProxyApp.loadPlugins(config.plugins);
