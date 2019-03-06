@@ -1,8 +1,9 @@
-/**
- * 入口文件
- */
+import 'reflect-metadata';
 import * as path from 'path';
 import logger from 'electron-log';
+import promiseFinally from 'promise.prototype.finally';
+
+promiseFinally.shim();
 
 if (process.env.NODE_ENV === 'development') {
   // 开发模式下，关闭日志文件输出
@@ -10,8 +11,9 @@ if (process.env.NODE_ENV === 'development') {
 } else {
   logger.transports.console.level = false;
   global.__root = path.resolve(__dirname, '../');
-  global.__static = path.resolve(__dirname, '/static');
-  global.__resource = path.resolve(__dirname, '../../../resources');
+  global.__site = path.resolve(__dirname, '../site');
+  global.__static = path.resolve(__dirname, '../static');
+  global.__resource = path.resolve(__dirname, '../resource');
 }
 
 process.on('unhandledRejection', err => {

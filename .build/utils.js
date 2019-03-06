@@ -7,10 +7,10 @@ const path = require('path');
 const rootResolve = (...ps) => path.resolve(__dirname, '..', ...ps);
 
 const runtimePathDefine = {
-  __root: `"${rootResolve('')}"`,
-  __static: `"${rootResolve('static')}"`,
-  __resource: `"${rootResolve('resources')}"`,
-  __site: `"${rootResolve('site')}"`,
+  'global.__root': `"${rootResolve('')}"`,
+  'global.__static': `"${rootResolve('static')}"`,
+  'global.__resource': `"${rootResolve('resource')}"`,
+  'global.__site': `"${rootResolve('site')}"`,
 };
 
 const webpackAlias = {

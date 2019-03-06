@@ -5,8 +5,7 @@ declare namespace NodeJS {
   declare interface Global {
     __root: string;
     __site: string;
+    __static: string;
+    __resource: string;
   }
 }
-
-const __root: string;
-const __site: string;

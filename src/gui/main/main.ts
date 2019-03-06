@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { app } from 'electron';
 import logger from 'electron-log';
 import { Container } from 'typedi';

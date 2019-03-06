@@ -10,6 +10,7 @@
     "build:ui": "cd ./webui && npm run build",
     "build:cli": "NODE_ENV=production webpack --config .build/cli/webpack.cli.config.js",
     "build:gui": "NODE_ENV=production node .build/gui/build.js && electron-builder",
+    "publish:cli": "npm run build:ui && npm run build:cli && ./scripts/publish-cli.sh",
     "test": "HOME=/tmp/proxy-test nyc mocha -r ts-node/register -c --recursive 'test/**/*.spec.ts'",
     "postinstall": "electron-builder install-app-deps"
   },
@@ -47,7 +48,7 @@
     "node-localstorage": "^1.3.1",
     "npm": "^6.8.0",
     "open": "0.0.5",
-    "ora": "^2.0.0",
+    "ora": "^3.2.0",
     "parse-domain": "^1.1.0",
     "pem": "^1.14.2",
     "promise.prototype.finally": "^3.1.0",
@@ -64,9 +65,9 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "@babel/core": "~7.2.0",
+    "@babel/core": "~7.3.4",
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
-    "@babel/plugin-transform-runtime": "~7.2.0",
+    "@babel/plugin-transform-runtime": "~7.3.4",
     "@babel/preset-env": "~7.3.1",
     "@babel/runtime": "^7.3.1",
     "@commitlint/cli": "^7.5.2",
@@ -101,7 +102,6 @@
     "chai-events": "^0.0.1",
     "chalk": "~2.4.2",
     "chokidar": "^2.0.4",
-    "copy-webpack-plugin": "~4.6.0",
     "css-loader": "~2.1.0",
     "del": "~3.0.0",
     "electron": "3.1.3",
@@ -121,9 +121,7 @@
     "node-sass": "~4.11.0",
     "nodemon": "^1.18.10",
     "nyc": "^11.6.0",
-    "ora": "^3.0.0",
     "prettier": "~1.16.0",
-    "progress-bar-webpack-plugin": "^1.11.0",
     "react": "^16.7.0",
     "react-copy-to-clipboard": "^5.0.1",
     "react-dom": "^16.7.0",
@@ -142,7 +140,7 @@
     "webpack": "~4.29.0",
     "webpack-bundle-analyzer": "^3.0.3",
     "webpack-cli": "~3.2.1",
-    "webpack-dev-server": "~3.1.4",
+    "webpack-dev-server": "~3.2.1",
     "webpack-hot-middleware": "~2.24.3",
     "webpack-merge": "~4.2.1",
     "webpack-node-externals": "^1.7.2"
@@ -152,7 +150,9 @@
     "url": "https://github.com/youzan/zan-proxy.git"
   },
   "files": [
-    "dist"
+    "dist",
+    "static",
+    "resource"
   ],
   "bin": {
     "zan-proxy": "./dist/main.js",
@@ -166,10 +166,11 @@
       "output": "build"
     },
     "files": [
-      "dist/**/*"
+      "dist/**",
+      "static/**"
     ],
     "extraResources": [
-      "resources/**"
+      "resource/**"
     ],
     "mac": {
       "icon": "icons/icon.icns",

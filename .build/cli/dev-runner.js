@@ -22,6 +22,7 @@ const startNodemon = (function() {
       console.log('nodemon started.');
       started = true;
     }).on('exit', () => {
+      console.log('nodemon exit.');
       process.exit();
     });
   }

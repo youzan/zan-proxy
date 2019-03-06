@@ -1,5 +1,4 @@
 import 'reflect-metadata';
-
 import promiseFinally from 'promise.prototype.finally';
 import program from 'commander';
 import path from 'path';
@@ -17,6 +16,8 @@ promiseFinally.shim();
 if (process.env.NODE_ENV !== 'development') {
   global.__root = path.resolve(__dirname, '..');
   global.__site = path.resolve(__dirname, '../site');
+  global.__static = path.resolve(__dirname, '../static');
+  global.__resource = path.resolve(__dirname, '../resource');
 }
 
 process.on('unhandledRejection', (reason, p) => {
@@ -24,13 +25,15 @@ process.on('unhandledRejection', (reason, p) => {
     console.error('Unhandled Rejection at: Promise ', p, ' reason: ', reason);
   }
 });
-process.on('SIGINT', () => {
-  process.exit();
-});
+
 process.on('uncaughtException', err => {
   if (process.env.DEBUG) {
     console.error(err);
   }
+});
+
+process.on('SIGINT', () => {
+  process.exit();
 });
 
 program

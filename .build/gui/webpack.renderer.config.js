@@ -6,10 +6,9 @@ const path = require('path');
 const fs = require('fs-extra');
 const webpack = require('webpack');
 const tsImportPluginFactory = require('ts-import-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ProgressBarPlugin = require('progress-bar-webpack-plugin');
+const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 
 const { rootResolve, runtimePathDefine, webpackAlias } = require('../utils');
 
@@ -185,7 +184,6 @@ const rendererConfig = {
     }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
-    new ProgressBarPlugin(),
   ],
 };
 
@@ -197,6 +195,7 @@ if (isDev) {
     new webpack.DefinePlugin({
       ...runtimePathDefine,
     }),
+    new FriendlyErrorsWebpackPlugin(),
   );
 } else {
   /**
@@ -205,13 +204,6 @@ if (isDev) {
   rendererConfig.devtool = '#source-map';
 
   rendererConfig.plugins.push(
-    new CopyWebpackPlugin([
-      {
-        from: rootResolve('static'),
-        to: rootResolve('dist/static'),
-        ignore: ['.*'],
-      },
-    ]),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': '"production"',
     }),

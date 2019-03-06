@@ -22,7 +22,3 @@ interface Window {
   __static: string;
 }
 
-const __plugins: {
-  [name: string]: ZanProxyMac.IRendererPluginExport;
-};
-const __static: string;

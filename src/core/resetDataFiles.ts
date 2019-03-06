@@ -32,7 +32,7 @@ export default function resetDataFiles(force = false) {
   resetFile(path.join(proxyDataDir, 'configure.json'), {}, force);
   const rootTargetDir = path.join(proxyDataDir, 'certificate/root');
   ['zproxy.crt.pem', 'zproxy.key.pem'].forEach(f => {
-    fs.copyFileSync(path.join(__root, 'certificate', f), path.join(rootTargetDir, f));
+    fs.copyFileSync(path.join(global.__resource, 'certificate', f), path.join(rootTargetDir, f));
   });
   console.log('初始化完成!');
 }
