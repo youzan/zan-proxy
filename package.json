@@ -10,7 +10,6 @@
     "build:ui": "cd ./webui && npm run build",
     "build:cli": "NODE_ENV=production webpack --config .build/cli/webpack.cli.config.js",
     "build:gui": "NODE_ENV=production node .build/gui/build.js && electron-builder",
-    "publish:cli": "npm run build:ui && npm run build:cli && ./scripts/publish-cli.sh",
     "test": "HOME=/tmp/proxy-test nyc mocha -r ts-node/register -c --recursive 'test/**/*.spec.ts'",
     "postinstall": "electron-builder install-app-deps"
   },
@@ -152,6 +151,7 @@
   "files": [
     "dist",
     "static",
+    "site",
     "resource"
   ],
   "bin": {
@@ -167,6 +167,7 @@
     },
     "files": [
       "dist/**",
+      "site/**",
       "static/**"
     ],
     "extraResources": [

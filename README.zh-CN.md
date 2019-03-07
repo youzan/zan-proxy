@@ -31,10 +31,13 @@
 
 从 [Github](https://github.com/youzan/zan-proxy/releases) 下载已经编译好的安装包。
 
-
 ## 界面
 
+### GUI
+
 <img src="https://img.yzcdn.cn/public_files/2019/03/01/b101dc19661fda0341aaff08239ac528.png" />
+
+### Web
 
 <img src="https://img.yzcdn.cn/public_files/2018/03/29/538c49fa295df7dc7184d75fc1c1ab99.png" />
 
@@ -48,31 +51,29 @@
 
     ```shell
     yarn
+    cd webui && yarn
     ```
 
-2. 安装ui依赖
+2. 启动ui开发模式
 
     ```shell
-    cd webui/ && yarn
+    yarn dev:ui
     ```
 
-3. 回到项目根目录
+3. 启动cli/gui开发模式
 
     ```shell
-    cd ..
+    yarn dev:cli  # cli development mode
+    yarn dev:gui  # gui development mode
     ```
 
 4. 构建
 
     ```shell
-    yarn build
+    yarn build:cli
+    yarn build:gui
     ```
 
-5. 运行
-
-    ```shell
-    node dist/bin/index.js
-    ```
 
 ## 插件列表
 

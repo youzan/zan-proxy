@@ -1,5 +1,8 @@
 #!/bin/bash
 
+yarn build:ui
+yarn build:cli
+
 cacheDir=".publish-cli"
 
 rm -rf $cacheDir

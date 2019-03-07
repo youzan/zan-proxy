@@ -10,6 +10,9 @@ if (process.env.NODE_ENV === 'development') {
   logger.transports.file.level = false;
 } else {
   logger.transports.console.level = false;
+  console.info = logger.info.bind(logger);
+  console.log = logger.log.bind(logger);
+  console.error = logger.error.bind(logger);
   global.__root = path.resolve(__dirname, '../');
   global.__site = path.resolve(__dirname, '../site');
   global.__static = path.resolve(__dirname, '../static');

@@ -2,14 +2,14 @@
 
 本文档只介绍部分对插件开发者来说需要了解的目录结构及相关文件。
 
-**注意：不推荐开发者对 `src` 目录中 `config.ts` 和 `plugins` 以外的文件进行修改，可能会在后续更新代码时产生冲突。**
+**注意：不推荐开发者对 `src/gui` 目录中 `config.ts` 和 `plugins` 以外的文件进行修改，可能会在后续合并代码时产生冲突。**
 
 ```shell
 root
 ├── package.json
 ├── icons             # 图标文文件夹
 ├── resources         # extraResources 外部资源文件夹
-├── src
+├── src/gui
 │   ├── config.ts     # 配置文件
 │   ├── global.d.ts   # 全局类型声明
 │   ├── common        # main进程与renderer进程公用文件目录
@@ -29,15 +29,10 @@ root
 │   └── types         # 公共类型目录
 ├── static            # 静态资源目录
 ├── dist
-├── build
-├── tsconfig.json
-├── tsconfig.main.json
-├── tsconfig.renderer.json
-├── tslint.json
-└── yarn.lock
+└── build
 ```
 
-#### src/config.ts
+#### src/gui/config.ts
 
 统一的配置文件，导出的对象会被 `src/main/main.ts` 文件使用，用于初始化应用。
 
@@ -45,19 +40,19 @@ root
 
 - plugins: `string[]` —— 程序运行时需要加载的插件的根目录数组
 
-#### src/global.d.ts
+#### src/gui/global.d.ts
 
 声明各种全局的类型，包括通用类型、 main 进程 global 扩展类型和 renderer 进程 window 扩展类型
 
-#### src/common
+#### src/gui/common
 
 main 进程和 renderer 进程公共目录，一般存放一些公共数据（如公共常量、通讯信道名称等）
 
-#### src/types
+#### src/gui/types
 
 main 进程和 renderer 进程的类型文件，该目录的所有类型都在 `ZanProxyMac` 这个命名空间下
 
-#### src/main
+#### src/gui/main
 
 该目录为 electron main 进程目录，该目录下有：
 
@@ -73,7 +68,7 @@ main 进程和 renderer 进程的类型文件，该目录的所有类型都在 `
 
 6. `utils`: 该目录下存放了 main 进程中的工具函数，具体内容请参考[API文档](./api/main.md#utils)
 
-#### src/renderer
+#### src/gui/renderer
 
 electron 渲染进程，webpack 打包后生成 vendor.js 和 renderer.js 两个文件（不包括插件的 renderer 进程代码）
 

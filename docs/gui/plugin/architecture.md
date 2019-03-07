@@ -1,6 +1,6 @@
 ## 项目架构
 
-![架构图](./img/architecture.jpg)
+![架构图](https://img.yzcdn.cn/public_files/2019/03/07/47150417c448047323f27f470942b572.jpg)
 
 上面是一张简单的 zan-proxy-mac 架构图，可以看出，zan-proxy-mac 以 Application 类为核心，管理多个 Manager，每个 Manager 都拥有 Storage、WorkspaceWindow 这些被注入的属性，下面将对各个类的职责做一下简单的介绍。
 

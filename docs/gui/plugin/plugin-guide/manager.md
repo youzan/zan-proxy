@@ -48,7 +48,7 @@ export default {
 
 相关的示例代码为：
 
-```ts Manager1
+```ts
 class Manager1 extends BaseManager {
   public init() {
     this.on('listen1', this.eventHandler);
@@ -60,7 +60,7 @@ class Manager1 extends BaseManager {
 }
 ```
 
-```ts Manager2
+```ts
 class Manager2 extends BaseManager {
   public afterInit() {
     this.application.emitAllManager('listen1');
