@@ -21,3 +21,6 @@ site
 docs/_book
 
 .vscode
+
+# gui ignore
+build

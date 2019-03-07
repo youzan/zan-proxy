@@ -13,7 +13,7 @@ if (process.env.NODE_ENV === 'development') {
   global.__root = path.resolve(__dirname, '../');
   global.__site = path.resolve(__dirname, '../site');
   global.__static = path.resolve(__dirname, '../static');
-  global.__resource = path.resolve(__dirname, '../resource');
+  global.__resource = path.resolve(__dirname, '../../resource');
 }
 
 process.on('unhandledRejection', err => {
@@ -23,6 +23,3 @@ process.on('unhandledRejection', err => {
 process.on('uncaughtException', err => {
   logger.error('uncaughtException', err);
 });
-
-// load dev and main file
-import('./main');

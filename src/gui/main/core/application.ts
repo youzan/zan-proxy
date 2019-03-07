@@ -14,8 +14,6 @@ import HostAndRuleFilesManager from '@gui/main/managers/host-and-rule-files';
 import RendererLoaderManager from '@gui/main/managers/renderer-loader';
 import WorkspaceWindow from './window';
 
-const PLUGIN_MANAGER_PATH = 'manager/index.js';
-
 interface IPlugin {
   name: string;
   manager: BaseManager;
@@ -172,11 +170,10 @@ export default class Application {
    * @memberof Application
    */
   private async loadPluginByEntryItem({ name, path: pluginPath }: IPluginEntry) {
-    const managerEntryFile = path.resolve(pluginPath, PLUGIN_MANAGER_PATH);
-    if (fs.existsSync(managerEntryFile)) {
+    if (fs.existsSync(pluginPath)) {
       try {
         // 加载 manager 文件
-        const pluginModule = await import(managerEntryFile);
+        const pluginModule = __non_webpack_require__(pluginPath);
         // 兼容 es6 default expoort 和 node module.exports
         const plugin: IPlugin = pluginModule.__esModule ? pluginModule.default : pluginModule;
 
@@ -184,14 +181,10 @@ export default class Application {
           throw new Error('文件没有导出内容');
         }
 
-        if (!(plugin.manager instanceof BaseManager)) {
-          throw new Error('manager 没有继承 BaseManager');
-        }
-
         plugin.name = name;
         this.externalPlugins.push(plugin);
       } catch (err) {
-        logger.error(`加载插件 ${pluginPath} 失败`, err);
+        logger.error(`加载插件 ${name} 失败`, err);
       }
     }
   }
@@ -208,7 +201,7 @@ export default class Application {
     }
 
     for (const pluginName of pluginNames) {
-      const pluginPath = path.resolve(global.__root, 'dist/plugins', pluginName);
+      const pluginPath = path.resolve(global.__root, 'dist', `${pluginName}.js`);
       await this.loadPluginByEntryItem({
         name: pluginName,
         path: pluginPath,

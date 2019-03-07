@@ -99,7 +99,7 @@ function greeting() {
   else if (cols > 60) text = 'lets-|build';
   else text = false;
 
-  if (text && !isCI) {
+  if (text) {
     say(text, {
       colors: ['yellow'],
       font: 'simple3d',

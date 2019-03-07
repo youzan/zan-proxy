@@ -2,10 +2,10 @@
 
 process.env.BABEL_ENV = 'main';
 
-const { dependencies } = require('../package.json');
+const nodeExternals = require('webpack-node-externals');
 const webpack = require('webpack');
 
-const { rootResolve, runtimePathDefine, webpackAlias } = require('../utils');
+const { rootResolve, runtimePathDefine, webpackAlias, scanGuiPlugin } = require('../utils');
 
 const isDev = process.env.NODE_ENV !== 'production';
 
@@ -13,9 +13,10 @@ const mainConfig = {
   mode: process.env.NODE_ENV,
   target: 'electron-main',
   entry: {
-    main: rootResolve('src/gui/main/index.ts'),
+    ...scanGuiPlugin('manager/index.ts'),
+    main: [rootResolve('src/gui/main/index.ts'), rootResolve('src/gui/main/main.ts')],
   },
-  externals: [...Object.keys(dependencies || {})],
+  externals: [nodeExternals()],
   module: {
     rules: [
       {

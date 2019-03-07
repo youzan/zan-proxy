@@ -81,7 +81,7 @@ function startRenderer () {
 
 function startMain () {
   return new Promise((resolve, reject) => {
-    mainConfig.entry.main = [rootResolve('src/main/index.dev.ts')].concat(mainConfig.entry.main)
+    mainConfig.entry.main = [rootResolve('src/gui/main/index.dev.ts')].concat(mainConfig.entry.main)
     mainConfig.mode = 'development'
     const compiler = webpack(mainConfig)
 
@@ -118,15 +118,9 @@ function startMain () {
 function startElectron () {
   var args = [
     '--inspect=5858',
-    rootResolve('dist/main.js'),
+    '.',
+    ...process.argv.slice(2),
   ]
-
-  // detect yarn or npm and process commandline args accordingly
-  if (process.env.npm_execpath.endsWith('yarn.js')) {
-    args = args.concat(process.argv.slice(3))
-  } else if (process.env.npm_execpath.endsWith('npm-cli.js')) {
-    args = args.concat(process.argv.slice(2))
-  }
 
   electronProcess = spawn(electron, args)
 

@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs-extra');
 
 /**
  * @param {string[]} ps
@@ -19,8 +20,25 @@ const webpackAlias = {
   '@cli': rootResolve('src/cli'),
 }
 
+/**
+ * 扫描插件 renderer 入口
+ */
+const scanGuiPlugin = (entryRelativePath) => {
+  const pluginRoot = rootResolve('src/gui/plugins');
+  const plugins = fs.readdirSync(pluginRoot);
+  const entries = {};
+  plugins.forEach(plugin => {
+    const filePath = path.join(pluginRoot, plugin, entryRelativePath);
+    if (fs.existsSync(filePath)) {
+      entries[plugin] = filePath;
+    }
+  });
+  return entries;
+}
+
 module.exports = {
   rootResolve,
   runtimePathDefine,
   webpackAlias,
+  scanGuiPlugin,
 };

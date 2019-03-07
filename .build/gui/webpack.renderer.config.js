@@ -10,23 +10,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 
-const { rootResolve, runtimePathDefine, webpackAlias } = require('../utils');
-
-/**
- * 扫描插件 renderer 入口
- */
-function scanPluginsRenderer() {
-  const pluginRoot = rootResolve('src/gui/plugins');
-  const plugins = fs.readdirSync(pluginRoot);
-  const entries = {};
-  plugins.forEach(plugin => {
-    const filePath = path.join(pluginRoot, plugin, 'renderer/index.ts');
-    if (fs.existsSync(filePath)) {
-      entries[plugin] = filePath;
-    }
-  });
-  return entries;
-}
+const { rootResolve, runtimePathDefine, webpackAlias, scanGuiPlugin } = require('../utils');
 
 const isDev = process.env.NODE_ENV !== 'production';
 
@@ -48,7 +32,7 @@ const rendererConfig = {
   devtool: '#cheap-module-eval-source-map',
   entry: {
     vendor: ['react', 'react-dom', 'lodash', 'mobx', 'mobx-react', 'antd'],
-    ...scanPluginsRenderer(), // 插件先加载，将组件设置到 window.__plugins
+    ...scanGuiPlugin('renderer/index.ts'), // 插件先加载，将组件设置到 window.__plugins
     renderer: rootResolve('src/gui/renderer/main.tsx'),
   },
   output: {
@@ -179,7 +163,7 @@ const rendererConfig = {
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     new HtmlWebpackPlugin({
       filename: 'index.html',
-      template: rootResolve('src/gui/index/.ejs'),
+      template: rootResolve('src/gui/index.ejs'),
       nodeModules: isDev ? rootResolve('node_modules') : false,
     }),
     new webpack.HotModuleReplacementPlugin(),

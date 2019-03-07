@@ -5,7 +5,7 @@ import { Service } from 'typedi';
 const winURL =
   process.env.NODE_ENV === 'development'
     ? 'http://localhost:9080'
-    : `file://${path.resolve(global.__static, '../index.html')}`;
+    : `file://${path.resolve(global.__root, 'dist/index.html')}`;
 
 @Service()
 export default class WorkspaceWindow {

@@ -5,7 +5,7 @@
       "dom",
       "esnext"
     ],
-    "jsx": "preserve",
+    "jsx": "react",
     "moduleResolution": "node",
     "module": "esnext",
     "allowJs": true,
