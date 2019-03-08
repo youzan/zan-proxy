@@ -1,0 +1,727 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>项目架构 · ZanProxy</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="type-system.html" />
+    
+    
+    <link rel="prev" href="directory.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../../">
+            
+                <a href="../../">
+            
+                    
+                    简介
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../../quick-start/">
+            
+                <a href="../../quick-start/">
+            
+                    
+                    快速开始
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1" data-path="../../quick-start/pre-install.html">
+            
+                <a href="../../quick-start/pre-install.html">
+            
+                    
+                    前置条件
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2" data-path="../../quick-start/install.html">
+            
+                <a href="../../quick-start/install.html">
+            
+                    
+                    安装
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3" data-path="../../quick-start/launch.html">
+            
+                <a href="../../quick-start/launch.html">
+            
+                    
+                    启动
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.4" data-path="../../quick-start/cert.html">
+            
+                <a href="../../quick-start/cert.html">
+            
+                    
+                    证书安装
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../../configure/">
+            
+                <a href="../../configure/">
+            
+                    
+                    代理配置
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../../configure/host.html">
+            
+                <a href="../../configure/host.html">
+            
+                    
+                    Host管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="../../configure/rule.html">
+            
+                <a href="../../configure/rule.html">
+            
+                    
+                    转发规则
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="../../configure/project.html">
+            
+                <a href="../../configure/project.html">
+            
+                    
+                    工程路径
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="../../configure/mock.html">
+            
+                <a href="../../configure/mock.html">
+            
+                    
+                    mock数据
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../../usage/">
+            
+                <a href="../../usage/">
+            
+                    
+                    使用代理
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="../../usage/chrome.html">
+            
+                <a href="../../usage/chrome.html">
+            
+                    
+                    chrome代理配置
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="../../usage/mobile.html">
+            
+                <a href="../../usage/mobile.html">
+            
+                    
+                    手机代理设置
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="../../usage/enable.html">
+            
+                <a href="../../usage/enable.html">
+            
+                    
+                    规则启用/禁用
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="../../usage/monitor.html">
+            
+                <a href="../../usage/monitor.html">
+            
+                    
+                    请求监控
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../../plugin/">
+            
+                <a href="../../plugin/">
+            
+                    
+                    自定义插件
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../../plugin/code.html">
+            
+                <a href="../../plugin/code.html">
+            
+                    
+                    编写插件
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.2" data-path="../../plugin/usage.html">
+            
+                <a href="../../plugin/usage.html">
+            
+                    
+                    使用插件
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    Mac 客户端
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1" data-path="../use.html">
+            
+                <a href="../use.html">
+            
+                    
+                    使用方式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    插件开发
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.2.1" data-path="directory.html">
+            
+                <a href="directory.html">
+            
+                    
+                    目录结构
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.6.2.2" data-path="architecture.html">
+            
+                <a href="architecture.html">
+            
+                    
+                    项目架构
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.3" data-path="type-system.html">
+            
+                <a href="type-system.html">
+            
+                    
+                    类型系统
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.4" >
+            
+                <span>
+            
+                    
+                    插件开发指南
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.2.4.1" data-path="plugin-guide/start.html">
+            
+                <a href="plugin-guide/start.html">
+            
+                    
+                    新建插件
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.4.2" data-path="plugin-guide/manager.html">
+            
+                <a href="plugin-guide/manager.html">
+            
+                    
+                    Manager
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.4.3" data-path="plugin-guide/renderer.html">
+            
+                <a href="plugin-guide/renderer.html">
+            
+                    
+                    Renderer
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.5" >
+            
+                <span>
+            
+                    
+                    API参考
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.2.5.1" data-path="api/main.html">
+            
+                <a href="api/main.html">
+            
+                    
+                    Main
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2.5.2" data-path="api/renderer.html">
+            
+                <a href="api/renderer.html">
+            
+                    
+                    Renderer
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="../../cooperation/">
+            
+                <a href="../../cooperation/">
+            
+                    
+                    团队协作
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.7.1" data-path="../../cooperation/remoteRule.html">
+            
+                <a href="../../cooperation/remoteRule.html">
+            
+                    
+                    远程规则
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="../.." >项目架构</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h2 id="&#x9879;&#x76EE;&#x67B6;&#x6784;">&#x9879;&#x76EE;&#x67B6;&#x6784;</h2>
+<p><img src="https://img.yzcdn.cn/public_files/2019/03/07/47150417c448047323f27f470942b572.jpg" alt="&#x67B6;&#x6784;&#x56FE;"></p>
+<p>&#x4E0A;&#x9762;&#x662F;&#x4E00;&#x5F20;&#x7B80;&#x5355;&#x7684; zan-proxy-mac &#x67B6;&#x6784;&#x56FE;&#xFF0C;&#x53EF;&#x4EE5;&#x770B;&#x51FA;&#xFF0C;zan-proxy-mac &#x4EE5; Application &#x7C7B;&#x4E3A;&#x6838;&#x5FC3;&#xFF0C;&#x7BA1;&#x7406;&#x591A;&#x4E2A; Manager&#xFF0C;&#x6BCF;&#x4E2A; Manager &#x90FD;&#x62E5;&#x6709; Storage&#x3001;WorkspaceWindow &#x8FD9;&#x4E9B;&#x88AB;&#x6CE8;&#x5165;&#x7684;&#x5C5E;&#x6027;&#xFF0C;&#x4E0B;&#x9762;&#x5C06;&#x5BF9;&#x5404;&#x4E2A;&#x7C7B;&#x7684;&#x804C;&#x8D23;&#x505A;&#x4E00;&#x4E0B;&#x7B80;&#x5355;&#x7684;&#x4ECB;&#x7ECD;&#x3002;</p>
+<h3 id="application">Application</h3>
+<p>Application &#x7C7B;&#x662F; zan-proxy-mac &#x7684;&#x6838;&#x5FC3;&#xFF0C;&#x4E5F;&#x662F;&#x5E94;&#x7528;&#x7684;&#x5165;&#x53E3;&#x3002;&#x8FD9;&#x4E2A;&#x7C7B;&#x8D1F;&#x8D23;&#x52A0;&#x8F7D;&#x63D2;&#x4EF6;&#xFF0C;&#x7BA1;&#x7406;&#x5E94;&#x7528;&#x4E2D;&#x7684;&#x6240;&#x6709; Manager&#xFF0C;&#x62E5;&#x6709;&#x8C03;&#x7528; Manager &#x7684;&#x751F;&#x547D;&#x5468;&#x671F;&#x65B9;&#x6CD5;&#xFF0C;&#x4E3A; Manager &#x6CE8;&#x5165;&#x5916;&#x90E8;&#x5C5E;&#x6027;&#xFF0C;&#x7EDF;&#x4E00;&#x89E6;&#x53D1; Manager &#x76D1;&#x542C;&#x4E8B;&#x4EF6;&#x7B49;&#x529F;&#x80FD;&#x3002;</p>
+<h3 id="manager">Manager</h3>
+<p>Manager &#x7C7B;&#x662F; zan-proxy-mac &#x7684;&#x529F;&#x80FD;&#x627F;&#x8F7D;&#x4E3B;&#x4F53;&#xFF0C;&#x6240;&#x6709;&#x4E0E;&#x5E94;&#x7528;&#x529F;&#x80FD;&#x76F8;&#x5173;&#x7684;&#x903B;&#x8F91;&#x90FD;&#x88AB;&#x5206;&#x6563;&#x5C01;&#x88C5;&#x5728;&#x591A;&#x4E2A;&#x4E0D;&#x540C;&#x7684; Manager &#x5185;&#xFF0C;&#x5305;&#x62EC;&#x5DE5;&#x4F5C;&#x533A;&#x9884;&#x8BBE;&#x5207;&#x6362;&#x3001;Tray &#x83DC;&#x5355;&#x6E32;&#x67D3;&#x3001;&#x9884;&#x5B89;&#x88C5;&#x63D2;&#x4EF6;&#x3001;Renderer &#x8FDB;&#x7A0B;&#x63D2;&#x4EF6;&#x52A0;&#x8F7D;&#x7B49;&#x3002;</p>
+<p>Manager &#x81EA;&#x8EAB;&#x4E5F;&#x662F;&#x4E00;&#x4E2A;&#x5F02;&#x6B65;&#x7684; EventEmitter&#xFF0C;&#x901A;&#x8FC7;&#x76D1;&#x542C;&#x548C;&#x89E6;&#x53D1;&#x5BF9;&#x5E94;&#x7684;&#x4E8B;&#x4EF6;&#x6765;&#x5B9E;&#x73B0;&#x4E0D;&#x540C; Manager &#x4E4B;&#x95F4;&#x7684;&#x6570;&#x636E;&#x4F20;&#x8F93;&#x901A;&#x8BAF;&#xFF0C;&#x540C;&#x65F6;&#x5404;&#x4E2A; Manager &#x4E5F;&#x8D1F;&#x8D23;&#x4E0E; Renderer &#x8FDB;&#x7A0B;&#x7684;&#x76F8;&#x5173; Ipc &#x4FE1;&#x9053;&#x8FDB;&#x884C;&#x6570;&#x636E;&#x4F20;&#x8F93;&#x548C;&#x5904;&#x7406;&#x3002;</p>
+<h3 id="storage">Storage</h3>
+<p>Storage &#x662F;&#x4E00;&#x4E2A;&#x672C;&#x5730;&#x6570;&#x636E;&#x5B58;&#x50A8;&#x4E2D;&#x5FC3;&#xFF0C;&#x5404;&#x4E2A; Manager &#x901A;&#x8FC7;&#x8C03;&#x7528; Storage&#xFF0C;&#x5C06;&#x81EA;&#x5DF1;&#x7684;&#x4E00;&#x4E9B;&#x6570;&#x636E;&#x4FDD;&#x5B58;&#x5230;&#x672C;&#x5730;&#xFF0C;&#x4EE5;&#x4FBF;&#x5728;&#x4E0B;&#x6B21;&#x6253;&#x5F00;&#x5E94;&#x7528;&#x65F6;&#x4ECE;&#x672C;&#x5730;&#x6062;&#x590D;&#x76F8;&#x5173;&#x6570;&#x636E;&#x3002;</p>
+<h3 id="workspacewindow">WorkspaceWindow</h3>
+<p>WorkspaceWindow &#x63A7;&#x5236; Renderer &#x8FDB;&#x7A0B;&#x7A97;&#x53E3;&#xFF0C;&#x5404;&#x4E2A; Manager &#x901A;&#x8FC7;&#x5B83;&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x7ED9; Renderer &#x8FDB;&#x7A0B;&#x53D1;&#x9001;&#x4FE1;&#x606F;&#x3002;</p>
+<h3 id="utilsipc">Utils/ipc</h3>
+<p>&#x4E0A;&#x9762;&#x63D0;&#x5230;&#x7684;&#x901A;&#x8FC7; WorkspaceWindow &#x76F4;&#x63A5;&#x7ED9; Renderer &#x8FDB;&#x7A0B;&#x53D1;&#x9001;&#x4FE1;&#x606F;&#x7684;&#x65B9;&#x5F0F;&#x53EA;&#x662F;&#x7528;&#x5728;&#x4E00;&#x4E9B;&#x9700;&#x8981; Main &#x8FDB;&#x7A0B;&#x4E3B;&#x52A8;&#x7ED9; Renderer &#x8FDB;&#x7A0B;&#x63A8;&#x9001;&#x6D88;&#x606F;&#x7684;&#x573A;&#x5408;&#x3002;</p>
+<p>&#x4E00;&#x822C;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;&#x7531; Renderer &#x8FDB;&#x7A0B;&#x5411; Main &#x8FDB;&#x7A0B;&#x53D1;&#x9001;&#x6D88;&#x606F;&#x7684;&#x60C5;&#x51B5;&#x66F4;&#x4E3A;&#x591A;&#x89C1;&#xFF0C;&#x8FD9;&#x79CD;&#x60C5;&#x51B5;&#x4E0E;&#x4E00;&#x822C; web &#x5E94;&#x7528;&#x4E2D;&#x7684; Ajax &#x8BF7;&#x6C42;&#x6BD4;&#x8F83;&#x76F8;&#x4F3C;&#xFF0C;&#x56E0;&#x6B64; zan-proxy-mac &#x4E3A; Main &#x8FDB;&#x7A0B;&#x548C; Renderer &#x8FDB;&#x7A0B;&#x90FD;&#x5C01;&#x88C5;&#x4E86;&#x76F8;&#x5E94;&#x7684;&#x65B9;&#x6CD5;&#xFF0C;&#x7528;&#x6765;&#x5C06; Ipc &#x901A;&#x8BAF;&#x6A21;&#x62DF;&#x4E3A;&#x4E00;&#x4E2A; Ajax &#x8BF7;&#x6C42;&#x3002;</p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="directory.html" class="navigation navigation-prev " aria-label="Previous page: 目录结构">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="type-system.html" class="navigation navigation-next " aria-label="Next page: 类型系统">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"项目架构","level":"1.6.2.2","depth":3,"next":{"title":"类型系统","level":"1.6.2.3","depth":3,"path":"gui/plugin/type-system.md","ref":"gui/plugin/type-system.md","articles":[]},"previous":{"title":"目录结构","level":"1.6.2.1","depth":3,"path":"gui/plugin/directory.md","ref":"gui/plugin/directory.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":false,"twitter":false,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":[]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ZanProxy","links":{"gitbook":false,"sharing":{"google":false,"facebook":false,"twitter":false,"all":false}},"gitbook":"*"},"file":{"path":"gui/plugin/architecture.md","mtime":"2019-03-08T06:06:12.814Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-03-08T06:08:21.743Z"},"basePath":"../..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../../gitbook/gitbook.js"></script>
+    <script src="../../gitbook/theme.js"></script>
+    
+        
+        <script src="../../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+
