@@ -21,6 +21,7 @@ The proxy server can be easily configured by a user-friendly interface. In addit
 
 ## Features
 
+* Clean and user-friendly interface
 * Support HTTP, HTTPS and websocket
 * Support remote redirect rules
 * Modify the request target
@@ -31,17 +32,15 @@ The proxy server can be easily configured by a user-friendly interface. In addit
 
 ## Installation
 
-```shell
-npm i -g zan-proxy
-```
+Download from [Github](https://github.com/youzan/zan-proxy/releases).
 
-## Usage
+## Interface
 
-```shell
-zan-proxy
-```
+### GUI
 
-The website for management will be opened automatically.
+<img src="https://img.yzcdn.cn/public_files/2019/03/01/b101dc19661fda0341aaff08239ac528.png" />
+
+### Web
 
 <img src="https://img.yzcdn.cn/public_files/2018/03/29/538c49fa295df7dc7184d75fc1c1ab99.png" />
 
@@ -55,30 +54,27 @@ The detailed documentation can be refered [here](https://youzan.github.io/zan-pr
 
     ```shell
     yarn
+    cd webui && yarn
     ```
 
-2. install ui dependencies
+2.  start webui development mode
 
     ```shell
-    cd webui/ && yarn
+    yarn dev:ui
     ```
 
-3. back to the project root directory
+3. start cli/gui development mode
 
     ```shell
-    cd ..
+    yarn dev:cli  # cli development mode
+    yarn dev:gui  # gui development mode
     ```
 
 4. build
 
     ```shell
-    yarn build
-    ```
-
-5. run
-
-    ```shell
-    node dist/bin/index.js
+    yarn build:cli
+    yarn build:gui
     ```
 
 ## Plugins List

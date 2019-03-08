@@ -1,16 +1,26 @@
 {
-  "plugins": [
-    "transform-runtime"
-  ],
-  "presets": [
-    [
-      "env",
-      {
-        "targets": {
-          "node": "6.9"
-        },
-        "debug": true
-      }
-    ]
-  ]
+  "comments": false,
+  "env": {
+    "main": {
+      "presets": [
+        ["@babel/env", {
+          "targets": { "node": 8 }
+        }]
+      ]
+    },
+    "renderer": {
+      "presets": [
+        [
+          "@babel/env",
+          {
+            "modules": false
+          }
+        ]
+      ],
+      "plugins": [
+        "@babel/plugin-transform-runtime",
+        "@babel/plugin-syntax-dynamic-import"
+      ]
+    }
+  }
 }

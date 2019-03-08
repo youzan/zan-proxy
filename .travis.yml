@@ -1,7 +1,6 @@
-
 language: node_js
 node_js:
-- 6
+- 8
 os: linux
 cache:
   yarn: true
@@ -11,7 +10,7 @@ branches:
   - dev
 install:
 - |
-    yarn install
+    npm install
 script:
 - |
-    npm run lint && npm run test
+    npm run test

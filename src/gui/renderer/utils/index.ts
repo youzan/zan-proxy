@@ -1,0 +1,1 @@
+export { ipcSend } from './ipc';

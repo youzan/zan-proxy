@@ -4,37 +4,41 @@
  * If useCapture is set to false, the handlers fire backwards
  */
 module.exports = function createBodyClickListener(fn) {
-  let isListening = false
+  let isListening = false;
 
   /* === public api ========================================== */
   return {
     get isListening() {
-      return isListening
+      return isListening;
     },
 
     start(cb) {
-      window.addEventListener('click', _onclick, true)
-      window.addEventListener('keyup', _onescape, true)
-      isListening = true
-      if (typeof cb === 'function') cb()
+      window.addEventListener('click', _onclick, true);
+      window.addEventListener('keyup', _onescape, true);
+      isListening = true;
+      if (typeof cb === 'function') cb();
     },
 
     stop(cb) {
-      window.removeEventListener('click', _onclick, true)
-      window.removeEventListener('keyup', _onescape, true)
-      isListening = false
-      if (typeof cb === 'function') cb()
+      window.removeEventListener('click', _onclick, true);
+      window.removeEventListener('keyup', _onescape, true);
+      isListening = false;
+      if (typeof cb === 'function') cb();
+    },
+  };
+
+  /* === private helpers ===================================== */
+  function _onclick(e) {
+    e.preventDefault();
+    if (typeof fn === 'function') fn(e);
+    try {
+      stop();
+    } catch (e) {
+      /* no prob */
     }
   }
 
-  /* === private helpers ===================================== */
-  function _onclick (e) {
-    e.preventDefault()
-    if (typeof fn === 'function') fn(e)
-    try { stop() } catch(e) { /* no prob */ }
+  function _onescape(e) {
+    if (e.keyCode === 27) _onclick(e);
   }
-
-  function _onescape (e) {
-    if (e.keyCode === 27) _onclick(e)
-  }
-}
+};

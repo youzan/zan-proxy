@@ -19,5 +19,18 @@
 * [自定义插件](plugin/README.md)
     * [编写插件](plugin/code.md)
     * [使用插件](plugin/usage.md)
+* [Mac 客户端](gui/README.md)
+    * [使用方式](gui/use.md)
+    * [插件开发](gui/plugin/index.md)
+        * [目录结构](gui/plugin/directory.md)
+        * [项目架构](gui/plugin/architecture.md)
+        * [类型系统](gui/plugin/type-system.md)
+        * 插件开发指南
+            * [新建插件](gui/plugin/plugin-guide/start.md)
+            * [Manager](gui/plugin/plugin-guide/manager.md)
+            * [Renderer](gui/plugin/plugin-guide/renderer.md)
+        * API参考
+            * [Main](gui/plugin/api/main.md)
+            * [Renderer](gui/plugin/api/renderer.md)
 * [团队协作](cooperation/README.md)
     * [远程规则](cooperation/remoteRule.md)

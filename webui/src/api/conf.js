@@ -4,7 +4,7 @@
 
 import axios from 'axios';
 export default {
-  saveFile(content){
+  saveFile(content) {
     return axios.post('/configure/savefile', content);
-  }
-}
+  },
+};

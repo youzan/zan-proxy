@@ -16,6 +16,11 @@ tep/*
 .idea
 npm-debug.log
 dist
-site/static
+site
 .nyc_output
 docs/_book
+
+.vscode
+
+# gui ignore
+build

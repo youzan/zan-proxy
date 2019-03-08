@@ -1,8 +1,8 @@
 import { expect } from "chai";
 import http from "http";
 import "mocha";
-import { Forwarder } from "../../src/ProxyServer/impl";
-import { Forwarder as IForwarder } from "../../src/ProxyServer/interfaces";
+import { Forwarder } from "../../src/core/ProxyServer/impl";
+import { Forwarder as IForwarder } from "../../src/core/ProxyServer/interfaces";
 
 describe("Forwarder", () => {
     const forwarder: IForwarder = new Forwarder();

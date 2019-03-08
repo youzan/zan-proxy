@@ -1,32 +1,42 @@
 {
-    "compilerOptions": {
-        "moduleResolution": "node",
-        "target": "es2015",
-        "sourceRoot": "./src",
-        "sourceMap": true,
-        "strictNullChecks": true,
-        "strictFunctionTypes": true,
-        "allowSyntheticDefaultImports": true,
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
-        "esModuleInterop": true,
-        "emitDecoratorMetadata": true,
-        "experimentalDecorators": true,
-        "module": "commonjs",
-        "outDir": "dist",
-        "lib": [
-            "dom",
-            "es2017"
-        ]
-    },
-    "exclude": [
-        "cmd",
-        "esm",
-        "coverage",
-        "old",
-        ".felint",
-        ".milti_hooks",
-        "**/test/**/*.spec.ts"
+  "compilerOptions": {
+    "target": "es6",
+    "lib": [
+      "dom",
+      "esnext"
     ],
-    "compileOnSave": true
+    "jsx": "react",
+    "moduleResolution": "node",
+    "module": "esnext",
+    "allowJs": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "alwaysStrict": true,
+    "noEmitHelpers": true,
+    "importHelpers": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "baseUrl": "./src",
+    "paths": {
+      "@core/*": ["core/*"],
+      "@cli/*": ["gui/*"],
+      "@gui/*": ["gui/*"]
+    },
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/gui/types",
+      "./src/gui/main/managers",
+      "./src/gui/plugins"
+    ],
+    "sourceMap": true,
+    "strictBindCallApply": true,
+    "outDir": "./dist"
+  },
+  "files": [
+    "src/global.d.ts"
+  ],
+  "include": [
+    "./src"
+  ]
 }

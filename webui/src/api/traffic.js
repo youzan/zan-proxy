@@ -1,50 +1,47 @@
-import axios from "axios";
-import queryString from "query-string";
+import axios from 'axios';
+import queryString from 'query-string';
 export async function getResponseBody(id) {
-  try{
+  try {
     let result = await axios.get(`/traffic/getResponseBody?id=${id}`);
     return result.data;
-  }catch (e){
+  } catch (e) {
     return '';
   }
-
 }
 export async function getRequestBody(id) {
-  try{
+  try {
     let result = await axios.get(`/traffic/getRequestBody?id=${id}`);
     return result.data;
-  }catch (e){
+  } catch (e) {
     return '';
   }
-
 }
 
 export async function setStopRecord(stop) {
-    try{
-        let result = await axios.get(`/traffic/stopRecord?stop=${stop}`);
-        return result.data;
-    }catch (e){
-        return '';
-    }
+  try {
+    let result = await axios.get(`/traffic/stopRecord?stop=${stop}`);
+    return result.data;
+  } catch (e) {
+    return '';
+  }
 }
 
 export async function clear() {
-    try{
-        let result = await axios.get('/traffic/clear');
-        return result.data;
-    }catch (e){
-        return '';
-    }
+  try {
+    let result = await axios.get('/traffic/clear');
+    return result.data;
+  } catch (e) {
+    return '';
+  }
 }
 export async function setFilter(filter) {
-    try{
-        let result = await axios.get(`/traffic/setfilter?filter=${filter}`);
-        return result.data;
-    }catch (e){
-        return '';
-    }
+  try {
+    let result = await axios.get(`/traffic/setfilter?filter=${filter}`);
+    return result.data;
+  } catch (e) {
+    return '';
+  }
 }
-
 
 let pairSplitRegExp = /; */;
 let decode = decodeURIComponent;
@@ -62,7 +59,7 @@ export function parseCookie(str, options) {
     throw new TypeError('argument str must be a string');
   }
 
-  var obj = {}
+  var obj = {};
   var opt = options || {};
   var pairs = str.split(pairSplitRegExp);
   var dec = opt.decode || decode;
@@ -76,7 +73,7 @@ export function parseCookie(str, options) {
       continue;
     }
 
-    var key = pair.substr(0, eq_idx).trim()
+    var key = pair.substr(0, eq_idx).trim();
     var val = pair.substr(++eq_idx, pair.length).trim();
 
     // quoted values

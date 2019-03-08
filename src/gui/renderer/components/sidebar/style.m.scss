@@ -1,0 +1,32 @@
+.sidebar {
+  overflow: hidden;
+  height: 100vh;
+  border-right: 1px solid #ddd;
+  position: fixed;
+  left: 0;
+  top: 0;
+}
+
+.search-box {
+  padding: 15px 20px;
+  border-bottom: 1px solid #ddd;
+}
+
+.search-icon {
+  color: rgba($color: #000000, $alpha: 0.25);
+}
+
+.workspace-list {
+  overflow: auto;
+  width: 256px;
+  height: calc(100vh - 136px);
+  padding: 0;
+  margin-bottom: 0;
+}
+
+.actions {
+  padding: 20px;
+  text-align: center;
+  border-top: 1px solid #ddd;
+}
+

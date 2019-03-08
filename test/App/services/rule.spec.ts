@@ -5,7 +5,7 @@ import path from "path";
 import os from "os";
 import rimraf from "rimraf";
 import URL from "url";
-import { AppInfoService, RuleFile, RuleService } from "../../../src/App/services";
+import { AppInfoService, RuleService, RuleFile } from "../../../src/core/App/services";
 
 const should = chai.should();
 

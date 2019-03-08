@@ -1,0 +1,63 @@
+.workspace-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  padding: 8px 20px 8px;
+  width: 240px;
+  border-bottom: solid 1px #ddd;
+  justify-content: flex-start;
+  cursor: pointer;
+
+  .drag-icon {
+    margin-right: 10px;
+    cursor: -webkit-grab;
+  }
+
+  .name {
+    font-size: 14px;
+    margin: 7px 15px 7px 0;
+    width: 150px;
+    color: #333;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .checked-switch {
+    border: 1px solid #7AB0FF;
+  }
+
+  &:hover {
+    background-color: rgba($color: #EAF1FF, $alpha: 1);
+  }
+
+  &.selected {
+    background-color: rgba($color: #38f, $alpha: 0.8);
+  }
+
+  &.selected {
+    .name,
+    .drag-icon {
+      color: #fff;
+    }
+
+    &::after {
+      display: none;
+    }
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  // &::after {
+  //   content: '';
+  //   position: absolute;
+  //   bottom: 0;
+  //   left: 20px;
+  //   right: 0;
+  //   height: 1px;
+  //   background-color: #ddd;
+  // }
+}

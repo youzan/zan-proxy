@@ -1,0 +1,49 @@
+html,
+body {
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  margin: 0;
+  height: 100%;
+  padding: 0;
+  user-select: none;
+}
+
+// 用于 ant design 的表单中，给每个表单项的末尾添加额外的操作内容
+.form-extra {
+  position: absolute;
+  width: fit-content;
+
+  .link-btn {
+    font-size: 12px;
+    cursor: pointer;
+    margin-left: 15px;
+  }
+}
+
+.ant-form-item {
+  margin-bottom: 12px;
+
+  label {
+    color: #666;
+  }
+}
+
+.editor-field {
+  margin-bottom: 40px;
+}
+
+.editor-field-title {
+  text-align: right;
+
+  &::after {
+    content: ' ';
+    margin: 0 8px 0 2px;
+    position: relative;
+    top: -0.5px;
+  }
+}
+
+.editor-field-divider {
+  margin: 40px 0;
+  border: 0 none;
+  border-top: 1px solid #ddd;
+}

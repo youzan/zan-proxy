@@ -1,16 +1,110 @@
 {
   "defaultSeverity": "error",
-  "extends": ["tslint:recommended"],
-  "jsRules": {},
+  "extends": [
+    "tslint:recommended",
+    "tslint-config-prettier",
+    "tslint-eslint-rules"
+  ],
+  "linterOptions": {
+    "exclude": ["test/**/*.ts", "dist/**/*", "webui/**/*", "**/*.d.ts"]
+  },
   "rules": {
     "interface-name": false,
     "no-console": false,
     "no-var-requires": false,
-    "quotemark": [true, "single", "jsx-double"],
-    "arrow-parens": [true, "ban-single-arg-parens"]
+    "prettier": [
+      true,
+      {
+        "printWidth": 100,
+        "semi": true,
+        "trailingComma": "all",
+        "singleQuote": true
+      }
+    ],
+    "curly": true,
+    "semicolon": [true, "always", "ignore-bound-class-methods"],
+    "quotemark": [
+      true,
+      "single",
+      "jsx-double",
+      "avoid-escape",
+      "avoid-template"
+    ],
+    "arrow-parens": [true, "ban-single-arg-parens"],
+    "trailing-comma": [
+      true,
+      {
+        "multiline": "always",
+        "singleline": "never",
+        "esSpecCompliant": true
+      }
+    ],
+    "indent": [true, "spaces", 2],
+    "whitespace": [
+      true,
+      "check-branch",
+      "check-decl",
+      "check-operator",
+      "check-module",
+      "check-separator",
+      "check-rest-spread",
+      "check-type",
+      "check-typecast",
+      "check-type-operator",
+      "check-preblock"
+    ],
+    "comment-format": [true, "check-space"],
+    "eofline": true,
+
+    "ordered-imports": false,
+    "object-literal-sort-keys": false,
+    "member-ordering": false,
+
+    "typedef": true,
+    "typedef-whitespace": [
+      true,
+      {
+        "call-signature": "nospace",
+        "index-signature": "nospace",
+        "parameter": "nospace",
+        "property-declaration": "nospace",
+        "variable-declaration": "nospace"
+      },
+      {
+        "call-signature": "onespace",
+        "index-signature": "onespace",
+        "parameter": "onespace",
+        "property-declaration": "onespace",
+        "variable-declaration": "onespace"
+      }
+    ],
+    "variable-name": [
+      true,
+      "check-format",
+      "allow-pascal-case",
+      "allow-leading-underscore"
+    ],
+    "ter-max-len": [
+      true,
+      {
+        "code": 120,
+        "tabWidth": 2,
+        "ignoreUrls": true,
+        "ignorePattern": ["^import\\s.*\\s*'.+';$"]
+      }
+    ],
+
+    "member-access": false,
+    "triple-equals": true,
+    "no-empty-interface": false,
+    "one-variable-per-declaration": false,
+    "prefer-for-of": false,
+    "radix": false,
+    "no-shadowed-variable": false,
+    "only-arrow-functions": false,
+    "no-unused-expression": false,
+    "no-eval": true,
+    "no-require-imports": true
   },
-  "rulesDirectory": [],
-  "linterOptions": {
-    "exclude": ["test/**/*.ts", "dist/**/*", "webui/**/*"]
-  }
+  "rulesDirectory": ["tslint-plugin-prettier"]
 }
