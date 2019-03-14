@@ -1,7 +1,6 @@
 import { promisify } from 'es6-promisify';
 import EventEmitter from 'events';
-import fs from 'fs';
-import jsonfile from 'jsonfile';
+import fs from 'fs-extra';
 import { cloneDeep, forEach, lowerCase } from 'lodash';
 import fetch from 'node-fetch';
 import path from 'path';
@@ -9,7 +8,6 @@ import { Service } from 'typedi';
 import uuid from 'uuid/v4';
 import { AppInfoService } from './appInfo';
 
-const jsonfileWriteFile = promisify(jsonfile.writeFile);
 const fsUnlink = promisify(fs.unlink);
 export const ErrNameExists = new Error('name exists');
 
@@ -69,7 +67,7 @@ export class RuleService extends EventEmitter {
       .filter(name => name.endsWith('.json'))
       .reduce((prev, curr) => {
         try {
-          prev[curr] = jsonfile.readFileSync(path.join(this.ruleSaveDir, curr));
+          prev[curr] = fs.readJsonSync(path.join(this.ruleSaveDir, curr));
         } catch (e) {
           // ignore
         }
@@ -105,7 +103,7 @@ export class RuleService extends EventEmitter {
     this.rules[userId][name] = ruleFile;
     // 写文件
     const filePath = this._getRuleFilePath(userId, name);
-    await jsonfileWriteFile(filePath, ruleFile, { encoding: 'utf-8' });
+    await fs.writeJson(filePath, ruleFile, { encoding: 'utf-8' });
     // 发送消息通知
     this.emit('data-change', userId, this.getRuleFileList(userId));
     return true;
@@ -159,7 +157,7 @@ export class RuleService extends EventEmitter {
   public async setRuleFileCheckStatus(userId, name, checked) {
     this.rules[userId][name].checked = checked;
     const ruleFilePath = this._getRuleFilePath(userId, name);
-    await jsonfileWriteFile(ruleFilePath, this.rules[userId][name], {
+    await fs.writeJson(ruleFilePath, this.rules[userId][name], {
       encoding: 'utf-8',
     });
     // 发送消息通知
@@ -171,7 +169,7 @@ export class RuleService extends EventEmitter {
   public async setRuleFileDisableSync(userId, name, disable) {
     this.rules[userId][name].disableSync = disable;
     const ruleFilePath = this._getRuleFilePath(userId, name);
-    await jsonfileWriteFile(ruleFilePath, this.rules[userId][name], {
+    await fs.writeJson(ruleFilePath, this.rules[userId][name], {
       encoding: 'utf-8',
     });
     // 发送消息通知
@@ -196,7 +194,7 @@ export class RuleService extends EventEmitter {
     this.rules[userId] = userRuleMap;
     // 写文件
     const filePath = this._getRuleFilePath(userId, ruleFile.name);
-    await jsonfileWriteFile(filePath, userRuleMap[ruleFile.name], {
+    await fs.writeJson(filePath, userRuleMap[ruleFile.name], {
       encoding: 'utf-8',
     });
     // 清空缓存

@@ -1,13 +1,10 @@
 import { promisify } from 'es6-promisify';
 import EventEmitter from 'events';
-import fs from 'fs';
-import jsonfile from 'jsonfile';
+import fs from 'fs-extra';
 import { forEach, template } from 'lodash';
 import path from 'path';
 import { Service } from 'typedi';
 import { AppInfoService } from './appInfo';
-
-const jsonfileWriteFile = promisify(jsonfile.writeFile);
 
 export interface Profile {
   projectPath: object;
@@ -49,7 +46,7 @@ export class ProfileService extends EventEmitter {
       .readdirSync(this.profileSaveDir)
       .filter(name => name.endsWith('.json'))
       .reduce((prev, curr) => {
-        prev[curr] = jsonfile.readFileSync(path.join(this.profileSaveDir, curr));
+        prev[curr] = fs.readJsonSync(path.join(this.profileSaveDir, curr));
         return prev;
       }, {});
     forEach(profileMap, (profile, fileName) => {
@@ -59,7 +56,7 @@ export class ProfileService extends EventEmitter {
       this.userProfileMap[userId] = profile;
     });
     // 加载ip-> userID映射
-    this.clientIpUserMap = jsonfile.readFileSync(this.clientIpUserMapSaveFile);
+    this.clientIpUserMap = fs.readJsonSync(this.clientIpUserMapSaveFile);
   }
 
   public getProfile(userId) {
@@ -71,7 +68,7 @@ export class ProfileService extends EventEmitter {
 
     const filePath = path.join(this.profileSaveDir, `${userId}.json`);
     // 将数据写入文件
-    await jsonfileWriteFile(filePath, profile, { encoding: 'utf-8' });
+    await fs.writeJson(filePath, profile, { encoding: 'utf-8' });
     // 发送通知
     this.emit('data-change-profile', userId, profile);
   }
@@ -143,7 +140,7 @@ export class ProfileService extends EventEmitter {
     const originUserId = this.clientIpUserMap[clientIp];
     this.clientIpUserMap[clientIp] = userId;
 
-    await jsonfileWriteFile(this.clientIpUserMapSaveFile, this.clientIpUserMap, {
+    await fs.writeJson(this.clientIpUserMapSaveFile, this.clientIpUserMap, {
       encoding: 'utf-8',
     });
 

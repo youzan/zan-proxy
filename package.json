@@ -32,7 +32,6 @@
     "inflation": "^2.0.0",
     "inquirer": "^6.2.2",
     "ip": "^1.1.5",
-    "jsonfile": "^2.4.0",
     "koa": "^2.7.0",
     "koa-bodyparser": "^4.2.1",
     "koa-compose": "^4.1.0",

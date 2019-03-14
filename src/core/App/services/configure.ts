@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import jsonfile from 'jsonfile';
+import fs from 'fs-extra';
 import { assign } from 'lodash';
 import path from 'path';
 import { Service } from 'typedi';
@@ -29,7 +29,7 @@ export class ConfigureService extends EventEmitter {
     super();
     const proxyDataDir = appInfoService.getProxyDataDir();
     this.configureFile = path.join(proxyDataDir, 'configure.json');
-    this.configure = assign({}, defaultConfigure, jsonfile.readFileSync(this.configureFile));
+    this.configure = assign({}, defaultConfigure, fs.readJsonSync(this.configureFile));
   }
 
   // 获取配置
@@ -41,7 +41,7 @@ export class ConfigureService extends EventEmitter {
   public async setConfigure(userId, configure) {
     this.configure = configure;
 
-    jsonfile.writeFileSync(this.configureFile, this.configure, {
+    fs.writeJSONSync(this.configureFile, this.configure, {
       encoding: 'utf-8',
     });
     // 发送通知

@@ -1,13 +1,11 @@
 import { promisify } from 'es6-promisify';
 import EventEmitter from 'events';
-import fs from 'fs';
-import jsonfile from 'jsonfile';
+import fs from 'fs-extra';
 import { find, forEach } from 'lodash';
 import path from 'path';
 import { Service } from 'typedi';
 import { AppInfoService } from './appInfo';
 
-const jsonfileWriteFile = promisify(jsonfile.writeFile);
 const fsReadFile = promisify(fs.readFile);
 const fsWriteFile = promisify(fs.writeFile);
 const fsUnlink = promisify(fs.unlink);
@@ -33,7 +31,7 @@ export class MockDataService extends EventEmitter {
       .readdirSync(this.mockListDir)
       .filter(name => name.endsWith('.json'))
       .reduce((prev, curr) => {
-        prev[curr] = jsonfile.readFileSync(path.join(this.mockListDir, curr));
+        prev[curr] = fs.readJsonSync(path.join(this.mockListDir, curr));
         return prev;
       }, {});
     forEach(contentMap, (content, fileName) => {
@@ -85,7 +83,7 @@ export class MockDataService extends EventEmitter {
   public async setMockDataList(userId, mocklist) {
     this.mockDataList[userId] = mocklist;
     const listFilePath = this._getMockEntryPath(userId);
-    await jsonfileWriteFile(listFilePath, mocklist, { encoding: 'utf-8' });
+    await fs.writeJson(listFilePath, mocklist, { encoding: 'utf-8' });
     // 发送消息通知
     this.emit('data-change', userId, this.getMockDataList(userId));
   }
@@ -141,7 +139,7 @@ export class MockDataService extends EventEmitter {
     });
     // 保存mock数据文件列表
     const listFilePath = this._getMockEntryPath(userId);
-    await jsonfileWriteFile(listFilePath, dataList, { encoding: 'utf-8' });
+    await fs.writeJson(listFilePath, dataList, { encoding: 'utf-8' });
     // 保存数据文件
     const dataFilePath = this._getDataFilePath(userId, dataFileId);
     await fsWriteFile(dataFilePath, content, { encoding: 'utf-8' });
