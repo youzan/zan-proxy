@@ -2,6 +2,7 @@ import * as React from 'react';
 import { observer, inject } from 'mobx-react';
 import { Button, message, Form, Input, Checkbox, Select, Modal, Row, Col } from 'antd';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
+import throttle from 'lodash/throttle';
 
 import { WorkspaceStore, HostFileStore, RuleFileStore, PluginStore } from '@gui/renderer/store';
 import * as api from '@gui/renderer/api';
@@ -42,7 +43,7 @@ class WorkspaceEditor extends React.Component<IProps> {
    * 保存当前工作区
    * @returns
    */
-  private saveWorkspace = async () => {
+  private saveWorkspace = throttle(async () => {
     // 保存时若没有填写名称，则弹出命名框
     if (!this.workspace.name) {
       return message.error('请输入工作区名称');
@@ -63,7 +64,7 @@ class WorkspaceEditor extends React.Component<IProps> {
     } catch (err) {
       message.error(err);
     }
-  };
+  }, 1000);
 
   /**
    * 复制工作区
@@ -71,19 +72,19 @@ class WorkspaceEditor extends React.Component<IProps> {
    * @private
    * @memberof WorkspaceEditor
    */
-  private copyWorkspace = () => {
+  private copyWorkspace = throttle(() => {
     this.props.workspaceStore.copyWorkspace(this.props.workspaceStore.currentWorkspace);
     return this.saveWorkspace();
-  };
+  }, 1000);
 
   /**
    * 导出工作区的配置文件
    * @returns
    */
-  private exportWorkspace = async () => {
+  private exportWorkspace = throttle(async () => {
     await api.exportWorkspace(this.workspace);
     message.success('导出成功');
-  };
+  }, 1000);
 
   /**
    * 打开转发规则编辑页
