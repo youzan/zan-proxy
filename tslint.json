@@ -2,6 +2,7 @@
   "defaultSeverity": "error",
   "extends": [
     "tslint:recommended",
+    "tslint-react",
     "tslint-config-prettier",
     "tslint-eslint-rules"
   ],
@@ -55,6 +56,13 @@
     ],
     "comment-format": [true, "check-space"],
     "eofline": true,
+
+    "jsx-key": true,
+    "jsx-no-lambda": false,
+    "jsx-no-bind": false,
+    "jsx-wrap-multiline": true,
+    "jsx-boolean-value": false,
+    "jsx-space-before-trailing-slash": true,
 
     "ordered-imports": false,
     "object-literal-sort-keys": false,

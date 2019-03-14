@@ -1,3 +1,4 @@
 {
-  "src/**/*.{ts,tsx}": "tslint -t stylish"
+  "src/**/*.{ts,tsx}": "tslint -t stylish",
+  "test/**/*.ts": "tslint -t stylish",
 }

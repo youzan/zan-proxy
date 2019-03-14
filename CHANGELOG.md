@@ -1,5 +1,13 @@
 # Github Change Log
 
+## zan-proxy@4.1.0 (2019-03-08)
+
+**Implemented enhancements:**
+
+- 添加 mac 版 electron 客户端
+- 调整目录结构，更新部分依赖
+- 使用 @vue/cli 升级 webui 部分
+
 ## zan-proxy@4.0.23 ~ 4.0.27 (2019-01-20)
 
 **Fixed bug:**

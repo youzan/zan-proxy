@@ -285,8 +285,4 @@ export default class WorkspaceManager extends BaseManager {
       { type: 'separator' },
     );
   };
-
-  public async destory() {
-    logger.log('workspaceManager destory');
-  }
 }

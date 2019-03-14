@@ -101,7 +101,16 @@ export default class Application {
   }
 
   constructor() {
-    app.on('will-quit', () => this.destory());
+    app.on('will-quit', e => {
+      e.preventDefault();
+      this.destory()
+        .catch(err => {
+          logger.error('Error On Destory Application:', err);
+        })
+        .finally(() => {
+          process.exit(0);
+        });
+    });
   }
 
   /**
@@ -259,6 +268,6 @@ export default class Application {
    * @memberof Application
    */
   private destory() {
-    this.emitManagersLifecycleFunc('destory');
+    return this.emitManagersLifecycleFunc('destory');
   }
 }

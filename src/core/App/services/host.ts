@@ -1,7 +1,6 @@
 import { promisify } from 'es6-promisify';
 import EventEmitter from 'events';
-import fs from 'fs';
-import jsonfile from 'jsonfile';
+import fs from 'fs-extra';
 import { find, forEach } from 'lodash';
 import fetch from 'node-fetch';
 import path from 'path';
@@ -10,7 +9,6 @@ import { AppInfoService } from './appInfo';
 
 const ipReg = /((?:(?:25[0-5]|2[0-4]\d|[01]?\d?\d)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d?\d))/;
 
-const jsonWriteFile = promisify(jsonfile.writeFile);
 const fsUnlink = promisify(fs.unlink);
 const fsExists = (p): Promise<boolean> =>
   new Promise(resolve => {
@@ -42,7 +40,7 @@ export class HostService extends EventEmitter {
       .filter(name => name.endsWith('.json'))
       .reduce((prev, curr) => {
         try {
-          prev[curr] = jsonfile.readFileSync(path.join(this.hostSaveDir, curr));
+          prev[curr] = fs.readJsonSync(path.join(this.hostSaveDir, curr));
         } catch (e) {
           // ignore
         }
@@ -130,7 +128,7 @@ export class HostService extends EventEmitter {
     this.userHostFilesMap[userId][name] = content;
 
     const hostfileName = this._getHostFilePath(userId, name);
-    await jsonWriteFile(hostfileName, content, { encoding: 'utf-8' });
+    await fs.writeJson(hostfileName, content, { encoding: 'utf-8' });
     this.emit('data-change', userId, this.getHostFileList(userId));
     this.emit('host-saved', userId, name, content);
     return true;
@@ -163,7 +161,7 @@ export class HostService extends EventEmitter {
     for (const name of toSaveFileName) {
       const hostfileName = this._getHostFilePath(userId, name);
       const content = this.userHostFilesMap[userId][name];
-      await jsonWriteFile(hostfileName, content, { encoding: 'utf-8' });
+      await fs.writeJson(hostfileName, content, { encoding: 'utf-8' });
     }
     delete this.inUsingHostsMapCache[userId];
     this.emit('data-change', userId, this.getHostFileList(userId));
@@ -188,7 +186,7 @@ export class HostService extends EventEmitter {
     }
 
     const hostfileName = this._getHostFilePath(userId, name);
-    await jsonWriteFile(hostfileName, content, { encoding: 'utf-8' });
+    await fs.writeJson(hostfileName, content, { encoding: 'utf-8' });
     this.emit('host-saved', userId, name, content);
     this.emit('data-change', userId, this.getHostFileList(userId));
   }
