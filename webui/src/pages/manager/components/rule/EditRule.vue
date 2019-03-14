@@ -36,7 +36,7 @@
       <el-table-column prop="match" label="URL特征" />
       <el-table-column prop="name" label="描述" />
       <el-table-column label="转发地址">
-        <template slot-slot-scope="scope">
+        <template slot-scope="scope">
           {{
             scope.row.actionList.filter(a => a.type === 'redirect')[0]
               ? scope.row.actionList.filter(a => a.type === 'redirect')[0].data.target
