@@ -49,7 +49,7 @@
     "open": "0.0.5",
     "ora": "^3.2.0",
     "parse-domain": "^2.1.7",
-    "pem": "^1.14.2",
+    "pem": "1.12.5",
     "promise.prototype.finally": "^3.1.0",
     "raw-body": "^2.3.3",
     "reflect-metadata": "^0.1.13",
