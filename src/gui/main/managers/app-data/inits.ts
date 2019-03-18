@@ -25,7 +25,7 @@ export async function initCert() {
         if (error) {
           throw error;
         }
-        logger.log(`stdout: ${stdout}`);
+        logger.info(`stdout: ${stdout}`);
       });
     }
     resolve();

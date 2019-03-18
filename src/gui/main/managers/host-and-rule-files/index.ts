@@ -142,6 +142,6 @@ export default class HostAndRuleFilesManager extends BaseManager {
   };
 
   public destory() {
-    this.socketClient.close();
+    this.socketClient && this.socketClient.close();
   }
 }

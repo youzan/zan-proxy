@@ -101,15 +101,15 @@ export default class Application {
   }
 
   constructor() {
-    app.on('will-quit', e => {
+    app.on('will-quit', async e => {
       e.preventDefault();
-      this.destory()
-        .catch(err => {
-          logger.error('Error On Destory Application:', err);
-        })
-        .finally(() => {
-          process.exit(0);
-        });
+      try {
+        this.destory();
+      } catch (err) {
+        logger.error('Error On Destory Application:', err);
+      } finally {
+        process.exit(0);
+      }
     });
   }
 
