@@ -4043,10 +4043,6 @@ es6-promisify@^5.0.0:
   dependencies:
     es6-promise "^4.0.3"
 
-es6-promisify@^6.0.0:
-  version "6.0.0"
-  resolved "https://registry.npmjs.org/es6-promisify/-/es6-promisify-6.0.0.tgz#b526a75eaa5ca600e960bf3d5ad98c40d75c7203"
-
 es6-promisify@^6.0.1:
   version "6.0.1"
   resolved "http://registry.npm.taobao.org/es6-promisify/download/es6-promisify-6.0.1.tgz#6edaa45f3bd570ffe08febce66f7116be4b1cdb6"
@@ -8912,15 +8908,15 @@ pbkdf2@^3.0.3:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
-pem@^1.14.2:
-  version "1.14.2"
-  resolved "http://registry.npm.taobao.org/pem/download/pem-1.14.2.tgz#ab29350416bc3a532c30beeee0d541af897fb9ac"
-  integrity sha1-qyk1BBa8OlMsML7u4NVBr4l/uaw=
+pem@1.12.5:
+  version "1.12.5"
+  resolved "http://registry.npm.taobao.org/pem/download/pem-1.12.5.tgz#97bf2e459537c54e0ee5b0aa11b5ca18d6b5fef2"
+  integrity sha1-l78uRZU3xU4O5bCqEbXKGNa1/vI=
   dependencies:
-    es6-promisify "^6.0.0"
     md5 "^2.2.1"
     os-tmpdir "^1.0.1"
-    which "^1.3.1"
+    safe-buffer "^5.1.1"
+    which "^1.2.4"
 
 pend@~1.2.0:
   version "1.2.0"
@@ -12287,7 +12283,7 @@ which@1, which@^1.2.9, which@^1.3.0:
   dependencies:
     isexe "^2.0.0"
 
-which@1.3.1, which@^1.2.10, which@^1.2.14, which@^1.3.1:
+which@1.3.1, which@^1.2.10, which@^1.2.14, which@^1.2.4, which@^1.3.1:
   version "1.3.1"
   resolved "http://registry.npm.taobao.org/which/download/which-1.3.1.tgz#a45043d54f5805316da8d62f9f50918d3da70b0a"
   integrity sha1-pFBD1U9YBTFtqNYvn1CRjT2nCwo=
