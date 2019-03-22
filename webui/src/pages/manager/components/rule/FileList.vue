@@ -50,22 +50,18 @@
       <el-table-column prop="description" label="描述" />
       <el-table-column label="操作" :width="180" :context="_self">
         <template slot-scope="scope">
-          <a :href="'#/editrule?name=' + scope.row.name">
+          <a class="link-btn" :href="'#/editrule?name=' + scope.row.name">
             <el-tooltip class="item" effect="dark" content="编辑规则" placement="top-start">
               <el-button type="info" icon="edit" size="mini"></el-button>
             </el-tooltip>
           </a>
-          <span>
-            <el-tooltip class="item" effect="dark" content="导出规则" placement="top-start">
-              <el-button type="info" icon="share" size="mini" @click="onShareFile(scope.row, scope.$index)" />
-            </el-tooltip>
-          </span>
+          <el-tooltip class="item" effect="dark" content="导出规则" placement="top-start">
+            <el-button type="info" icon="share" size="mini" @click="onShareFile(scope.row, scope.$index)" />
+          </el-tooltip>
           <el-tooltip class="item" effect="dark" content="复制规则" placement="top-start">
             <el-button type="info" icon="document" size="mini" @click="onCopyFile(scope.row, scope.$index)" />
           </el-tooltip>
-          <span>
-            <el-button type="danger" icon="delete" size="mini" @click="onDeleteFile(scope.row, scope.$index)" />
-          </span>
+          <el-button type="danger" icon="delete" size="mini" @click="onDeleteFile(scope.row, scope.$index)" />
           <!-- <span>
             <el-tooltip class="item" effect="dark" content="同步远程文件" placement="top-start">
               <el-button

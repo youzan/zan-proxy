@@ -19,10 +19,10 @@
       <el-table-column prop="description" label="描述" />
       <el-table-column label="操作" :width="136" :context="_self">
         <template slot-scope="scope">
-          <a :href="'#/edithost?name=' + scope.row.name">
+          <a class="link-btn" :href="'#/edithost?name=' + scope.row.name">
             <el-button type="info" icon="edit" size="mini"></el-button>
           </a>
-          <a :href="'/host/download?name=' + scope.row.name" target="_blank">
+          <a class="link-btn" :href="'/host/download?name=' + scope.row.name" target="_blank">
             <el-button type="info" icon="share" size="mini"></el-button>
           </a>
           <el-button
