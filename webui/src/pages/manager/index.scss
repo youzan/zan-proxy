@@ -148,3 +148,9 @@ body {
   border-top: none;
   border-bottom: none;
 }
+
+.link-btn + .el-button,
+.link-btn + .link-btn,
+.el-button + .link-btn {
+  margin-left: 10px;
+}

@@ -840,6 +840,13 @@
   dependencies:
     "@types/node" "*"
 
+"@types/http-proxy@^1.17.0":
+  version "1.17.0"
+  resolved "http://registry.npm.taobao.org/@types/http-proxy/download/@types/http-proxy-1.17.0.tgz#baf82ff6aa2723fd29f90e3ba1384e665006863e"
+  integrity sha1-uvgv9qonI/0p+Q47oThOZlAGhj4=
+  dependencies:
+    "@types/node" "*"
+
 "@types/inquirer@^0.0.44":
   version "0.0.44"
   resolved "http://registry.npm.taobao.org/@types/inquirer/download/@types/inquirer-0.0.44.tgz#60ce954581cfdf44ad3899ec4cdc5fbe3fef1694"
