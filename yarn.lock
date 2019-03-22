@@ -811,10 +811,47 @@
   resolved "http://registry.npm.taobao.org/@sindresorhus/is/download/@sindresorhus/is-0.7.0.tgz#9a06f4f137ee84d7df0460c1fdb1135ffa6c50fd"
   integrity sha1-mgb08TfuhNffBGDB/bETX/psUP0=
 
+"@types/accepts@*":
+  version "1.3.5"
+  resolved "http://registry.npm.taobao.org/@types/accepts/download/@types/accepts-1.3.5.tgz#c34bec115cfc746e04fe5a059df4ce7e7b391575"
+  integrity sha1-w0vsEVz8dG4E/loFnfTOfns5FXU=
+  dependencies:
+    "@types/node" "*"
+
+"@types/body-parser@*":
+  version "1.17.0"
+  resolved "http://registry.npm.taobao.org/@types/body-parser/download/@types/body-parser-1.17.0.tgz#9f5c9d9bd04bb54be32d5eb9fc0d8c974e6cf58c"
+  integrity sha1-n1ydm9BLtUvjLV65/A2Ml05s9Yw=
+  dependencies:
+    "@types/connect" "*"
+    "@types/node" "*"
+
 "@types/chai@^4.1.7":
   version "4.1.7"
   resolved "http://registry.npm.taobao.org/@types/chai/download/@types/chai-4.1.7.tgz#1b8e33b61a8c09cbe1f85133071baa0dbf9fa71a"
   integrity sha1-G44zthqMCcvh+FEzBxuqDb+fpxo=
+
+"@types/connect@*":
+  version "3.4.32"
+  resolved "http://registry.npm.taobao.org/@types/connect/download/@types/connect-3.4.32.tgz#aa0e9616b9435ccad02bc52b5b454ffc2c70ba28"
+  integrity sha1-qg6WFrlDXMrQK8UrW0VP/Cxwuig=
+  dependencies:
+    "@types/node" "*"
+
+"@types/cookie@^0.3.2":
+  version "0.3.2"
+  resolved "http://registry.npm.taobao.org/@types/cookie/download/@types/cookie-0.3.2.tgz#453f4b14b25da6a8ea4494842dedcbf0151deef9"
+  integrity sha1-RT9LFLJdpqjqRJSELe3L8BUd7vk=
+
+"@types/cookies@*":
+  version "0.7.1"
+  resolved "http://registry.npm.taobao.org/@types/cookies/download/@types/cookies-0.7.1.tgz#f9f204bd6767d389eea3b87609e30c090c77a540"
+  integrity sha1-+fIEvWdn04nuo7h2CeMMCQx3pUA=
+  dependencies:
+    "@types/connect" "*"
+    "@types/express" "*"
+    "@types/keygrip" "*"
+    "@types/node" "*"
 
 "@types/electron-debug@~1.1.0":
   version "1.1.0"
@@ -833,12 +870,48 @@
   dependencies:
     "@types/node" "*"
 
+"@types/events@*":
+  version "3.0.0"
+  resolved "http://registry.npm.taobao.org/@types/events/download/@types/events-3.0.0.tgz#2862f3f58a9a7f7c3e78d79f130dd4d71c25c2a7"
+  integrity sha1-KGLz9Yqaf3w+eNefEw3U1xwlwqc=
+
+"@types/express-serve-static-core@*":
+  version "4.16.2"
+  resolved "http://registry.npm.taobao.org/@types/express-serve-static-core/download/@types/express-serve-static-core-4.16.2.tgz#5ee8a22e602005be6767df6b2cba9879df3f75aa"
+  integrity sha1-XuiiLmAgBb5nZ99rLLqYed8/dao=
+  dependencies:
+    "@types/node" "*"
+    "@types/range-parser" "*"
+
+"@types/express@*":
+  version "4.16.1"
+  resolved "http://registry.npm.taobao.org/@types/express/download/@types/express-4.16.1.tgz#d756bd1a85c34d87eaf44c888bad27ba8a4b7cf0"
+  integrity sha1-11a9GoXDTYfq9EyIi60nuopLfPA=
+  dependencies:
+    "@types/body-parser" "*"
+    "@types/express-serve-static-core" "*"
+    "@types/serve-static" "*"
+
 "@types/fs-extra@^5.0.5":
   version "5.0.5"
   resolved "http://registry.npm.taobao.org/@types/fs-extra/download/@types/fs-extra-5.0.5.tgz#080d90a792f3fa2c5559eb44bd8ef840aae9104b"
   integrity sha1-CA2Qp5Lz+ixVWetEvY74QKrpEEs=
   dependencies:
     "@types/node" "*"
+
+"@types/glob@*":
+  version "7.1.1"
+  resolved "http://registry.npm.taobao.org/@types/glob/download/@types/glob-7.1.1.tgz#aa59a1c6e3fbc421e07ccd31a944c30eba521575"
+  integrity sha1-qlmhxuP7xCHgfM0xqUTDDrpSFXU=
+  dependencies:
+    "@types/events" "*"
+    "@types/minimatch" "*"
+    "@types/node" "*"
+
+"@types/http-assert@*":
+  version "1.4.0"
+  resolved "http://registry.npm.taobao.org/@types/http-assert/download/@types/http-assert-1.4.0.tgz#41d173466e396e99a14d75f7160cc997f2f9ed8b"
+  integrity sha1-QdFzRm45bpmhTXX3FgzJl/L57Ys=
 
 "@types/http-proxy@^1.17.0":
   version "1.17.0"
@@ -862,6 +935,80 @@
   dependencies:
     "@types/node" "*"
 
+"@types/keygrip@*":
+  version "1.0.1"
+  resolved "http://registry.npm.taobao.org/@types/keygrip/download/@types/keygrip-1.0.1.tgz#ff540462d2fb4d0a88441ceaf27d287b01c3d878"
+  integrity sha1-/1QEYtL7TQqIRBzq8n0oewHD2Hg=
+
+"@types/koa-bodyparser@^4.2.2":
+  version "4.2.2"
+  resolved "http://registry.npm.taobao.org/@types/koa-bodyparser/download/@types/koa-bodyparser-4.2.2.tgz#7066e2871fbc4f15571c34e68ca587f5acc95d28"
+  integrity sha1-cGbihx+8TxVXHDTmjKWH9azJXSg=
+  dependencies:
+    "@types/koa" "*"
+
+"@types/koa-compose@*":
+  version "3.2.3"
+  resolved "http://registry.npm.taobao.org/@types/koa-compose/download/@types/koa-compose-3.2.3.tgz#4e2981f7bc4ce0f4797219516a91bf6ff3a70fa1"
+  integrity sha1-TimB97xM4PR5chlRapG/b/OnD6E=
+  dependencies:
+    "@types/koa" "*"
+
+"@types/koa-favicon@^2.0.19":
+  version "2.0.19"
+  resolved "http://registry.npm.taobao.org/@types/koa-favicon/download/@types/koa-favicon-2.0.19.tgz#a1b584fd64c99f16710633272292bf7d4b0ca1fa"
+  integrity sha1-obWE/WTJnxZxBjMnIpK/fUsMofo=
+  dependencies:
+    "@types/koa" "*"
+
+"@types/koa-mount@^3.0.1":
+  version "3.0.1"
+  resolved "http://registry.npm.taobao.org/@types/koa-mount/download/@types/koa-mount-3.0.1.tgz#2c068d1696b173c62c316158210c4316c4401f57"
+  integrity sha1-LAaNFpaxc8YsMWFYIQxDFsRAH1c=
+  dependencies:
+    "@types/koa" "*"
+
+"@types/koa-qs@^2.0.0":
+  version "2.0.0"
+  resolved "http://registry.npm.taobao.org/@types/koa-qs/download/@types/koa-qs-2.0.0.tgz#4c60206169c1e978ac36dc9a8b395ad5546ef5cf"
+  integrity sha1-TGAgYWnB6XisNtyaizla1VRu9c8=
+  dependencies:
+    "@types/koa" "*"
+
+"@types/koa-router@^7.0.40":
+  version "7.0.40"
+  resolved "http://registry.npm.taobao.org/@types/koa-router/download/@types/koa-router-7.0.40.tgz#9654dbc43375a0380c44c49c4504b4dbfc3e4e6a"
+  integrity sha1-llTbxDN1oDgMRMScRQS02/w+Tmo=
+  dependencies:
+    "@types/koa" "*"
+
+"@types/koa-send@*":
+  version "4.1.2"
+  resolved "http://registry.npm.taobao.org/@types/koa-send/download/@types/koa-send-4.1.2.tgz#978f8267ad116d12ac6a18fecd8f34c5657e09ad"
+  integrity sha1-l4+CZ60RbRKsahj+zY80xWV+Ca0=
+  dependencies:
+    "@types/koa" "*"
+
+"@types/koa-static@^4.0.1":
+  version "4.0.1"
+  resolved "http://registry.npm.taobao.org/@types/koa-static/download/@types/koa-static-4.0.1.tgz#b740d80a549b0a0a7a3b38918daecde88a7a50ec"
+  integrity sha1-t0DYClSbCgp6OziRja7N6Ip6UOw=
+  dependencies:
+    "@types/koa" "*"
+    "@types/koa-send" "*"
+
+"@types/koa@*", "@types/koa@^2.0.48":
+  version "2.0.48"
+  resolved "http://registry.npm.taobao.org/@types/koa/download/@types/koa-2.0.48.tgz#29162783029d3e5df8b58c55f6bf0d35f78fc39f"
+  integrity sha1-KRYngwKdPl34tYxV9r8NNfePw58=
+  dependencies:
+    "@types/accepts" "*"
+    "@types/cookies" "*"
+    "@types/http-assert" "*"
+    "@types/keygrip" "*"
+    "@types/koa-compose" "*"
+    "@types/node" "*"
+
 "@types/lodash@^4.14.123":
   version "4.14.123"
   resolved "http://registry.npm.taobao.org/@types/lodash/download/@types/lodash-4.14.123.tgz#39be5d211478c8dd3bdae98ee75bb7efe4abfe4d"
@@ -871,6 +1018,21 @@
   version "5.1.0"
   resolved "http://registry.npm.taobao.org/@types/lru-cache/download/@types/lru-cache-5.1.0.tgz#57f228f2b80c046b4a1bd5cac031f81f207f4f03"
   integrity sha1-V/Io8rgMBGtKG9XKwDH4HyB/TwM=
+
+"@types/mime-types@^2.1.0":
+  version "2.1.0"
+  resolved "http://registry.npm.taobao.org/@types/mime-types/download/@types/mime-types-2.1.0.tgz#9ca52cda363f699c69466c2a6ccdaad913ea7a73"
+  integrity sha1-nKUs2jY/aZxpRmwqbM2q2RPqenM=
+
+"@types/mime@*":
+  version "2.0.1"
+  resolved "http://registry.npm.taobao.org/@types/mime/download/@types/mime-2.0.1.tgz#dc488842312a7f075149312905b5e3c0b054c79d"
+  integrity sha1-3EiIQjEqfwdRSTEpBbXjwLBUx50=
+
+"@types/minimatch@*":
+  version "3.0.3"
+  resolved "http://registry.npm.taobao.org/@types/minimatch/download/@types/minimatch-3.0.3.tgz#3dca0e3f33b200fc7d1139c0cd96c1268cadfd9d"
+  integrity sha1-PcoOPzOyAPx9ETnAzZbBJoyt/Z0=
 
 "@types/mocha@^5.2.6":
   version "5.2.6"
@@ -923,6 +1085,11 @@
   resolved "http://registry.npm.taobao.org/@types/prop-types/download/@types/prop-types-15.7.0.tgz#4c48fed958d6dcf9487195a0ef6456d5f6e0163a"
   integrity sha1-TEj+2VjW3PlIcZWg72RW1fbgFjo=
 
+"@types/range-parser@*":
+  version "1.2.3"
+  resolved "http://registry.npm.taobao.org/@types/range-parser/download/@types/range-parser-1.2.3.tgz#7ee330ba7caafb98090bece86a5ee44115904c2c"
+  integrity sha1-fuMwunyq+5gJC+zoal7kQRWQTCw=
+
 "@types/react-dom@^16.0.11":
   version "16.8.2"
   resolved "http://registry.npm.taobao.org/@types/react-dom/download/@types/react-dom-16.8.2.tgz#9bd7d33f908b243ff0692846ef36c81d4941ad12"
@@ -945,6 +1112,14 @@
   dependencies:
     "@types/prop-types" "*"
     csstype "^2.2.0"
+
+"@types/rimraf@^2.0.2":
+  version "2.0.2"
+  resolved "http://registry.npm.taobao.org/@types/rimraf/download/@types/rimraf-2.0.2.tgz#7f0fc3cf0ff0ad2a99bb723ae1764f30acaf8b6e"
+  integrity sha1-fw/Dzw/wrSqZu3I64XZPMKyvi24=
+  dependencies:
+    "@types/glob" "*"
+    "@types/node" "*"
 
 "@types/rx-core-binding@*":
   version "4.0.4"
@@ -1052,10 +1227,25 @@
   resolved "http://registry.npm.taobao.org/@types/semver/download/@types/semver-5.5.0.tgz#146c2a29ee7d3bae4bf2fcb274636e264c813c45"
   integrity sha1-FGwqKe59O65L8vyydGNuJkyBPEU=
 
+"@types/serve-static@*":
+  version "1.13.2"
+  resolved "http://registry.npm.taobao.org/@types/serve-static/download/@types/serve-static-1.13.2.tgz#f5ac4d7a6420a99a6a45af4719f4dcd8cd907a48"
+  integrity sha1-9axNemQgqZpqRa9HGfTc2M2Qekg=
+  dependencies:
+    "@types/express-serve-static-core" "*"
+    "@types/mime" "*"
+
 "@types/socket.io-client@^1.4.32":
   version "1.4.32"
   resolved "http://registry.npm.taobao.org/@types/socket.io-client/download/@types/socket.io-client-1.4.32.tgz#988a65a0386c274b1c22a55377fab6a30789ac14"
   integrity sha1-mIploDhsJ0scIqVTd/q2oweJrBQ=
+
+"@types/socket.io@1.4.40":
+  version "1.4.40"
+  resolved "http://registry.npm.taobao.org/@types/socket.io/download/@types/socket.io-1.4.40.tgz#4f6955a8bdab66f8af47edcebea038f89aea7ad2"
+  integrity sha1-T2lVqL2rZvivR+3OvqA4+JrqetI=
+  dependencies:
+    "@types/node" "*"
 
 "@types/through@*":
   version "0.0.29"

@@ -33,7 +33,7 @@ export class Manager {
 
   private app: Koa;
   private server: http.Server;
-  private io: SocketIO;
+  private io: SocketIO.Server;
 
   constructor() {
     this.httpTrafficService = Container.get(HttpTrafficService);
@@ -50,7 +50,7 @@ export class Manager {
     // body解析
     this.app.use(
       koaBodyParser({
-        formLimt: '5mb',
+        formLimit: '5mb',
         jsonLimit: '5mb',
         textLimit: '5mb',
       }),
@@ -70,7 +70,7 @@ export class Manager {
     // 创建server
     this.server = http.createServer(this.app.callback());
     // socketio
-    this.io = new SocketIO(this.server);
+    this.io = SocketIO(this.server);
 
     // 初始化socket io
     this._initTraffic();
