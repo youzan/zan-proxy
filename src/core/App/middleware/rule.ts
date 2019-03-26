@@ -1,6 +1,7 @@
 import fs from 'fs';
 import mime from 'mime-types';
 import URL from 'url';
+import * as got from 'got';
 import { MockDataService, ProfileService, RuleService } from '../services';
 
 const fsExists = p => {
@@ -72,7 +73,15 @@ export const rule = ({
             continue;
           }
           ctx.res.setHeader('zan-proxy-target', target);
-          if (target.startsWith('http') || target.startsWith('ws')) {
+          // 先处理 https
+          if (target.startsWith('https')) {
+            const gotRes = await got.get(target, {
+              // 忽略本地自签名证书授权
+              rejectUnauthorized: false,
+              timeout: 1000,
+            });
+            ctx.res.body = gotRes.body;
+          } else if (target.startsWith('http') || target.startsWith('ws')) {
             ctx.req.url = target;
           } else {
             const exists = await fsExists(target);
