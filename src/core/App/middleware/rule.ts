@@ -78,8 +78,16 @@ export const rule = ({
             const gotRes = await got.get(target, {
               // 忽略本地自签名证书授权
               rejectUnauthorized: false,
-              timeout: 1000,
+              throwHttpErrors: false,
             });
+            // set response info
+            ctx.res.statusCode = gotRes.statusCode;
+            ctx.res.statusMessage = gotRes.statusMessage;
+            for (const headerName in gotRes.headers) {
+              if (gotRes.headers.hasOwnProperty(headerName)) {
+                ctx.res.setHeader(headerName, gotRes.headers[headerName]);
+              }
+            }
             ctx.res.body = gotRes.body;
           } else if (target.startsWith('http') || target.startsWith('ws')) {
             ctx.req.url = target;
