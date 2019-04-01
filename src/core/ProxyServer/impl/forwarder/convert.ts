@@ -2,10 +2,8 @@ import URL from 'url';
 
 export default function(req) {
   const url = URL.parse(req.url);
-  let port = url.port || 80;
-  if (url.protocol && url.protocol.startsWith('https')) {
-    port = 443;
-  }
+  const isHttps = url.protocol && url.protocol.startsWith('https');
+  const port = url.port || (isHttps ? 443 : 80);
   return {
     auth: url.auth,
     headers: req.headers,
