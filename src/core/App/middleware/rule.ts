@@ -72,7 +72,6 @@ export const rule = ({
             continue;
           }
           ctx.res.setHeader('zan-proxy-target', target);
-          console.log(target);
           if (target.startsWith('http') || target.startsWith('ws')) {
             ctx.req.url = target;
           } else {
