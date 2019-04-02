@@ -1,4 +1,5 @@
 import http from 'http';
+import net from 'net';
 import fillReqUrl from './fillReqUrl';
 
 export class HttpServer {
@@ -13,7 +14,7 @@ export class HttpServer {
     this.server.on('connect', connectHandler.handle.bind(connectHandler));
   }
   public setUpgradeHandler(upgradeHandler) {
-    this.server.on('upgrade', (req, socket, head) => {
+    this.server.on('upgrade', (req: http.IncomingMessage, socket: net.Socket, head: Buffer) => {
       fillReqUrl(req, 'ws');
       upgradeHandler.handle(req, socket, head);
     });
