@@ -114,7 +114,6 @@
 import LeftMenu from './components/common/LeftMenu';
 import hostApi from '../../api/host';
 import ruleApi from '../../api/rule';
-import confApi from '../../api/conf';
 import profileApi from '../../api/profile';
 import Vue from 'vue';
 import $ from 'jquery';
@@ -139,8 +138,6 @@ export default {
   data() {
     return {
       isDataCenter: true,
-      // 基本配置信息
-      configure: {},
       // 个人配置
       profile: {
         projectPath: [],
@@ -468,10 +465,6 @@ export default {
 
   created() {
     var socket = io('/manager');
-
-    socket.on('configure', data => {
-      this.configure = data;
-    });
 
     socket.on('profile', profile => {
       this.profile = profile;

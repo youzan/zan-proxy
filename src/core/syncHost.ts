@@ -3,7 +3,7 @@ import { AppInfoService, HostService } from './App/services';
 
 const syncRemoteHosts = async () => {
   console.log('开始同步远程Host文件');
-  const appInfoService = new AppInfoService(false);
+  const appInfoService = new AppInfoService();
   const hostService = new HostService(appInfoService);
   const hostFileList = hostService.getHostFileList('root');
   for (const hostFile of hostFileList) {

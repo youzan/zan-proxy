@@ -9,9 +9,9 @@ import koaStatic from 'koa-static';
 import path from 'path';
 import SocketIO from 'socket.io';
 import { Container, Service } from 'typedi';
+
 import PluginManager from '../plugin-manager';
 import {
-  ConfigureService,
   HostService,
   HttpTrafficService,
   MockDataService,
@@ -23,7 +23,6 @@ import router from './router';
 @Service()
 export class Manager {
   private httpTrafficService: HttpTrafficService;
-  private configureService: ConfigureService;
   private profileService: ProfileService;
   private hostService: HostService;
   private mockDataService: MockDataService;
@@ -37,7 +36,6 @@ export class Manager {
 
   constructor() {
     this.httpTrafficService = Container.get(HttpTrafficService);
-    this.configureService = Container.get(ConfigureService);
     this.profileService = Container.get(ProfileService);
     this.hostService = Container.get(HostService);
     this.mockDataService = Container.get(MockDataService);
@@ -132,9 +130,6 @@ export class Manager {
       const userId = this._getUserId(client);
       client.join(userId);
       // 推送最新数据
-      // proxy配置
-      const config = await this.configureService.getConfigure();
-      client.emit('configure', config);
       // 个人配置
       const profile = await this.profileService.getProfile(userId);
       client.emit('profile', profile);
@@ -149,10 +144,6 @@ export class Manager {
       // 数据文件列表
       const dataList = await this.mockDataService.getMockDataList(userId);
       client.emit('datalist', dataList);
-    });
-    // proxy配置信息
-    this.configureService.on('data-change', (userId, configure) => {
-      socket.to(userId).emit('configure', configure);
     });
     // 个人配置信息
     this.profileService.on('data-change-profile', (userId, profile) => {

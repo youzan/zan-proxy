@@ -22,7 +22,7 @@ export default class PluginManager {
   private plugins: Plugin[];
   private dir: string;
   constructor(appInfoService: AppInfoService) {
-    this.dir = path.join(appInfoService.getProxyDataDir(), 'plugins');
+    this.dir = path.join(appInfoService.proxyDataDir, 'plugins');
     this.storage = new Storage(this.getDir());
     this.plugins = this.storage
       .get()

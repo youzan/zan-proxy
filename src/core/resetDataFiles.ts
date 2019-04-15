@@ -1,6 +1,7 @@
 import fs from 'fs-extra';
-import path from 'path';
 import os from 'os';
+import path from 'path';
+
 const proxyDataDir = path.join(os.homedir(), '.front-end-proxy');
 
 function resetFile(filePath, data, force) {
@@ -29,7 +30,6 @@ export default function resetDataFiles(force = false) {
   fs.ensureDirSync(path.join(proxyDataDir, 'traffic'));
 
   resetFile(path.join(proxyDataDir, 'clientIpUserMap.json'), {}, force);
-  resetFile(path.join(proxyDataDir, 'configure.json'), {}, force);
   const rootTargetDir = path.join(proxyDataDir, 'certificate/root');
   ['zproxy.crt.pem', 'zproxy.key.pem'].forEach(f => {
     fs.copyFileSync(path.join(global.__resource, 'certificate', f), path.join(rootTargetDir, f));

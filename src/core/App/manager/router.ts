@@ -1,7 +1,7 @@
 import Router from 'koa-router';
 import { Container } from 'typedi';
+
 import {
-  ConfigController,
   HostController,
   HttpTrafficController,
   MockDataController,
@@ -12,7 +12,6 @@ import {
 
 export default function() {
   const router = new Router();
-  Container.get(ConfigController).regist(router);
   Container.get(ProfileController).regist(router);
   Container.get(HostController).regist(router);
   Container.get(HttpTrafficController).regist(router);

@@ -20,7 +20,7 @@ export class MockDataService extends EventEmitter {
   private mockDataList: object;
   constructor(appInfoService: AppInfoService) {
     super();
-    const proxyDataDir = appInfoService.getProxyDataDir();
+    const proxyDataDir = appInfoService.proxyDataDir;
     // 存放mock data的目录
     this.mockDataDir = path.join(proxyDataDir, 'mock-data');
     this.mockListDir = path.join(proxyDataDir, 'mock-list');

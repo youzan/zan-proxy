@@ -59,7 +59,7 @@ export class RuleService extends EventEmitter {
     this.rules = {};
     // 缓存数据: 正在使用的规则 userId -> inUsingRuleList
     this.usingRuleCache = {};
-    const proxyDataDir = appInfoService.getProxyDataDir();
+    const proxyDataDir = appInfoService.proxyDataDir;
     this.ruleSaveDir = path.join(proxyDataDir, 'rule');
 
     const contentMap = fs

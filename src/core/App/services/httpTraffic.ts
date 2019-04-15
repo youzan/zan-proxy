@@ -29,7 +29,7 @@ export class HttpTrafficService extends EventEmitter {
     // 记录用户的监视窗数量
     this.userMonitorCount = {};
 
-    const proxyDataDir = appInfoService.getProxyDataDir();
+    const proxyDataDir = appInfoService.proxyDataDir;
     // 监控数据缓存目录
     this.trafficDir = path.join(proxyDataDir, 'traffic');
     this.filterMap = {};

@@ -32,7 +32,7 @@ export class HostService extends EventEmitter {
     // 缓存
     // userId, {globHostMap, hostMap}
     this.inUsingHostsMapCache = {};
-    const proxyDataDir = appInfoService.getProxyDataDir();
+    const proxyDataDir = appInfoService.proxyDataDir;
     this.hostSaveDir = path.join(proxyDataDir, 'host');
 
     const contentMap = fs

@@ -38,7 +38,7 @@ export class ProfileService extends EventEmitter {
     // clientIp -> userId
     this.clientIpUserMap = {};
 
-    const proxyDataDir = appInfoService.getProxyDataDir();
+    const proxyDataDir = appInfoService.proxyDataDir;
     this.profileSaveDir = path.join(proxyDataDir, 'profile');
     this.clientIpUserMapSaveFile = path.join(proxyDataDir, 'clientIpUserMap.json');
 

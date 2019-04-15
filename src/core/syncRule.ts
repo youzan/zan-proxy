@@ -3,7 +3,7 @@ import { AppInfoService, RuleFile, RuleService } from './App/services';
 
 const syncRemoteRules = async () => {
   console.log('开始同步远程规则集');
-  const appInfoService = new AppInfoService(false);
+  const appInfoService = new AppInfoService();
   const ruleService = new RuleService(appInfoService);
   const userIDs = Object.keys(ruleService.rules);
   for (const userID of userIDs) {

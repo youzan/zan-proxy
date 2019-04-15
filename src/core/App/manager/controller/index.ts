@@ -1,4 +1,3 @@
-export * from './config';
 export * from './host';
 export * from './httpTraffic';
 export * from './mockData';
