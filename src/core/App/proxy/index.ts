@@ -33,6 +33,11 @@ export class Proxy {
   }
 
   private useMiddleware(middlewareCls: IProxyMiddleware) {
+    // 中间件 class 初始化
+    if (middlewareCls.onInit) {
+      middlewareCls.onInit();
+    }
+    // 中间件 class 挂载
     this.server.use(middlewareCls.middleware.bind(middlewareCls));
   }
 

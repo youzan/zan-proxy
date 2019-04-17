@@ -31,5 +31,6 @@ export interface IProxyContext {
 export type IProxyMiddlewareFn = (ctx: IProxyContext, next: NextFunction) => Promise<any>;
 
 export interface IProxyMiddleware {
+  onInit?: () => void;
   middleware: IProxyMiddlewareFn;
 }

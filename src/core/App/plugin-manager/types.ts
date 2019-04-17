@@ -8,7 +8,9 @@ export interface IPluginInfo {
   version: string;
 }
 
-export interface IPluginModule extends IPluginInfo {
+export interface IPluginClass {
   manage: () => koa;
   proxy: () => IProxyMiddlewareFn;
 }
+
+export type IPluginModule = IPluginInfo & IPluginClass;

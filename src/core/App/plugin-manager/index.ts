@@ -1,5 +1,6 @@
+import { EventEmitter } from 'events';
 import fs from 'fs-extra';
-import koa from 'koa';
+import Koa from 'koa';
 import koaBodyParser from 'koa-bodyparser';
 import compose from 'koa-compose';
 import koaMount from 'koa-mount';
@@ -11,37 +12,56 @@ import { Service } from 'typedi';
 
 import { AppInfoService } from '../services';
 import PluginStorage from './storage';
-import { IPluginModule } from './types';
+import { IPluginClass, IPluginInfo, IPluginModule } from './types';
 
 @Service()
-export default class PluginManager {
+export default class PluginManager extends EventEmitter {
   private storage: PluginStorage;
   private plugins: { [key: string]: IPluginModule };
   private pluginInstallDir: string;
 
   constructor(appInfoService: AppInfoService) {
+    super();
+
     this.pluginInstallDir = path.join(appInfoService.proxyDataDir, 'plugins');
     this.storage = new PluginStorage(this.pluginInstallDir);
+    this.getPluginsFromStorage();
+  }
+
+  /**
+   * 获取插件集合
+   */
+  private getPluginsFromStorage() {
     this.plugins = this.storage
       .get()
       .filter(p => !p.disabled)
-      .reduce((prev, curr) => {
+      .reduce<{ [key: string]: IPluginModule }>((group, plugin) => {
         try {
-          const pluginPath = this.getPluginDir(curr.name);
+          const pluginPath = this.getPluginDir(plugin.name);
           if (!fs.existsSync(pluginPath)) {
-            throw Error(`plugin ${curr.name} not found`);
+            throw Error(`plugin ${plugin.name} not found`);
           }
-          const PluginClass = __non_webpack_require__(pluginPath);
-          prev[curr.name] = new PluginClass();
+          delete require.cache[pluginPath];
+          const pluginClassInstance: IPluginClass = new (__non_webpack_require__(pluginPath))();
+          group[plugin.name] = {
+            ...plugin,
+            proxy: pluginClassInstance.proxy.bind(pluginClassInstance),
+            manage: pluginClassInstance.manage.bind(pluginClassInstance),
+          };
         } catch (error) {
           console.error(
-            `plugin "${curr.name}" has a runtime error. please check it.\n${error.stack}`,
+            `plugin "${plugin.name}" has a runtime error. please check it.\n${error.stack}`,
           );
           process.exit(-1);
         }
-        return prev;
+        return group;
       }, {});
+    this.emit('data-change');
   }
+
+  /**
+   * 添加插件库
+   */
   public add(pluginName: string, npmConfig = {}) {
     return new Promise((resolve, reject) => {
       const install = () => {
@@ -82,7 +102,11 @@ export default class PluginManager {
       }
     });
   }
-  public remove(pluginName) {
+
+  /**
+   * 删除插件库
+   */
+  public remove(pluginName: string) {
     return new Promise((resolve, reject) => {
       const uninstall = () => {
         npm.commands.uninstall([pluginName, this.pluginInstallDir], err => {
@@ -108,7 +132,10 @@ export default class PluginManager {
     });
   }
 
-  public setAttrs(pluginName, attrs) {
+  /**
+   * 设置某个插件的属性
+   */
+  public setAttrs(pluginName: string, attrs: Partial<IPluginInfo>) {
     let plugins = this.storage.get();
     plugins = plugins.map(p => {
       if (p.name === pluginName) {
@@ -119,12 +146,18 @@ export default class PluginManager {
     this.storage.set(plugins);
   }
 
-  public has(name) {
+  /**
+   * 判断是否有某个插件
+   */
+  public has(name: string) {
     return !!this.plugins[name];
   }
 
+  /**
+   * 获取 ui 展示的 koa 实例
+   */
   public getUIApp() {
-    const app = new koa();
+    const app = new Koa();
     app.use(koaBodyParser());
 
     Object.keys(this.plugins).forEach(name => {
@@ -148,6 +181,7 @@ export default class PluginManager {
     router.post('/remove', async ctx => {
       const { name } = ctx.request.body;
       await this.remove(name);
+      this.getPluginsFromStorage();
       ctx.body = {
         message: 'ok',
         status: 200,
@@ -173,6 +207,7 @@ export default class PluginManager {
       }
       try {
         await this.add(name, npmConfig);
+        this.getPluginsFromStorage();
       } catch (err) {
         ctx.status = 400;
         ctx.body = err.message;
@@ -187,6 +222,7 @@ export default class PluginManager {
     router.post('/disabled', async ctx => {
       const { name, disabled } = ctx.request.body;
       this.setAttrs(name, { disabled });
+      this.getPluginsFromStorage();
       ctx.body = {
         message: 'ok',
         status: 200,
@@ -196,13 +232,16 @@ export default class PluginManager {
     return app;
   }
 
+  /**
+   * 获取组合后的中间件
+   */
   public getComposedPluginMiddlewares() {
-    console.log('getComposedPluginMiddlewares');
-    return compose(
-      map(filter(this.plugins, plugin => !plugin.disabled), plugin => plugin.proxy.bind(plugin)),
-    );
+    return compose(map(this.plugins, plugin => plugin.proxy()));
   }
 
+  /**
+   * 获取插件目录
+   */
   private getPluginDir(pluginName: string) {
     return path.resolve(this.pluginInstallDir, 'node_modules', pluginName);
   }

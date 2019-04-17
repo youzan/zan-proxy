@@ -1,5 +1,4 @@
 import fs from 'fs-extra';
-import * as got from 'got';
 import http from 'http';
 import mime from 'mime-types';
 import { Inject, Service } from 'typedi';
@@ -72,23 +71,7 @@ export class RuleMiddleware implements IProxyMiddleware {
       return;
     }
     ctx.res.setHeader('zan-proxy-target', target);
-    // 先处理 https
-    if (target.startsWith('https')) {
-      const gotRes = await got.get(target, {
-        // 忽略本地自签名证书授权
-        rejectUnauthorized: false,
-        throwHttpErrors: false,
-      });
-      // set response info
-      ctx.res.statusCode = gotRes.statusCode;
-      ctx.res.statusMessage = gotRes.statusMessage;
-      for (const headerName in gotRes.headers) {
-        if (gotRes.headers.hasOwnProperty(headerName)) {
-          ctx.res.setHeader(headerName, gotRes.headers[headerName]);
-        }
-      }
-      ctx.res.body = gotRes.body;
-    } else if (target.startsWith('http') || target.startsWith('ws')) {
+    if (target.startsWith('http') || target.startsWith('ws')) {
       ctx.req.url = target;
     } else {
       const exists = await fsExists(target);
