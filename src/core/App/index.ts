@@ -13,7 +13,7 @@ export default class App {
     await this.proxy.init();
   }
 
-  public async start(proxyPort: number, managerPort: number) {
+  public start(proxyPort: number, managerPort: number) {
     const appInfoService: AppInfoService = Container.get(AppInfoService);
     this.proxy.ignore(`127.0.0.1:${managerPort}`);
     this.proxy.ignore(`${appInfoService.appInfo.LANIp}:${managerPort}`);

@@ -1,6 +1,8 @@
 import Router from 'koa-router';
 import { Inject, Service } from 'typedi';
-import { ProfileService, RuleService, ErrNameExists } from '../../services';
+
+import { ErrNameExists, ProfileService, RuleService } from '../../services';
+
 /**
  * Created by tsxuehu on 4/11/17.
  */
@@ -156,7 +158,7 @@ export class RuleController {
       }
 
       const targetTpl = ctx.request.body.targetTpl;
-      const targetRlt = await this.profileService.calcPath(userId, url, match, targetTpl);
+      const targetRlt = await this.profileService.calcPath(url, match, targetTpl);
 
       // 测试规则
       ctx.body = {

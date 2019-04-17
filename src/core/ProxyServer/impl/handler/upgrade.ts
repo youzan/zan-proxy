@@ -1,6 +1,8 @@
 import http from 'http';
 import HttpProxy from 'http-proxy';
+import net from 'net';
 import URL from 'url';
+
 import { UpgradeHandler as IUpgradeHandler } from '../../interfaces';
 
 export class UpgradeHandler implements IUpgradeHandler {
@@ -17,7 +19,7 @@ export class UpgradeHandler implements IUpgradeHandler {
   public setMiddleware(middleware) {
     this.middleware = middleware;
   }
-  public async handle(req, socket, head) {
+  public async handle(req: http.IncomingMessage, socket: net.Socket, head: Buffer) {
     const ctx = {
       head,
       req,

@@ -1,10 +1,14 @@
-export const user = profileService => {
-  return async (ctx, next) => {
+import { Service } from 'typedi';
+
+import { IProxyContext, IProxyMiddleware, NextFunction } from '../types/proxy';
+
+@Service()
+export class UserMiddleware implements IProxyMiddleware {
+  public async middleware(ctx: IProxyContext, next: NextFunction) {
     if (ctx.ignore) {
-      await next();
-      return;
+      return next();
     }
-    ctx.userID = profileService.getClientIpMappedUserId(ctx.clientIP);
+    ctx.userID = 'root';
     await next();
-  };
-};
+  }
+}

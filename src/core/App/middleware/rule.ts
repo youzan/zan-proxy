@@ -1,8 +1,12 @@
-import fs from 'fs';
-import mime from 'mime-types';
-import URL from 'url';
+import fs from 'fs-extra';
 import * as got from 'got';
-import { MockDataService, ProfileService, RuleService } from '../services';
+import http from 'http';
+import mime from 'mime-types';
+import { Inject, Service } from 'typedi';
+import URL from 'url';
+
+import { MockDataService, ProfileService, Rule, RuleActionData, RuleService } from '../services';
+import { IProxyContext, IProxyMiddleware, NextFunction } from '../types/proxy';
 
 const fsExists = p => {
   return new Promise(resolve => {
@@ -10,104 +14,147 @@ const fsExists = p => {
   });
 };
 
-export const rule = ({
-  ruleService,
-  mockDataService,
-  profileService,
-}: {
-  ruleService: RuleService;
-  mockDataService: MockDataService;
-  profileService: ProfileService;
-}) => {
-  return async (ctx, next) => {
+/**
+ * 转发规则处理中间件
+ */
+@Service()
+export class RuleMiddleware implements IProxyMiddleware {
+  @Inject() private ruleService: RuleService;
+  @Inject() private mockDataService: MockDataService;
+  @Inject() private profileService: ProfileService;
+
+  /**
+   * 处理 mock data 规则
+   */
+  private async processMockData(userID: string, data: RuleActionData, ctx: IProxyContext) {
+    const { dataId } = data;
+    const content = await this.mockDataService.getDataFileContent(userID, dataId);
+    const contentType = await this.mockDataService.getDataFileContentType(userID, dataId);
+    ctx.res.body = content;
+    ctx.res.setHeader('Content-Type', contentType);
+  }
+
+  /**
+   * 添加请求头
+   */
+  private async processAddRequestHeader(userID: string, data: RuleActionData, ctx: IProxyContext) {
+    ctx.req.headers[data.headerKey] = data.headerValue;
+  }
+
+  /**
+   * 添加响应头
+   */
+  private async processAddResponseHeader(
+    data: RuleActionData,
+    resHeaders: http.OutgoingHttpHeaders,
+  ) {
+    resHeaders[data.headerKey] = data.headerValue;
+  }
+
+  /**
+   * 返回空响应
+   */
+  private async processEmpty(ctx: IProxyContext) {
+    ctx.res.body = '';
+  }
+
+  /**
+   * 处理转发规则
+   */
+  private async processRedirect(
+    urlObj: URL.UrlWithStringQuery,
+    rule: Rule,
+    data: RuleActionData,
+    ctx: IProxyContext,
+  ) {
+    const target = this.profileService.calcPath(urlObj.href, rule.match, data.target);
+    if (!target) {
+      return;
+    }
+    ctx.res.setHeader('zan-proxy-target', target);
+    // 先处理 https
+    if (target.startsWith('https')) {
+      const gotRes = await got.get(target, {
+        // 忽略本地自签名证书授权
+        rejectUnauthorized: false,
+        throwHttpErrors: false,
+      });
+      // set response info
+      ctx.res.statusCode = gotRes.statusCode;
+      ctx.res.statusMessage = gotRes.statusMessage;
+      for (const headerName in gotRes.headers) {
+        if (gotRes.headers.hasOwnProperty(headerName)) {
+          ctx.res.setHeader(headerName, gotRes.headers[headerName]);
+        }
+      }
+      ctx.res.body = gotRes.body;
+    } else if (target.startsWith('http') || target.startsWith('ws')) {
+      ctx.req.url = target;
+    } else {
+      const exists = await fsExists(target);
+      if (exists) {
+        ctx.res.body = fs.createReadStream(target);
+      } else {
+        ctx.res.body = `target ${target} does not exist`;
+        ctx.res.statusCode = 404;
+      }
+    }
+  }
+
+  public async middleware(ctx: IProxyContext, next: NextFunction) {
     if (ctx.ignore) {
-      await next();
-      return;
+      return next();
     }
-    if (!profileService.enableRule(ctx.userID)) {
-      await next();
-      return;
+
+    // 未启用转发规则
+    if (!this.profileService.enableRule) {
+      return next();
     }
-    const { userID } = ctx;
-    const { req } = ctx;
+
+    const { userID, req } = ctx;
     const { method, url } = req;
     const urlObj = URL.parse(url);
-    const processRule = ruleService.getProcessRule(userID, method, urlObj);
+    const processRule = this.ruleService.getProcessRule(userID, method, urlObj);
+    // 没有转发规则
     if (!processRule) {
-      await next();
-      return;
+      return next();
     }
+
     ctx.res.setHeader('zan-proxy-rule-match', processRule.match);
     if (urlObj.pathname && mime.lookup(urlObj.pathname)) {
+      // @ts-ignore
       ctx.res.setHeader('Content-Type', mime.lookup(urlObj.pathname));
     }
+
     // 规则的响应头先缓存在这里
-    const resHeaders = {};
+    const resHeaders: http.OutgoingHttpHeaders = {};
     for (const action of processRule.actionList) {
       const { data } = action;
       switch (action.type) {
         case 'mockData':
-          const { dataId } = data;
-          const content = await mockDataService.getDataFileContent(userID, dataId);
-          const contentType = await mockDataService.getDataFileContentType(userID, dataId);
-          ctx.res.body = content;
-          ctx.res.setHeader('Content-Type', contentType);
+          this.processMockData(userID, data, ctx);
           break;
         case 'addRequestHeader':
-          ctx.req.headers[data.headerKey] = data.headerValue;
+          this.processAddRequestHeader(userID, data, ctx);
           break;
         case 'addResponseHeader':
-          resHeaders[data.headerKey] = data.headerValue;
+          this.processAddResponseHeader(data, resHeaders);
           break;
         case 'empty':
-          ctx.res.body = '';
+          this.processEmpty(ctx);
           break;
         case 'redirect':
-          const target = profileService.calcPath(
-            userID,
-            urlObj.href,
-            processRule.match,
-            data.target,
-          );
-          if (!target) {
-            continue;
-          }
-          ctx.res.setHeader('zan-proxy-target', target);
-          // 先处理 https
-          if (target.startsWith('https')) {
-            const gotRes = await got.get(target, {
-              // 忽略本地自签名证书授权
-              rejectUnauthorized: false,
-              throwHttpErrors: false,
-            });
-            // set response info
-            ctx.res.statusCode = gotRes.statusCode;
-            ctx.res.statusMessage = gotRes.statusMessage;
-            for (const headerName in gotRes.headers) {
-              if (gotRes.headers.hasOwnProperty(headerName)) {
-                ctx.res.setHeader(headerName, gotRes.headers[headerName]);
-              }
-            }
-            ctx.res.body = gotRes.body;
-          } else if (target.startsWith('http') || target.startsWith('ws')) {
-            ctx.req.url = target;
-          } else {
-            const exists = await fsExists(target);
-            if (exists) {
-              ctx.res.body = fs.createReadStream(target);
-            } else {
-              ctx.res.body = `target ${target} does not exist`;
-              ctx.res.statusCode = 404;
-            }
-          }
+          this.processRedirect(urlObj, processRule, data, ctx);
           break;
         default:
           break;
       }
     }
     await next();
+
+    // 在响应中设置额外的响应头
     Object.keys(resHeaders).forEach(headerKey => {
       ctx.res.setHeader(headerKey, resHeaders[headerKey]);
     });
-  };
-};
+  }
+}

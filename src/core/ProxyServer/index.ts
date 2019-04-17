@@ -3,6 +3,7 @@ import compose from 'koa-compose';
 import LRU from 'lru-cache';
 import os from 'os';
 import path from 'path';
+
 import {
   CertificateService,
   CertificateStorage,
@@ -48,7 +49,7 @@ export class ProxyServer {
 
   private httpsPort: number;
 
-  public async listen(port: number = 8001) {
+  public listen(port: number = 8001) {
     const handlerMiddleware = compose(
       this.middleware.concat([
         async ctx => {

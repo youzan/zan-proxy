@@ -130,11 +130,14 @@ export class Manager {
       const userId = this._getUserId(client);
       client.join(userId);
       // 推送最新数据
+
       // 个人配置
-      const profile = await this.profileService.getProfile(userId);
+      const profile = await this.profileService.getProfile();
       client.emit('profile', profile);
-      const mappedClientIps = await this.profileService.getClientIpsMappedToUserId(userId);
-      client.emit('mappedClientIps', mappedClientIps);
+      this.profileService.on('data-change', profile => {
+        client.emit('profile', profile);
+      });
+
       // host文件列表
       const hostFileList = await this.hostService.getHostFileList(userId);
       client.emit('hostfilelist', hostFileList);
@@ -145,13 +148,7 @@ export class Manager {
       const dataList = await this.mockDataService.getMockDataList(userId);
       client.emit('datalist', dataList);
     });
-    // 个人配置信息
-    this.profileService.on('data-change-profile', (userId, profile) => {
-      socket.to(userId).emit('profile', profile);
-    });
-    this.profileService.on('data-change-clientIpUserMap', (userId, clientIpList) => {
-      socket.to(userId).emit('mappedClientIps', clientIpList);
-    });
+
     // host文件变化
     this.hostService.on('data-change', (userId, hostFilelist) => {
       socket.to(userId).emit('hostfilelist', hostFilelist);

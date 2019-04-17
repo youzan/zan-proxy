@@ -1,14 +1,19 @@
-import { IncomingMessage } from 'http';
+import { Service } from 'typedi';
 
-export const ip = () => {
-  return async (ctx, next) => {
+import { IProxyContext, IProxyMiddleware, NextFunction } from '../types/proxy';
+
+@Service()
+export class IpMiddleware implements IProxyMiddleware {
+  public async middleware(ctx: IProxyContext, next: NextFunction) {
     if (ctx.ignore) {
-      await next();
-      return;
+      return next();
     }
-    const req: IncomingMessage = ctx.req;
+
+    const req = ctx.req;
     ctx.clientIP =
-      req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress;
+      (req.headers['x-forwarded-for'] as string) ||
+      req.connection.remoteAddress ||
+      req.socket.remoteAddress;
     await next();
-  };
-};
+  }
+}

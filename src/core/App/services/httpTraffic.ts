@@ -5,17 +5,18 @@ import { forEach } from 'lodash';
 import path from 'path';
 import rimraf from 'rimraf';
 import { Service } from 'typedi';
+
 import { AppInfoService } from './appInfo';
 
 const fsWriteFile = promisify(fs.writeFile);
 const fsReadFile = promisify(fs.readFile);
 
-const logCountPerUser = 500;
+const MAX_LOG_COUNT = 500;
 
 @Service()
 export class HttpTrafficService extends EventEmitter {
   private cache: object;
-  private userRequestPointer: object;
+  private userRequestPointer: { [key: string]: number };
   private userMonitorCount: object;
   private trafficDir: string;
   private filterMap: object;
@@ -59,7 +60,7 @@ export class HttpTrafficService extends EventEmitter {
 
   public getStatus(userId) {
     return {
-      overflow: this.userRequestPointer[userId] > logCountPerUser,
+      overflow: this.userRequestPointer[userId] > MAX_LOG_COUNT,
       stopRecord: this.stopRecord[userId] || false,
     };
   }
@@ -84,7 +85,9 @@ export class HttpTrafficService extends EventEmitter {
     this.cache = {};
   }
 
-  // 为请求分配id
+  /**
+   * 为请求分配id
+   */
   public getRequestId(userId, urlObj) {
     // 处于停止记录状态 则不返回id
     if (this.stopRecord[userId]) {
@@ -95,7 +98,7 @@ export class HttpTrafficService extends EventEmitter {
     let id = this.userRequestPointer[userId] || 0;
 
     // 超过500个请求则不再记录
-    if (id > logCountPerUser) {
+    if (id > MAX_LOG_COUNT) {
       return -1;
     }
 
@@ -104,7 +107,7 @@ export class HttpTrafficService extends EventEmitter {
     if (href.includes(filter)) {
       id++;
       this.userRequestPointer[userId] = id;
-      if (id > logCountPerUser) {
+      if (id > MAX_LOG_COUNT) {
         const state = this.getStatus(userId);
         // 向监控窗推送通知
         this.emit('state-change', userId, state);

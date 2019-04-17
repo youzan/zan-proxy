@@ -1,29 +1,27 @@
 import fs from 'fs-extra';
 import koa from 'koa';
 import koaBodyParser from 'koa-bodyparser';
+import compose from 'koa-compose';
 import koaMount from 'koa-mount';
 import Router from 'koa-router';
-import { remove, uniqWith } from 'lodash';
+import { filter, map, remove, uniqWith } from 'lodash';
 import npm from 'npm';
 import path from 'path';
 import { Service } from 'typedi';
-import { AppInfoService } from '../services';
-import Storage from './storage';
 
-export interface Plugin {
-  name: string;
-  manage: () => koa;
-  proxy: () => koa;
-}
+import { AppInfoService } from '../services';
+import PluginStorage from './storage';
+import { IPluginModule } from './types';
 
 @Service()
 export default class PluginManager {
-  private storage: Storage;
-  private plugins: Plugin[];
-  private dir: string;
+  private storage: PluginStorage;
+  private plugins: { [key: string]: IPluginModule };
+  private pluginInstallDir: string;
+
   constructor(appInfoService: AppInfoService) {
-    this.dir = path.join(appInfoService.proxyDataDir, 'plugins');
-    this.storage = new Storage(this.getDir());
+    this.pluginInstallDir = path.join(appInfoService.proxyDataDir, 'plugins');
+    this.storage = new PluginStorage(this.pluginInstallDir);
     this.plugins = this.storage
       .get()
       .filter(p => !p.disabled)
@@ -33,8 +31,8 @@ export default class PluginManager {
           if (!fs.existsSync(pluginPath)) {
             throw Error(`plugin ${curr.name} not found`);
           }
-          const pluginClass = __non_webpack_require__(pluginPath);
-          prev[curr.name] = new pluginClass();
+          const PluginClass = __non_webpack_require__(pluginPath);
+          prev[curr.name] = new PluginClass();
         } catch (error) {
           console.error(
             `plugin "${curr.name}" has a runtime error. please check it.\n${error.stack}`,
@@ -44,10 +42,10 @@ export default class PluginManager {
         return prev;
       }, {});
   }
-  public add(pluginName, npmConfig = {}) {
+  public add(pluginName: string, npmConfig = {}) {
     return new Promise((resolve, reject) => {
       const install = () => {
-        npm.commands.install([pluginName, this.getDir()], (err: any) => {
+        npm.commands.install([pluginName, this.pluginInstallDir], (err: any) => {
           if (err) {
             if (err.code === 'E404') {
               return reject(Error(`插件不存在 ${err.uri}`));
@@ -58,6 +56,7 @@ export default class PluginManager {
             this.storage.get().concat([
               {
                 name: pluginName,
+                version: '',
               },
             ]),
             (p1, p2) => {
@@ -71,7 +70,7 @@ export default class PluginManager {
       };
       npmConfig = Object.assign({}, npmConfig, {
         loglevel: 'silent',
-        prefix: this.getDir(),
+        prefix: this.pluginInstallDir,
       });
       if (npm.config.loaded) {
         Object.keys(npmConfig).forEach(k => {
@@ -86,7 +85,7 @@ export default class PluginManager {
   public remove(pluginName) {
     return new Promise((resolve, reject) => {
       const uninstall = () => {
-        npm.commands.uninstall([pluginName, this.getDir()], err => {
+        npm.commands.uninstall([pluginName, this.pluginInstallDir], err => {
           if (err) {
             return reject(err);
           }
@@ -97,7 +96,7 @@ export default class PluginManager {
           return resolve(plugins);
         });
       };
-      const npmConfig = { loglevel: 'silent', prefix: this.getDir() };
+      const npmConfig = { loglevel: 'silent', prefix: this.pluginInstallDir };
       if (npm.config.loaded) {
         Object.keys(npmConfig).forEach(k => {
           npm.config.set(k, npmConfig[k]);
@@ -134,6 +133,7 @@ export default class PluginManager {
         const pluginApp = plugin.manage();
         if (
           Object.prototype.toString.call(pluginApp) === '[object Object]' &&
+          // @ts-ignore
           pluginApp.__proto__.constructor.name === 'Application'
         ) {
           app.use(koaMount(`/${name}`, pluginApp));
@@ -196,18 +196,14 @@ export default class PluginManager {
     return app;
   }
 
-  public loadProxyMiddleware(server) {
-    Object.keys(this.plugins).forEach(name => {
-      const plugin = this.plugins[name];
-      server.use(plugin.proxy(server));
-    });
+  public getComposedPluginMiddlewares() {
+    console.log('getComposedPluginMiddlewares');
+    return compose(
+      map(filter(this.plugins, plugin => !plugin.disabled), plugin => plugin.proxy.bind(plugin)),
+    );
   }
 
-  private getDir() {
-    return this.dir;
-  }
-
-  private getPluginDir(pluginName) {
-    return path.resolve(this.getDir(), 'node_modules', pluginName);
+  private getPluginDir(pluginName: string) {
+    return path.resolve(this.pluginInstallDir, 'node_modules', pluginName);
   }
 }

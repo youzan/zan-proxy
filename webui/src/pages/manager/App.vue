@@ -145,8 +145,6 @@ export default {
       },
       // 将转发变量配置转换为数组格式 方便编辑
       projectPathArray: [],
-      // 关联的ip
-      mappedClientIps: [],
       // 生效的规则
       rule: [],
       // host文件列表
@@ -476,10 +474,6 @@ export default {
         });
       });
       this.projectPathArray = result;
-    });
-
-    socket.on('mappedClientIps', ips => {
-      this.mappedClientIps = ips;
     });
 
     socket.on('hostfilelist', data => {

@@ -5,9 +5,10 @@ import { find, forEach } from 'lodash';
 import fetch from 'node-fetch';
 import path from 'path';
 import { Service } from 'typedi';
+
 import { AppInfoService } from './appInfo';
 
-const ipReg = /((?:(?:25[0-5]|2[0-4]\d|[01]?\d?\d)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d?\d))/;
+const IP_REG = /((?:(?:25[0-5]|2[0-4]\d|[01]?\d?\d)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d?\d))/;
 
 const fsUnlink = promisify(fs.unlink);
 const fsExists = (p): Promise<boolean> =>
@@ -17,13 +18,20 @@ const fsExists = (p): Promise<boolean> =>
     });
   });
 
+interface IHostMap {
+  globHostMap: { [host: string]: string };
+  hostMap: { [host: string]: string };
+}
+
 /**
  * Created by tsxuehu on 8/3/17.
  */
 @Service()
 export class HostService extends EventEmitter {
   private userHostFilesMap: object;
-  private inUsingHostsMapCache: object;
+  private inUsingHostsMapCache: {
+    [user: string]: IHostMap;
+  };
   private hostSaveDir: string;
   constructor(appInfoService: AppInfoService) {
     super();
@@ -55,16 +63,18 @@ export class HostService extends EventEmitter {
     });
   }
 
-  public async resolveHost(userId, hostname) {
+  public resolveHost(hostname: string): string {
     if (!hostname) {
       return hostname;
     }
 
-    if (ipReg.test(hostname)) {
+    // 访问 ip 地址时，不做 host 解析
+    if (IP_REG.test(hostname)) {
       return hostname;
     }
-    let ip;
-    const inUsingHosts = this.getInUsingHosts(userId);
+
+    let ip: string;
+    const inUsingHosts = this.getInUsingHosts('root');
     ip = inUsingHosts.hostMap[hostname];
     if (ip) {
       return ip;

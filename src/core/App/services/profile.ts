@@ -1,76 +1,98 @@
-import { promisify } from 'es6-promisify';
 import EventEmitter from 'events';
 import fs from 'fs-extra';
 import { forEach, template } from 'lodash';
 import path from 'path';
 import { Service } from 'typedi';
+
 import { AppInfoService } from './appInfo';
 
-export interface Profile {
-  projectPath: object;
-  enableRule: boolean;
+export interface IProfile {
+  /** 是否启用host解析 */
   enableHost: boolean;
+  /** 是否启用转发规则 */
+  enableRule: boolean;
+  /** 工程路径配置 */
+  projectPath: object;
 }
 
-const defaultProfile: Profile = {
-  // 是否启用host解析
+const DEFAULT_PROFILE: IProfile = {
   enableHost: true,
-  // 是否启用转发规则
   enableRule: true,
-  // 工程路径配置
   projectPath: {},
 };
+
 /**
- * 代理运转需要的规则数据
- * 代理端口、超时时间、gitlab token、工程路径、是否启用转发规则
- * Created by tsxuehu on 8/3/17.
+ * 配置是否启用host解析、转发规则及工程路径
  */
 @Service()
 export class ProfileService extends EventEmitter {
-  private userProfileMap: object;
-  private clientIpUserMap: object;
-  private profileSaveDir: string;
-  private clientIpUserMapSaveFile: string;
+  /**
+   * 用户配置信息映射表，目前 user 只有 root 一个
+   */
+  private profile: IProfile;
+
+  /**
+   * 配置信息存储目录
+   */
+  private profileSaveFile: string;
+
   constructor(appInfoService: AppInfoService) {
     super();
-    // userId -> profile
-    this.userProfileMap = {};
-    // clientIp -> userId
-    this.clientIpUserMap = {};
 
     const proxyDataDir = appInfoService.proxyDataDir;
-    this.profileSaveDir = path.join(proxyDataDir, 'profile');
-    this.clientIpUserMapSaveFile = path.join(proxyDataDir, 'clientIpUserMap.json');
+    // 修改为单用户模式，但是为了保证兼容，需要使用之前的配置保存文件路径
+    this.profileSaveFile = path.join(proxyDataDir, 'profile/root.json');
 
-    const profileMap = fs
-      .readdirSync(this.profileSaveDir)
-      .filter(name => name.endsWith('.json'))
-      .reduce((prev, curr) => {
-        prev[curr] = fs.readJsonSync(path.join(this.profileSaveDir, curr));
-        return prev;
-      }, {});
-    forEach(profileMap, (profile, fileName) => {
-      const userId = fileName.slice(0, -5);
-      // 补全profile数据
-      // this.userProfileMap[userId] = assign({}, defaultProfile, profile);;
-      this.userProfileMap[userId] = profile;
-    });
-    // 加载ip-> userID映射
-    this.clientIpUserMap = fs.readJsonSync(this.clientIpUserMapSaveFile);
+    try {
+      this.profile = fs.readJsonSync(this.profileSaveFile);
+    } catch {
+      this.profile = DEFAULT_PROFILE;
+    }
   }
 
-  public getProfile(userId) {
-    return this.userProfileMap[userId] || defaultProfile;
+  /**
+   * 获取配置信息
+   */
+  public getProfile() {
+    return this.profile || DEFAULT_PROFILE;
   }
 
-  public async setProfile(userId, profile) {
-    this.userProfileMap[userId] = profile;
+  /**
+   * 获取转发规则启用开关
+   */
+  public get enableRule() {
+    return this.getProfile().enableRule;
+  }
 
-    const filePath = path.join(this.profileSaveDir, `${userId}.json`);
+  /**
+   * 获取 host 解析启用开关
+   */
+  public get enableHost() {
+    return this.getProfile().enableHost;
+  }
+
+  /**
+   * 更新配置信息
+   */
+  public setProfile(profile) {
+    this.profile = profile;
+
     // 将数据写入文件
-    await fs.writeJson(filePath, profile, { encoding: 'utf-8' });
+    fs.writeJsonSync(this.profileSaveFile, profile, { encoding: 'utf-8' });
     // 发送通知
-    this.emit('data-change-profile', userId, profile);
+    this.emit('data-change', profile);
+  }
+
+  public setEnableRule(enable: boolean) {
+    const conf = this.getProfile();
+    conf.enableRule = enable;
+    this.setProfile(conf);
+  }
+
+  public setEnableHost(enable: boolean) {
+    const conf = this.getProfile();
+    conf.enableHost = enable;
+    this.setProfile(conf);
   }
 
   /**
@@ -81,7 +103,7 @@ export class ProfileService extends EventEmitter {
    * @param match
    * @param target
    */
-  public calcPath(userId, href: string, match, target) {
+  public calcPath(href: string, match, target) {
     if (match) {
       const matchList = href.match(new RegExp(match));
       forEach(matchList, (value, index) => {
@@ -95,72 +117,9 @@ export class ProfileService extends EventEmitter {
         target = target.replace(reg, value);
       });
       const compiled = template(target);
-      const projectPath = this.getProfile(userId).projectPath;
+      const projectPath = this.getProfile().projectPath;
       // 解析应用的变量
       return compiled(projectPath);
     }
-  }
-
-  /**
-   *
-   * @param userId
-   * @param enable
-   */
-  public async setEnableRule(userId, enable) {
-    const conf = this.getProfile(userId);
-    conf.enableRule = enable;
-    await this.setProfile(userId, conf);
-  }
-
-  public async setEnableHost(userId, enable) {
-    const conf = this.getProfile(userId);
-    conf.enableHost = enable;
-    await this.setProfile(userId, conf);
-  }
-
-  /**
-   * 获取转发规则启用开关
-   * @param clientIp
-   */
-  public enableRule(userId) {
-    return this.getProfile(userId).enableRule;
-  }
-
-  public enableHost(userId) {
-    return this.getProfile(userId).enableHost;
-  }
-
-  // 获取clientIp对应的user id
-  public getClientIpMappedUserId(clientIp) {
-    return this.clientIpUserMap[clientIp] || 'root';
-  }
-
-  // 将ip绑定至用户
-  public async bindClientIp(userId, clientIp) {
-    const originUserId = this.clientIpUserMap[clientIp];
-    this.clientIpUserMap[clientIp] = userId;
-
-    await fs.writeJson(this.clientIpUserMapSaveFile, this.clientIpUserMap, {
-      encoding: 'utf-8',
-    });
-
-    const clientIpList = this.getClientIpsMappedToUserId(userId);
-    this.emit('data-change-clientIpUserMap', userId, clientIpList);
-
-    if (originUserId) {
-      const originClientIpList = this.getClientIpsMappedToUserId(originUserId);
-      this.emit('data-change-clientIpUserMap', originUserId, originClientIpList);
-    }
-  }
-
-  // 获取用户绑定的clientip
-  public getClientIpsMappedToUserId(userId) {
-    const ips: string[] = [];
-    forEach(this.clientIpUserMap, (mapedUserId, ip) => {
-      if (mapedUserId === userId) {
-        ips.push(ip);
-      }
-    });
-    return ips;
   }
 }

@@ -6,6 +6,7 @@ import fetch from 'node-fetch';
 import path from 'path';
 import { Service } from 'typedi';
 import uuid from 'uuid/v4';
+
 import { AppInfoService } from './appInfo';
 
 const fsUnlink = promisify(fs.unlink);
@@ -50,7 +51,7 @@ export interface RuleFileMeta {
 
 @Service()
 export class RuleService extends EventEmitter {
-  public rules: object;
+  public rules: { [user: string]: { [name: string]: RuleFile } };
   private usingRuleCache: object;
   private ruleSaveDir: string;
   constructor(appInfoService: AppInfoService) {
@@ -237,7 +238,7 @@ export class RuleService extends EventEmitter {
    */
   public getProcessRule(userId, method, urlObj): Rule | null {
     let candidateRule = null;
-    const inusingRules = this._getInuseRules(userId);
+    const inusingRules = this.getUsingRules(userId);
     for (const rule of inusingRules) {
       // 捕获规则
       if (this._isUrlMatch(urlObj.href, rule.match) && this._isMethodMatch(method, rule.method)) {
@@ -321,15 +322,16 @@ export class RuleService extends EventEmitter {
     return copied;
   }
 
-  private _getInuseRules(userId) {
+  private getUsingRules(userId) {
     if (this.usingRuleCache[userId]) {
       return this.usingRuleCache[userId];
     }
     const ruleMap = this.rules[userId] || {};
     // 计算使用中的规则
-    const rulesLocal: any[] = [];
-    const rulesRemote: any[] = [];
+    const rulesLocal: Rule[] = [];
+    const rulesRemote: Rule[] = [];
     forEach(ruleMap, (file, filename) => {
+      // 转发规则未被选中
       if (!file.checked) {
         return;
       }
@@ -338,7 +340,6 @@ export class RuleService extends EventEmitter {
           return;
         }
         const copy = cloneDeep(rule);
-        copy.ruleFileName = filename;
         if (file.meta && file.meta.remote) {
           rulesRemote.push(copy);
         } else {

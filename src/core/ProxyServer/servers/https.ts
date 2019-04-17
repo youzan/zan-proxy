@@ -1,6 +1,8 @@
+import http from 'http';
 import https from 'https';
 import { createSecureContext } from 'tls';
-import { CertificateService, HttpHandler } from '../interfaces';
+
+import { CertificateService, HttpHandler, UpgradeHandler } from '../interfaces';
 import fillReqUrl from './fillReqUrl';
 
 export class HttpsServer {
@@ -15,14 +17,14 @@ export class HttpsServer {
     private certService: CertificateService, // private connectHandler: ConnectHandler
   ) {}
   public setHttpHandler(httpHandler: HttpHandler) {
-    this.server.on('request', (req, res) => {
+    this.server.on('request', (req: http.IncomingMessage, res: http.ServerResponse) => {
       fillReqUrl(req, 'https');
       // req.headers["x-forwarded-for"] = this.connectHandler.getIP(req.connection.remotePort);
       httpHandler.handle(req, res);
     });
   }
 
-  public setUpgradeHandler(upgradeHandler) {
+  public setUpgradeHandler(upgradeHandler: UpgradeHandler) {
     this.server.on('upgrade', (req, socket, head) => {
       fillReqUrl(req, 'wss');
       upgradeHandler.handle(req, socket, head);
