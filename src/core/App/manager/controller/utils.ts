@@ -1,12 +1,13 @@
-import axios from 'axios';
-import fs from 'fs';
+import fs from 'fs-extra';
 import { Context } from 'koa';
 import path from 'path';
+import { Controller, Ctx, Get, Post } from 'routing-controllers';
 import { Inject, Service } from 'typedi';
 
 import { AppInfoService, HostService, RuleFile, RuleService } from '../../services';
 
 @Service()
+@Controller('/utils')
 export class UtilsController {
   @Inject() private appInfoService: AppInfoService;
   @Inject() private hostService: HostService;
@@ -15,16 +16,18 @@ export class UtilsController {
   /**
    * 下载证书
    */
-  private rootCAFile = (ctx: Context) => {
+  @Get('/rootCA.crt')
+  public rootCAFile(@Ctx() ctx: Context) {
     ctx.set('Content-disposition', 'attachment;filename=zproxy.crt');
     const filePath = path.join(this.appInfoService.proxyDataDir, 'certificate/root/zproxy.crt.pem');
-    ctx.body = fs.createReadStream(filePath, { encoding: 'utf-8' });
-  };
+    return fs.createReadStream(filePath, { encoding: 'utf-8' });
+  }
 
   /**
    * 生成 pac 规则
    */
-  private pac = async (ctx: Context) => {
+  @Get('/pac')
+  public async pac(@Ctx() ctx: Context) {
     const ip = this.appInfoService.appInfo.LANIp;
     const port = this.appInfoService.appInfo.proxyPort;
 
@@ -71,12 +74,6 @@ export class UtilsController {
                           return direct;\n\
                      }`;
     ctx.set('Content-Type', 'application/x-javascript-config');
-    ctx.body = pac;
-  };
-
-  public regist(router) {
-    router.get('/utils/rootCA.crt', this.rootCAFile);
-
-    router.get('/pac', this.pac);
+    return pac;
   }
 }

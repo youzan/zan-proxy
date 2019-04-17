@@ -1,4 +1,5 @@
 import ora from 'ora';
+
 import { AppInfoService, RuleFile, RuleService } from './App/services';
 
 const syncRemoteRules = async () => {
@@ -10,7 +11,7 @@ const syncRemoteRules = async () => {
     const userRuleFilesMap = ruleService.rules[userID];
     const userRuleFiles: RuleFile[] = Object.keys(userRuleFilesMap).map(k => userRuleFilesMap[k]);
     for (const ruleFile of userRuleFiles) {
-      if (ruleFile.meta && ruleFile.meta.remote && !ruleFile.disableSync) {
+      if (ruleFile.meta && ruleFile.meta.remote) {
         const spinner = ora(`同步规则集${ruleFile.name}`).start();
         try {
           await ruleService.importRemoteRuleFile(userID, ruleFile.meta.url);

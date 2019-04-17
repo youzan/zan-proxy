@@ -3,14 +3,13 @@ import http from 'http';
 import Koa from 'koa';
 import koaBodyParser from 'koa-bodyparser';
 import koaFavicon from 'koa-favicon';
-import koaMount from 'koa-mount';
 import koaQs from 'koa-qs';
 import koaStatic from 'koa-static';
 import path from 'path';
+import { useContainer, useKoaServer } from 'routing-controllers';
 import SocketIO from 'socket.io';
-import { Container, Service } from 'typedi';
+import Container, { Inject, Service } from 'typedi';
 
-import PluginManager from '../plugin-manager';
 import {
   HostService,
   HttpTrafficService,
@@ -18,31 +17,46 @@ import {
   ProfileService,
   RuleService,
 } from '../services';
-import router from './router';
+import {
+  HostController,
+  HttpTrafficController,
+  MockDataController,
+  PluginsController,
+  ProfileController,
+  RuleController,
+  UtilsController,
+} from './controller';
+
+useContainer(Container);
 
 @Service()
 export class Manager {
-  private httpTrafficService: HttpTrafficService;
-  private profileService: ProfileService;
-  private hostService: HostService;
-  private mockDataService: MockDataService;
-  private ruleService: RuleService;
+  @Inject() private httpTrafficService: HttpTrafficService;
+  @Inject() private profileService: ProfileService;
+  @Inject() private hostService: HostService;
+  @Inject() private mockDataService: MockDataService;
+  @Inject() private ruleService: RuleService;
 
-  private pluginManager: PluginManager;
+  private controllers = [
+    ProfileController,
+    HostController,
+    HttpTrafficController,
+    MockDataController,
+    RuleController,
+    UtilsController,
+    PluginsController,
+  ];
 
   private app: Koa;
   private server: http.Server;
   private io: SocketIO.Server;
 
-  constructor() {
-    this.httpTrafficService = Container.get(HttpTrafficService);
-    this.profileService = Container.get(ProfileService);
-    this.hostService = Container.get(HostService);
-    this.mockDataService = Container.get(MockDataService);
-    this.ruleService = Container.get(RuleService);
-    this.pluginManager = Container.get(PluginManager);
+  public init() {
     // 初始化koa
     this.app = new Koa();
+    // 静态资源服务
+    this.app.use(koaStatic(global.__site, { index: 'manager.html' }));
+    this.app.use(koaFavicon(path.join(global.__site, 'favicon.ico')));
     // query string
     koaQs(this.app);
     // body解析
@@ -53,6 +67,7 @@ export class Manager {
         textLimit: '5mb',
       }),
     );
+
     // 路由
     this.app.use(async (ctx, next) => {
       // 取用户Id
@@ -60,11 +75,14 @@ export class Manager {
       ctx.userId = cookies.userId || 'root';
       await next();
     });
-    this.app.use(router());
-    // 静态资源服务
-    this.app.use(koaStatic(global.__site, { index: 'manager.html' }));
-    this.app.use(koaFavicon(path.join(global.__site, 'favicon.ico')));
-    this.app.use(koaMount('/plugins', this.pluginManager.getUIApp()));
+
+    useKoaServer(this.app, {
+      controllers: this.controllers,
+    });
+
+    // 挂载自定义插件路由
+    Container.get(PluginsController).mountCustomPlugins(this.app);
+
     // 创建server
     this.server = http.createServer(this.app.callback());
     // socketio
@@ -73,11 +91,6 @@ export class Manager {
     // 初始化socket io
     this._initTraffic();
     this._initManger();
-  }
-
-  public listen(port) {
-    // 启动server
-    this.server.listen(port);
   }
 
   // http流量监控界面
@@ -167,5 +180,10 @@ export class Manager {
   private _getUserId(socketIOConn) {
     const cookies = cookieParser.parse(socketIOConn.request.headers.cookie || '');
     return cookies.userId || 'root';
+  }
+
+  public listen(port) {
+    // 启动server
+    this.server.listen(port);
   }
 }

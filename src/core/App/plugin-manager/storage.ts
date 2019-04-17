@@ -1,4 +1,3 @@
-import { isString } from 'lodash';
 import { LocalStorage } from 'node-localstorage';
 
 import { IPluginInfo } from './types';
@@ -17,10 +16,10 @@ export default class PluginStorage {
   }
 
   public get(): IPluginInfo[] {
-    let plugins = this.store.getItem(key) || [];
-    if (isString(plugins)) {
-      plugins = JSON.parse(plugins);
+    try {
+      return JSON.parse(this.store.getItem(key));
+    } catch {
+      return [];
     }
-    return plugins;
   }
 }

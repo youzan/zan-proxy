@@ -1,4 +1,4 @@
-import koa from 'koa';
+import Koa from 'koa';
 
 import { IProxyMiddlewareFn } from '../types/proxy';
 
@@ -9,7 +9,7 @@ export interface IPluginInfo {
 }
 
 export interface IPluginClass {
-  manage: () => koa;
+  manage: () => Koa;
   proxy: () => IProxyMiddlewareFn;
 }
 

@@ -11,6 +11,7 @@ export default class App {
 
   public async init() {
     await this.proxy.init();
+    await this.manager.init();
   }
 
   public start(proxyPort: number, managerPort: number) {

@@ -19,17 +19,6 @@
           />
         </template>
       </el-table-column>
-      <!-- <el-table-column prop="disableSync" label="禁用同步" width="100">
-        <template scope='scope'>
-          <el-checkbox
-            v-model="scope.row.disableSync"
-            :disabled="!$dc.ruleState"
-            @change="onDisableSyncChange(scope.row.name,scope.row.disableSync)"
-            v-if="scope.row.meta.remote"
-          />
-          <span v-else>/</span>
-        </template>
-      </el-table-column>-->
       <el-table-column prop="name" label="名字" width="200">
         <template slot-scope="scope">
           <el-tooltip
@@ -186,19 +175,6 @@ export default {
     },
     onSelectionChange(name, checked) {
       ruleApi.setFileCheckStatus(name, checked).then(response => {
-        var serverData = response.data;
-        if (serverData.code == 0) {
-          this.$message({
-            type: 'success',
-            message: '设置成功!',
-          });
-        } else {
-          this.$message.error(`出错了，${serverData.msg}`);
-        }
-      });
-    },
-    onDisableSyncChange(name, checked) {
-      ruleApi.setFileDisableSync(name, checked).then(response => {
         var serverData = response.data;
         if (serverData.code == 0) {
           this.$message({
