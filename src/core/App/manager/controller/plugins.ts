@@ -74,13 +74,11 @@ export class PluginsController {
       const plugin = this.pluginManager.usingPlugins[name];
       if (plugin.manage) {
         const pluginManager = plugin.manage();
-        console.log(pluginManager);
         if (
           Object.prototype.toString.call(pluginManager) === '[object Object]' &&
           // @ts-ignore
           pluginManager.__proto__.constructor.name === 'Application'
         ) {
-          console.log(`mount plugin: ${name}`);
           app.use(koaMount(`/plugins/${name}`, pluginManager));
         } else {
           console.error(`"${name}" 插件的 manage() 方法需要返回 koa 实例`);

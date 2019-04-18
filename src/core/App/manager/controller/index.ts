@@ -5,3 +5,4 @@ export * from './profile';
 export * from './rule';
 export * from './utils';
 export * from './plugins';
+export * from './socket';
