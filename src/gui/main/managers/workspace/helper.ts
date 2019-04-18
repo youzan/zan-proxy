@@ -1,6 +1,6 @@
 import Container from 'typedi';
 
-import { HostService, ProfileService, RuleService } from '@core/App/services';
+import { HostService, ProfileService, RuleService } from '@core/services';
 
 const workspaceManagerHelper = {
   /**

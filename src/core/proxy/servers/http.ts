@@ -1,7 +1,7 @@
 import http from 'http';
 import net from 'net';
 
-import { ConnectHandler, HttpHandler, UpgradeHandler } from '../impl';
+import { ConnectHandler, HttpHandler, UpgradeHandler } from '../handler';
 import fillReqUrl from './fillReqUrl';
 
 export class HttpServer {

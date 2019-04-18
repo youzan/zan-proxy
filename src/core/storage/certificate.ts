@@ -1,7 +1,7 @@
 import fs from 'fs-extra';
 import path from 'path';
 
-import { CertificateModel } from '@core/types';
+import { CertificateModel } from '@core/types/certificate';
 
 const fsExists = (p): Promise<boolean> =>
   new Promise(resolve => {

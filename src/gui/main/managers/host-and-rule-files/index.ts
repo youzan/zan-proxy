@@ -1,16 +1,16 @@
-import SocketClient from 'socket.io-client';
-import Container, { Inject, Service } from 'typedi';
 import { ipcMain } from 'electron';
 import logger from 'electron-log';
+import SocketClient from 'socket.io-client';
+import Container, { Inject, Service } from 'typedi';
 
+import { HostService, RuleService } from '@core/services';
+import syncHosts from '@core/syncHost';
+import syncRules from '@core/syncRule';
 import { HOST_FILE_EVENTS, RULE_FILE_EVENTS } from '@gui/common/events';
 import BaseManager from '@gui/main/core/base-manager';
 import { showNotify } from '@gui/main/utils';
 
 import AppDataManager from '../app-data';
-import { HostService, RuleService } from '@core/App/services';
-import syncRules from '@core/syncRule';
-import syncHosts from '@core/syncHost';
 
 @Service()
 export default class HostAndRuleFilesManager extends BaseManager {

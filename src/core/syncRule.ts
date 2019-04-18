@@ -1,6 +1,6 @@
 import ora from 'ora';
 
-import { AppInfoService, RuleFile, RuleService } from './App/services';
+import { AppInfoService, RuleFile, RuleService } from './services';
 
 const syncRemoteRules = async () => {
   console.log('开始同步远程规则集');

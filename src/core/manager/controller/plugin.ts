@@ -5,7 +5,7 @@ import path from 'path';
 import { Controller, Ctx, Get, NotFoundError, Post } from 'routing-controllers';
 import { Inject, Service } from 'typedi';
 
-import { PluginService } from '@core/App/services';
+import { PluginService } from '@core/services';
 
 @Service()
 @Controller('/plugins')

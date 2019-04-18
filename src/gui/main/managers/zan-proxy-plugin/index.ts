@@ -1,7 +1,7 @@
 import { app } from 'electron';
 import Container, { Service } from 'typedi';
 
-import { PluginService } from '@core/App/services';
+import { PluginService } from '@core/services';
 import { APP_STATES } from '@gui/common/constants';
 import BaseManager from '@gui/main/core/base-manager';
 import { showNotify } from '@gui/main/utils';

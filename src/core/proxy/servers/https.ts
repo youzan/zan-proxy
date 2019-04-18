@@ -2,9 +2,9 @@ import http from 'http';
 import https from 'https';
 import { createSecureContext } from 'tls';
 
-import { CertificateService } from '@core/App/services';
+import { CertificateService } from '@core/services';
 
-import { HttpHandler, UpgradeHandler } from '../impl';
+import { HttpHandler, UpgradeHandler } from '../handler';
 import fillReqUrl from './fillReqUrl';
 
 export class HttpsServer {

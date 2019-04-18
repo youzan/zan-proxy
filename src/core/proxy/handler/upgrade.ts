@@ -5,7 +5,7 @@ import net from 'net';
 import { Service } from 'typedi';
 import URL from 'url';
 
-import { IProxyContext } from '@core/App/types/proxy';
+import { IProxyContext } from '@core/types/proxy';
 
 @Service()
 export class UpgradeHandler {

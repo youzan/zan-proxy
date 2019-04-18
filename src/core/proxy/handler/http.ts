@@ -3,7 +3,7 @@ import { ComposedMiddleware } from 'koa-compose';
 import Stream from 'stream';
 import { Service } from 'typedi';
 
-import { IProxyContext, IProxyMiddlewareFn } from '@core/App/types/proxy';
+import { IProxyContext, IProxyMiddlewareFn } from '@core/types/proxy';
 
 @Service()
 export class HttpHandler {
