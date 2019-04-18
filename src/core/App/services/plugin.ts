@@ -2,17 +2,19 @@ import { EventEmitter } from 'events';
 import fs from 'fs-extra';
 import compose from 'koa-compose';
 import { map, remove, uniqWith } from 'lodash';
+import { LocalStorage } from 'node-localstorage';
 import npm from 'npm';
 import path from 'path';
 import { Service } from 'typedi';
 
-import { AppInfoService } from '../services';
-import PluginStorage from './storage';
-import { IPluginClass, IPluginInfo, IPluginModule } from './types';
+import { IPluginClass, IPluginInfo, IPluginModule } from '../types/plugin';
+import { AppInfoService } from './appInfo';
+
+const key = 'zanproxy-plugins';
 
 @Service()
-export default class PluginManager extends EventEmitter {
-  private storage: PluginStorage;
+export class PluginService extends EventEmitter {
+  private store: LocalStorage;
   private plugins: { [key: string]: IPluginModule };
   private pluginInstallDir: string;
 
@@ -20,12 +22,24 @@ export default class PluginManager extends EventEmitter {
     super();
 
     this.pluginInstallDir = path.join(appInfoService.proxyDataDir, 'plugins');
-    this.storage = new PluginStorage(this.pluginInstallDir);
+    this.store = new LocalStorage(this.pluginInstallDir);
     this.refreshPlugins();
   }
 
+  public setPlugins(value: IPluginInfo[]) {
+    this.store.setItem(key, JSON.stringify(value));
+  }
+
+  public getPlugins(): IPluginInfo[] {
+    try {
+      return JSON.parse(this.store.getItem(key));
+    } catch {
+      return [];
+    }
+  }
+
   public get allInstalledPlugins() {
-    return this.storage.get();
+    return this.getPlugins();
   }
 
   public get usingPlugins() {
@@ -40,8 +54,7 @@ export default class PluginManager extends EventEmitter {
    * 获取插件集合
    */
   public refreshPlugins() {
-    this.plugins = this.storage
-      .get()
+    this.plugins = this.getPlugins()
       .filter(p => !p.disabled)
       .reduce<{ [key: string]: IPluginModule }>((group, plugin) => {
         try {
@@ -81,7 +94,7 @@ export default class PluginManager extends EventEmitter {
             return reject(err);
           }
           const plugins = uniqWith(
-            this.storage.get().concat([
+            this.getPlugins().concat([
               {
                 name: pluginName,
                 version: '',
@@ -92,7 +105,7 @@ export default class PluginManager extends EventEmitter {
               return p1.name === p2.name;
             },
           );
-          this.storage.set(plugins);
+          this.setPlugins(plugins);
           return resolve(plugins);
         });
       };
@@ -121,10 +134,10 @@ export default class PluginManager extends EventEmitter {
           if (err) {
             return reject(err);
           }
-          const plugins = this.storage.get();
+          const plugins = this.getPlugins();
           // @ts-ignore
           remove(plugins, p => p.name === pluginName);
-          this.storage.set(plugins);
+          this.setPlugins(plugins);
           return resolve(plugins);
         });
       };
@@ -144,14 +157,14 @@ export default class PluginManager extends EventEmitter {
    * 设置某个插件的属性
    */
   public setAttrs(pluginName: string, attrs: Partial<IPluginInfo>) {
-    let plugins = this.storage.get();
+    let plugins = this.getPlugins();
     plugins = plugins.map(p => {
       if (p.name === pluginName) {
         p = Object.assign(p, attrs);
       }
       return p;
     });
-    this.storage.set(plugins);
+    this.setPlugins(plugins);
   }
 
   /**

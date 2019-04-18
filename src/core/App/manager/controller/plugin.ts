@@ -5,12 +5,12 @@ import path from 'path';
 import { Controller, Ctx, Get, NotFoundError, Post } from 'routing-controllers';
 import { Inject, Service } from 'typedi';
 
-import PluginManager from '@core/App/plugin-manager';
+import { PluginService } from '@core/App/services';
 
 @Service()
 @Controller('/plugins')
-export class PluginsController {
-  @Inject() private pluginManager: PluginManager;
+export class PluginController {
+  @Inject() private pluginManager: PluginService;
 
   @Post('/remove')
   public async remove(@Ctx() ctx: Context) {

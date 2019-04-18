@@ -1,6 +1,6 @@
 import Koa from 'koa';
 
-import { IProxyMiddlewareFn } from '../types/proxy';
+import { IProxyMiddlewareFn } from '@core/App/types/proxy';
 
 export interface IPluginInfo {
   name: string;

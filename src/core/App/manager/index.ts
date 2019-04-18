@@ -12,7 +12,7 @@ import {
   HostController,
   HttpTrafficController,
   MockDataController,
-  PluginsController,
+  PluginController,
   ProfileController,
   RuleController,
   SocketController,
@@ -28,7 +28,7 @@ const apiControllers = [
   MockDataController,
   RuleController,
   UtilsController,
-  PluginsController,
+  PluginController,
 ];
 
 @Service()
@@ -70,7 +70,7 @@ export class Manager {
     });
 
     // 挂载自定义插件路由
-    Container.get(PluginsController).mountCustomPlugins(app);
+    Container.get(PluginController).mountCustomPlugins(app);
 
     this.app = app;
     return app;
