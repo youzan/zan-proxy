@@ -2,7 +2,9 @@ import http from 'http';
 import https from 'https';
 import { createSecureContext } from 'tls';
 
-import { CertificateService, HttpHandler, UpgradeHandler } from '../interfaces';
+import { CertificateService } from '@core/App/services';
+
+import { HttpHandler, UpgradeHandler } from '../impl';
 import fillReqUrl from './fillReqUrl';
 
 export class HttpsServer {
@@ -13,9 +15,11 @@ export class HttpsServer {
   }
 
   private server: https.Server;
+
   constructor(
     private certService: CertificateService, // private connectHandler: ConnectHandler
   ) {}
+
   public setHttpHandler(httpHandler: HttpHandler) {
     this.server.on('request', (req: http.IncomingMessage, res: http.ServerResponse) => {
       fillReqUrl(req, 'https');
@@ -24,6 +28,9 @@ export class HttpsServer {
     });
   }
 
+  /**
+   * https upgrade to wss handler
+   */
   public setUpgradeHandler(upgradeHandler: UpgradeHandler) {
     this.server.on('upgrade', (req, socket, head) => {
       fillReqUrl(req, 'wss');
@@ -31,7 +38,7 @@ export class HttpsServer {
     });
   }
 
-  public async listen(port) {
+  public async listen(port: number) {
     this.server.listen(port, '0.0.0.0');
   }
 

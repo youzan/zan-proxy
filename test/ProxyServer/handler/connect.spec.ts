@@ -1,14 +1,13 @@
-import chai from "chai";
-import http from "http";
-import LRU from "lru-cache";
-import "mocha";
-import net from "net";
-import { ConnectHandler } from "./../../../src/core/ProxyServer/impl";
+import 'mocha';
 
-const should = chai.should();
+import http from 'http';
+import LRUCache from 'lru-cache';
+import net from 'net';
+
+import { ConnectHandler } from '../../../src/core/ProxyServer/impl';
 
 describe("ConnectHandler", () => {
-    const cache = new LRU();
+    const cache = new LRUCache<string, any>();
     const connectHandler = new ConnectHandler(2019, cache);
     const s = http.createServer();
     const ts = net.createServer();

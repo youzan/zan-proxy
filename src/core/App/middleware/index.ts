@@ -5,3 +5,4 @@ export * from './rule';
 export * from './user';
 export * from './ignore';
 export * from './plugin';
+export * from './forward';

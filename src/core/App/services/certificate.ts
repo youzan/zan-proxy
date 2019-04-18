@@ -1,23 +1,23 @@
 import { promisify } from 'es6-promisify';
+import LRUCache from 'lru-cache';
 import parseDomain from 'parse-domain';
 import pem from 'pem';
 
-import {
-  Cache,
-  CertificateService as ICertificateService,
-  CertificateStorage,
-} from './../../../interfaces';
+import { CertificateStorage } from '../storage';
 
 const pemCreateCertificate = promisify(pem.createCertificate);
 const SELF_ROOT_KEY = '$$SELF_ROOT$$';
 
-export class CertificateService implements ICertificateService {
+/**
+ * 证书处理 service
+ */
+export class CertificateService {
   /**
    *
    * @param storage 证书存储服务
    * @param cache 缓存服务
    */
-  constructor(private storage: CertificateStorage, private cache: Cache) {}
+  constructor(private storage: CertificateStorage, private cache: LRUCache<string, any>) {}
   /**
    * 为域名获取证书
    * @param host

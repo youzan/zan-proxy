@@ -1,20 +1,22 @@
+import http from 'http';
+import { ComposedMiddleware } from 'koa-compose';
 import Stream from 'stream';
+import { Service } from 'typedi';
 
-import { HttpHandler as IHttpHandler } from '../../interfaces';
+import { IProxyContext, IProxyMiddlewareFn } from '@core/App/types/proxy';
 
-export class HttpHandler implements IHttpHandler {
-  private middleware;
-  constructor() {
-    this.middleware = () => Promise.resolve(null);
-  }
-  public async handle(req, res) {
-    const context: any = {
+@Service()
+export class HttpHandler {
+  private middleware: ComposedMiddleware<IProxyContext> = () => Promise.resolve(null);
+
+  public async handle(req: http.IncomingMessage, res: http.ServerResponse) {
+    const context = {
       req,
       res,
-    };
+    } as IProxyContext;
     this.middleware(context).then(() => {
       if (!res.writable || res.finished) {
-        return Promise.resolve(false);
+        return false;
       }
       const { body } = res;
       if (!body) {
@@ -32,7 +34,8 @@ export class HttpHandler implements IHttpHandler {
       return res.end(JSON.stringify(body));
     });
   }
-  public setMiddleware(middleware) {
+
+  public setMiddleware(middleware: IProxyMiddlewareFn) {
     this.middleware = middleware;
   }
 }

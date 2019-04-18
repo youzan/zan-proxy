@@ -1,34 +1,33 @@
 import http from 'http';
 import HttpProxy from 'http-proxy';
+import { ComposedMiddleware } from 'koa-compose';
 import net from 'net';
+import { Service } from 'typedi';
 import URL from 'url';
 
-import { UpgradeHandler as IUpgradeHandler } from '../../interfaces';
+import { IProxyContext } from '@core/App/types/proxy';
 
-export class UpgradeHandler implements IUpgradeHandler {
-  private proxy: HttpProxy;
-  private middleware;
-  constructor() {
-    // 创建httpProxy
-    this.proxy = HttpProxy.createProxyServer({
-      secure: false, // http-proxy api  在request的option里设置 rejectUnauthorized = false
-    });
+@Service()
+export class UpgradeHandler {
+  private proxyServer: HttpProxy = HttpProxy.createProxyServer({
+    secure: false, // http-proxy api  在request的option里设置 rejectUnauthorized = false
+  });
+  private middleware: ComposedMiddleware<IProxyContext> = () => Promise.resolve(null);
 
-    this.middleware = () => Promise.resolve(null);
-  }
-  public setMiddleware(middleware) {
+  public setMiddleware(middleware: ComposedMiddleware<IProxyContext>) {
     this.middleware = middleware;
   }
+
   public async handle(req: http.IncomingMessage, socket: net.Socket, head: Buffer) {
     const ctx = {
       head,
       req,
       res: new http.ServerResponse(req),
       socket,
-    };
+    } as IProxyContext;
     this.middleware(ctx).then(() => {
       const { hostname, port, protocol } = URL.parse(req.url);
-      this.proxy.ws(req, socket, head, {
+      this.proxyServer.ws(req, socket, head, {
         target: {
           hostname,
           port,

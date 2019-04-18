@@ -1,6 +1,7 @@
+import http from 'http';
+import LRUCache from 'lru-cache';
 import net from 'net';
-
-import { Cache, ConnectHandler as IConnectHandler } from '../../interfaces';
+import { Service } from 'typedi';
 
 const proxyHost = '127.0.0.1';
 
@@ -11,11 +12,12 @@ const proxyHost = '127.0.0.1';
 // https ws wss 都会发送connect请求
 // 代理服务器的目的只要抓取http https请求
 // 折中方案：抓取所有的http请求、端口号为443的https请求
-export class ConnectHandler implements IConnectHandler {
+@Service()
+export class ConnectHandler {
   public httpPort: number;
-  constructor(public httpsPort: number, private cache: Cache) {}
+  constructor(public httpsPort: number, private cache: LRUCache<string, any>) {}
 
-  public async handle(req, socket) {
+  public async handle(req: http.IncomingMessage, socket: net.Socket) {
     let proxyPort;
     // connect请求时 如何判断连到的目标机器是不是https协议？
     // ws、wss、https协议都会发送connect请求
@@ -49,9 +51,11 @@ export class ConnectHandler implements IConnectHandler {
       this.cache.del(IPKey);
     });
   }
+
   public getIP(port) {
     return this.cache.get(this._getIPKey(port));
   }
+
   private _getIPKey(port) {
     return `https_port_${port}`;
   }

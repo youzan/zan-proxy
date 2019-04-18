@@ -1,21 +1,38 @@
 import http from 'http';
-import https from 'https';
+import https, { RequestOptions } from 'https';
 import { isNull, isUndefined } from 'lodash';
-import { Forwarder as IForwarder } from '../../interfaces';
-import convert from './convert';
+import { Service } from 'typedi';
+import URL from 'url';
 
-export class Forwarder implements IForwarder {
-  public async forward(ctx): Promise<any> {
+import { IProxyContext, IProxyMiddleware, NextFunction } from '@core/App/types/proxy';
+
+function convert(req: http.IncomingMessage): RequestOptions {
+  const url = URL.parse(req.url);
+  const isHttps = url.protocol && url.protocol.startsWith('https');
+  const port = url.port || (isHttps ? 443 : 80);
+  return {
+    auth: url.auth,
+    headers: req.headers,
+    host: url.host,
+    hostname: url.hostname,
+    method: req.method,
+    path: url.path,
+    port,
+    protocol: url.protocol,
+    rejectUnauthorized: false,
+  };
+}
+
+@Service()
+export class ForwarderMiddleware implements IProxyMiddleware {
+  public async middleware(ctx: IProxyContext) {
     return new Promise((resolve, reject) => {
       const { req, res } = ctx;
       if (!res.writable || res.finished || !(isUndefined(res.body) || isNull(res.body))) {
         return resolve(false);
       }
       const options = convert(req);
-      let client: any = http;
-      if (options.protocol && options.protocol.startsWith('https')) {
-        client = https;
-      }
+      const client = options.protocol && options.protocol.startsWith('https') ? https : http;
       if (req.body && req.body.length) {
         options.headers['content-length'] = req.body.length;
       }

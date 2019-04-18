@@ -28,7 +28,7 @@ export interface IProxyContext {
   remoteResponseStartTime: number;
 }
 
-export type IProxyMiddlewareFn = (ctx: IProxyContext, next: NextFunction) => Promise<any>;
+export type IProxyMiddlewareFn = (ctx: IProxyContext, next?: NextFunction) => Promise<any>;
 
 export interface IProxyMiddleware {
   onInit?: () => void;
