@@ -47,16 +47,6 @@ export class AppInfoService extends EventEmitter {
   }
 
   /**
-   * 是否是webui请求
-   */
-  public isWebuiRequest(hostname: string, port: number) {
-    return (
-      (hostname === '127.0.0.1' || hostname === this.appInfo.LANIp) &&
-      port === this.appInfo.managerPort
-    );
-  }
-
-  /**
    * 打印运行环境信息
    */
   public printRuntimeInfo() {

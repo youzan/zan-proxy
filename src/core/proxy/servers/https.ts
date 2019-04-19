@@ -1,11 +1,9 @@
 import http from 'http';
 import https from 'https';
-import path from 'path';
 import { createSecureContext } from 'tls';
 import { Inject, Service } from 'typedi';
 
 import { AppInfoService, CertificateService } from '@core/services';
-import { CertificateStorage } from '@core/storage';
 
 import { fillReqUrl } from '../../utils';
 import { RequestHandler, UpgradeHandler } from '../handler';
@@ -13,8 +11,9 @@ import { RequestHandler, UpgradeHandler } from '../handler';
 @Service()
 export default class HttpsServer {
   @Inject() private appInfoService: AppInfoService;
+  @Inject() private certService: CertificateService;
+
   private server: https.Server;
-  private certService: CertificateService;
 
   public setHttpHandler(httpHandler: RequestHandler) {
     this.server.on('request', (req: http.IncomingMessage, res: http.ServerResponse) => {
@@ -39,11 +38,6 @@ export default class HttpsServer {
   }
 
   public async init() {
-    const certStorage = new CertificateStorage(
-      path.join(this.appInfoService.proxyDataDir, 'certificate'),
-    );
-    this.certService = new CertificateService(certStorage);
-
     const serverCrt = await this.certService.getCertificationForHost('internal_https_server');
     this.server = https.createServer({
       SNICallback: (servername, cb) => {
