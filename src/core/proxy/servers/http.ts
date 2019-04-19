@@ -2,14 +2,14 @@ import http from 'http';
 import net from 'net';
 import { Service } from 'typedi';
 
-import fillReqUrl from '../../utils/fillReqUrl';
-import { ConnectHandler, HttpHandler, UpgradeHandler } from '../handler';
+import { fillReqUrl } from '../../utils';
+import { ConnectHandler, RequestHandler, UpgradeHandler } from '../handler';
 
 @Service()
 export default class HttpServer {
   private server: http.Server = http.createServer();
 
-  public setHttpHandler(httpHandler: HttpHandler) {
+  public setHttpHandler(httpHandler: RequestHandler) {
     this.server.on('request', httpHandler.handle.bind(httpHandler));
   }
 

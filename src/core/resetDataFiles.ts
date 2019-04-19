@@ -6,9 +6,8 @@ const proxyDataDir = path.join(os.homedir(), '.front-end-proxy');
 
 /**
  * 初始化脚本
- * @param force
  */
-export default function resetDataFiles(force = false) {
+export default function resetDataFiles() {
   console.log('开始初始化数据...');
   fs.ensureDirSync(proxyDataDir);
   fs.ensureDirSync(path.join(proxyDataDir, 'certificate'));

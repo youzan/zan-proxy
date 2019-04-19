@@ -1,4 +1,3 @@
-import { promisify } from 'es6-promisify';
 import EventEmitter from 'events';
 import fs from 'fs-extra';
 import { cloneDeep, forEach, lowerCase } from 'lodash';
@@ -7,46 +6,11 @@ import path from 'path';
 import { Service } from 'typedi';
 import uuid from 'uuid/v4';
 
+import { Rule, RuleAction, RuleActionData, RuleFile } from '@core/types/rule';
+
 import { AppInfoService } from './appInfo';
 
-const fsUnlink = promisify(fs.unlink);
 export const ErrNameExists = new Error('name exists');
-
-export interface Rule {
-  name: string;
-  key: string;
-  method: string;
-  match: string;
-  checked: boolean;
-  actionList: RuleAction[];
-}
-
-export interface RuleAction {
-  type: string;
-  data: RuleActionData;
-}
-
-export interface RuleActionData {
-  target: string;
-  dataId: string;
-  headerKey: string;
-  headerValue: string;
-}
-
-export interface RuleFile {
-  meta: RuleFileMeta;
-  checked: boolean;
-  name: string;
-  description: string;
-  content: Rule[];
-}
-
-export interface RuleFileMeta {
-  remote: boolean;
-  url?: string;
-  ETag?: string;
-  remoteETag?: string;
-}
 
 @Service()
 export class RuleService extends EventEmitter {
@@ -110,30 +74,8 @@ export class RuleService extends EventEmitter {
   }
 
   // 返回用户的规则文件列表
-  public getRuleFileList(userId) {
-    const ruleMap = (this.rules[userId] = this.rules[userId] || {});
-
-    const rulesLocal: any[] = [];
-    const rulesRemote: any[] = [];
-    forEach(ruleMap, content => {
-      if (content.meta && content.meta.remote) {
-        rulesRemote.push({
-          checked: content.checked,
-          description: content.description,
-          meta: content.meta,
-          name: content.name,
-        });
-      } else {
-        rulesLocal.push({
-          checked: content.checked,
-          description: content.description,
-          meta: content.meta,
-          name: content.name,
-        });
-      }
-    });
-
-    return rulesLocal.concat(rulesRemote);
+  public getRuleFileList(userId: string) {
+    return Object.values(this.rules[userId] || {});
   }
 
   // 删除规则文件
@@ -143,7 +85,7 @@ export class RuleService extends EventEmitter {
     delete this.rules[userId][name];
 
     const ruleFilePath = this._getRuleFilePath(userId, name);
-    await fsUnlink(ruleFilePath);
+    await fs.remove(ruleFilePath);
     // 发送消息通知
     this.emit('data-change', userId, this.getRuleFileList(userId));
     if (rule.checked) {
@@ -209,7 +151,7 @@ export class RuleService extends EventEmitter {
     // 删除旧的rule
     delete this.rules[userId][originName];
     const ruleFilePath = this._getRuleFilePath(userId, originName);
-    await fsUnlink(ruleFilePath);
+    await fs.remove(ruleFilePath);
 
     // 修改rule名称
     ruleFile.name = name;

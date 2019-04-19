@@ -4,14 +4,10 @@ import mime from 'mime-types';
 import { Inject, Service } from 'typedi';
 import URL from 'url';
 
-import { MockDataService, ProfileService, Rule, RuleActionData, RuleService } from '../services';
-import { IProxyContext, IProxyMiddleware, NextFunction } from '../types/proxy';
+import { Rule, RuleActionData } from '@core/types/rule';
 
-const fsExists = p => {
-  return new Promise(resolve => {
-    fs.exists(p, exists => resolve(exists));
-  });
-};
+import { MockDataService, ProfileService, RuleService } from '../services';
+import { IProxyContext, IProxyMiddleware, NextFunction } from '../types/proxy';
 
 /**
  * 转发规则处理中间件
@@ -74,7 +70,7 @@ export class RuleMiddleware implements IProxyMiddleware {
     if (target.startsWith('http') || target.startsWith('ws')) {
       ctx.req.url = target;
     } else {
-      const exists = await fsExists(target);
+      const exists = await fs.pathExists(target);
       if (exists) {
         ctx.res.body = fs.createReadStream(target);
       } else {
@@ -115,19 +111,19 @@ export class RuleMiddleware implements IProxyMiddleware {
       const { data } = action;
       switch (action.type) {
         case 'mockData':
-          this.processMockData(userID, data, ctx);
+          await this.processMockData(userID, data, ctx);
           break;
         case 'addRequestHeader':
-          this.processAddRequestHeader(userID, data, ctx);
+          await this.processAddRequestHeader(userID, data, ctx);
           break;
         case 'addResponseHeader':
-          this.processAddResponseHeader(data, resHeaders);
+          await this.processAddResponseHeader(data, resHeaders);
           break;
         case 'empty':
-          this.processEmpty(ctx);
+          await this.processEmpty(ctx);
           break;
         case 'redirect':
-          this.processRedirect(urlObj, processRule, data, ctx);
+          await this.processRedirect(urlObj, processRule, data, ctx);
           break;
         default:
           break;

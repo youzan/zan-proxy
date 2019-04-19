@@ -6,7 +6,7 @@ type ISupportProtocal = 'http' | 'https' | 'ws' | 'wss';
 /**
  * 本地服务器收到的 req.url 只有 path 部分，需要使用 host header 来补全实际的访问 url
  */
-export default function fillReqURL(req: http.IncomingMessage, protocal: ISupportProtocal = 'http') {
+export function fillReqUrl(req: http.IncomingMessage, protocal: ISupportProtocal = 'http') {
   const reqUrlObj = URL.parse(req.url);
   const host = req.headers.host;
   reqUrlObj.host = host;

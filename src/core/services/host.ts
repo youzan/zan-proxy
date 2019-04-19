@@ -1,22 +1,15 @@
-import { promisify } from 'es6-promisify';
 import EventEmitter from 'events';
 import fs from 'fs-extra';
-import { find, forEach } from 'lodash';
+import { find, forEach, get } from 'lodash';
 import fetch from 'node-fetch';
 import path from 'path';
 import { Service } from 'typedi';
 
+import { IHostFile } from '@core/types/host';
+
 import { AppInfoService } from './appInfo';
 
 const IP_REG = /((?:(?:25[0-5]|2[0-4]\d|[01]?\d?\d)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d?\d))/;
-
-const fsUnlink = promisify(fs.unlink);
-const fsExists = (p): Promise<boolean> =>
-  new Promise(resolve => {
-    fs.exists(p, exists => {
-      resolve(exists);
-    });
-  });
 
 interface IHostMap {
   globHostMap: { [host: string]: string };
@@ -28,7 +21,11 @@ interface IHostMap {
  */
 @Service()
 export class HostService extends EventEmitter {
-  private userHostFilesMap: object;
+  private userHostFilesMap: {
+    [user: string]: {
+      [fileName: string]: IHostFile;
+    };
+  };
   private inUsingHostsMapCache: {
     [user: string]: IHostMap;
   };
@@ -91,25 +88,9 @@ export class HostService extends EventEmitter {
 
   /**
    * 获取用户的host文件列表
-   * @param userId
-   * @returns {Array}
    */
-  public getHostFileList(userId) {
-    const fileList: Array<{
-      name: string;
-      checked: boolean;
-      description: string;
-      meta: any;
-    }> = [];
-    forEach(this.userHostFilesMap[userId], content => {
-      fileList.push({
-        checked: content.checked,
-        description: content.description,
-        meta: content.meta,
-        name: content.name,
-      });
-    });
-    return fileList;
+  public getHostFileList(userId: string) {
+    return Object.values(this.userHostFilesMap[userId]);
   }
 
   /**
@@ -125,7 +106,7 @@ export class HostService extends EventEmitter {
       return false;
     }
 
-    const content = {
+    const content: IHostFile = {
       checked: false,
       content: {},
       description,
@@ -151,9 +132,9 @@ export class HostService extends EventEmitter {
      * 删除文件
      */
     const filePath = this._getHostFilePath(userId, name);
-    const exists = await fsExists(filePath);
+    const exists = await fs.pathExists(filePath);
     if (exists) {
-      await fsUnlink(filePath);
+      await fs.remove(filePath);
     }
     this.emit('data-change', userId, this.getHostFileList(userId));
     this.emit('host-deleted', userId, name);
@@ -177,11 +158,8 @@ export class HostService extends EventEmitter {
     this.emit('data-change', userId, this.getHostFileList(userId));
   }
 
-  public getHostFile(userId, name) {
-    if (!this.userHostFilesMap[userId]) {
-      return {};
-    }
-    return this.userHostFilesMap[userId][name];
+  public getHostFile(userId: string, name: string): IHostFile | undefined {
+    return get(this.userHostFilesMap, [userId, name]);
   }
 
   public async saveHostFile(userId, name, content) {
@@ -201,7 +179,7 @@ export class HostService extends EventEmitter {
     this.emit('data-change', userId, this.getHostFileList(userId));
   }
 
-  public async importRemoteHostFile(userId, url): Promise<any> {
+  public async importRemoteHostFile(userId: string, url: string) {
     const resp = await fetch(url);
     const f = await resp.json();
     f.meta = {
@@ -219,7 +197,7 @@ export class HostService extends EventEmitter {
     } else {
       f.checked = false;
     }
-    return await this.saveHostFile(userId, f.name, f);
+    return this.saveHostFile(userId, f.name, f);
   }
 
   private _getHostFilePath(userId, hostName) {

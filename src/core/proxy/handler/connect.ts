@@ -5,7 +5,7 @@ import { Inject, Service } from 'typedi';
 
 import { AppInfoService } from '@core/services';
 
-const proxyHost = '127.0.0.1';
+const PROXY_HOST = '127.0.0.1';
 
 // 对于https协议，client connect请求proxy proxy和https server建立链接
 // 此字段记录proxy 请求内部https server链接 和 client的ip 之间的映射关系
@@ -38,10 +38,9 @@ export class ConnectHandler {
     // 非443则放行,连到http服务器上
     // proxyHost = host; // ws协议直接和远程服务器链接
     const proxyPort = parseInt(targetPort, 10) === 443 ? this.httpsPort : this.httpPort;
-    let IPKey;
+    let IPKey: string;
     // 和远程建立链接 并告诉客户端
-    const conn = net.connect(proxyPort, proxyHost, () => {
-      // @ts-ignore
+    const conn = net.connect(proxyPort, PROXY_HOST, () => {
       IPKey = this._getIPKey(conn.address().port);
       this.cache.set(IPKey, socket.remoteAddress);
       socket.write('HTTP/' + req.httpVersion + ' 200 OK\r\n\r\n', 'UTF-8', () => {
@@ -60,11 +59,11 @@ export class ConnectHandler {
     });
   }
 
-  public getIP(port) {
+  public getIP(port: number) {
     return this.cache.get(this._getIPKey(port));
   }
 
-  private _getIPKey(port) {
+  private _getIPKey(port: number) {
     return `https_port_${port}`;
   }
 }

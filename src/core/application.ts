@@ -11,6 +11,9 @@ export default class App {
   @Inject() private manager: Manager;
   @Inject() private proxy: Proxy;
 
+  /**
+   * 初始化应用
+   */
   public async init(proxyPort: number, managerPort: number) {
     const httpsProxyPort = await getPort({ port: 8989 });
     this.appInfoService.setAppInfo({
@@ -24,6 +27,9 @@ export default class App {
     this.proxy.ignore(`${this.appInfoService.appInfo.LANIp}:${managerPort}`);
   }
 
+  /**
+   * 启动应用
+   */
   public start() {
     this.proxy.listen(this.appInfoService.appInfo.proxyPort);
     this.manager.listen(this.appInfoService.appInfo.managerPort);

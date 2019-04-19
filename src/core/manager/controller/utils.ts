@@ -1,10 +1,12 @@
 import fs from 'fs-extra';
 import { Context } from 'koa';
 import path from 'path';
-import { Controller, Ctx, Get, Post } from 'routing-controllers';
+import { Controller, Ctx, Get } from 'routing-controllers';
 import { Inject, Service } from 'typedi';
 
-import { AppInfoService, HostService, RuleFile, RuleService } from '../../services';
+import { RuleFile } from '@core/types/rule';
+
+import { AppInfoService, HostService, RuleService } from '../../services';
 
 @Service()
 @Controller('/utils')

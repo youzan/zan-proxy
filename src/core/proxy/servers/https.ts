@@ -7,8 +7,8 @@ import { Inject, Service } from 'typedi';
 import { AppInfoService, CertificateService } from '@core/services';
 import { CertificateStorage } from '@core/storage';
 
-import fillReqUrl from '../../utils/fillReqUrl';
-import { HttpHandler, UpgradeHandler } from '../handler';
+import { fillReqUrl } from '../../utils';
+import { RequestHandler, UpgradeHandler } from '../handler';
 
 @Service()
 export default class HttpsServer {
@@ -16,7 +16,7 @@ export default class HttpsServer {
   private server: https.Server;
   private certService: CertificateService;
 
-  public setHttpHandler(httpHandler: HttpHandler) {
+  public setHttpHandler(httpHandler: RequestHandler) {
     this.server.on('request', (req: http.IncomingMessage, res: http.ServerResponse) => {
       fillReqUrl(req, 'https');
       // req.headers["x-forwarded-for"] = this.connectHandler.getIP(req.connection.remotePort);

@@ -14,7 +14,7 @@ import {
   RuleMiddleware,
   UserMiddleware,
 } from '../middleware';
-import { ConnectHandler, HttpHandler, UpgradeHandler } from '../proxy/handler';
+import { ConnectHandler, RequestHandler, UpgradeHandler } from '../proxy/handler';
 import { IProxyMiddleware } from '../types/proxy';
 import HttpServer from './servers/http';
 import HttpsServer from './servers/https';
@@ -30,17 +30,22 @@ const COMMON_MIDDLEWARE_CLASSES: IProxyMiddleware[] = [
   Container.get(RecordRequestMiddleware),
 ];
 
+const forwardMiddleware = Container.get(ForwarderMiddleware);
+
 @Service()
 export class Proxy {
   private middleware: IProxyMiddlewareFn[] = [];
 
   private handlers: {
-    http: HttpHandler;
+    request: RequestHandler;
     connect: ConnectHandler;
     upgrade: UpgradeHandler;
+  } = {
+    connect: Container.get(ConnectHandler),
+    request: Container.get(RequestHandler),
+    upgrade: Container.get(UpgradeHandler),
   };
 
-  @Inject() private forwarder: ForwarderMiddleware;
   @Inject() private httpProxyServer: HttpServer;
   @Inject() private httpsProxyServer: HttpsServer;
 
@@ -58,29 +63,21 @@ export class Proxy {
   }
 
   public async init() {
-    this.handlers = {
-      connect: Container.get(ConnectHandler),
-      http: Container.get(HttpHandler),
-      upgrade: Container.get(UpgradeHandler),
-    };
-
-    await this.httpsProxyServer.init();
-    this.httpProxyServer.setHttpHandler(this.handlers.http);
+    this.httpProxyServer.setHttpHandler(this.handlers.request);
     this.httpProxyServer.setConnectHandler(this.handlers.connect);
     this.httpProxyServer.setUpgradeHandler(this.handlers.upgrade);
+    await this.httpsProxyServer.init();
 
-    this.httpsProxyServer.setHttpHandler(this.handlers.http);
+    this.httpsProxyServer.setHttpHandler(this.handlers.request);
     this.httpsProxyServer.setUpgradeHandler(this.handlers.upgrade);
 
     COMMON_MIDDLEWARE_CLASSES.forEach(middleware => this.useMiddleware(middleware));
   }
 
   public listen(port: number = 8001) {
-    const httpHandlerMiddleware = compose([
-      ...this.middleware,
-      this.forwarder.middleware.bind(this.forwarder),
-    ]);
-    this.handlers.http.setMiddleware(httpHandlerMiddleware);
+    this.handlers.request.setMiddleware(
+      compose([...this.middleware, forwardMiddleware.middleware.bind(forwardMiddleware)]),
+    );
     this.handlers.upgrade.setMiddleware(compose(this.middleware));
     this.httpProxyServer.listen(port);
     this.httpsProxyServer.listen();

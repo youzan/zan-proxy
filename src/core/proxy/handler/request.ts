@@ -6,7 +6,7 @@ import { Service } from 'typedi';
 import { IProxyContext, IProxyMiddlewareFn } from '@core/types/proxy';
 
 @Service()
-export class HttpHandler {
+export class RequestHandler {
   private middleware: ComposedMiddleware<IProxyContext> = () => Promise.resolve(null);
 
   public async handle(req: http.IncomingMessage, res: http.ServerResponse) {
@@ -20,7 +20,7 @@ export class HttpHandler {
       }
       const { body } = res;
       if (!body) {
-        res.end('');
+        return res.end('');
       }
       if (Buffer.isBuffer(body)) {
         return res.end(body);

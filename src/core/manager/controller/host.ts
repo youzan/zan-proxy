@@ -17,7 +17,7 @@ export class HostController {
       ctx.request.body.name,
       ctx.request.body.description,
     );
-    ctx.body = {
+    return {
       code: result ? 0 : 1,
       msg: result ? '' : '文件已存在',
     };
