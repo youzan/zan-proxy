@@ -1,7 +1,9 @@
 import http from 'http';
 import LRUCache from 'lru-cache';
 import net from 'net';
-import { Service } from 'typedi';
+import { Inject, Service } from 'typedi';
+
+import { AppInfoService } from '@core/services';
 
 const proxyHost = '127.0.0.1';
 
@@ -14,22 +16,28 @@ const proxyHost = '127.0.0.1';
 // 折中方案：抓取所有的http请求、端口号为443的https请求
 @Service()
 export class ConnectHandler {
-  public httpPort: number;
-  constructor(public httpsPort: number, private cache: LRUCache<string, any>) {}
+  @Inject() private appInfoService: AppInfoService;
+
+  private cache: LRUCache<string, any> = new LRUCache({
+    max: 500,
+    maxAge: 1000 * 60 * 60,
+  });
+
+  private get httpPort() {
+    return this.appInfoService.appInfo.proxyPort;
+  }
+
+  private get httpsPort() {
+    return this.appInfoService.appInfo.httpsProxyPort;
+  }
 
   public async handle(req: http.IncomingMessage, socket: net.Socket) {
-    let proxyPort;
     // connect请求时 如何判断连到的目标机器是不是https协议？
     // ws、wss、https协议都会发送connect请求
     const [, targetPort] = req.url.split(':');
-    // console.log(typeof req.url, req.url, req.url.split(":"), this.httpsProxyPort)
-    if (parseInt(targetPort, 10) === 443) {
-      proxyPort = this.httpsPort;
-    } else {
-      // 非443则放行,连到http服务器上
-      // proxyHost = host; // ws协议直接和远程服务器链接
-      proxyPort = this.httpPort;
-    }
+    // 非443则放行,连到http服务器上
+    // proxyHost = host; // ws协议直接和远程服务器链接
+    const proxyPort = parseInt(targetPort, 10) === 443 ? this.httpsPort : this.httpPort;
     let IPKey;
     // 和远程建立链接 并告诉客户端
     const conn = net.connect(proxyPort, proxyHost, () => {

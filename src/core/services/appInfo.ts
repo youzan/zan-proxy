@@ -8,6 +8,7 @@ import { Service } from 'typedi';
 export interface AppInfo {
   managerPort: number;
   proxyPort: number;
+  httpsProxyPort: number;
   LANIp: string;
 }
 
@@ -25,6 +26,7 @@ export class AppInfoService extends EventEmitter {
      */
     LANIp: ip.address(),
     proxyPort: 8001,
+    httpsProxyPort: 8989,
     managerPort: 40001,
   };
 

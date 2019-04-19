@@ -1,16 +1,10 @@
-import getPort from 'get-port';
 import compose from 'koa-compose';
-import LRUCache from 'lru-cache';
-import os from 'os';
-import path from 'path';
-import { Container, Service } from 'typedi';
+import { Container, Inject, Service } from 'typedi';
 
-import { ForwarderMiddleware } from '@core/middleware';
-import { CertificateService } from '@core/services';
-import { CertificateStorage } from '@core/storage';
 import { IProxyMiddlewareFn } from '@core/types/proxy';
 
 import {
+  ForwarderMiddleware,
   HostMiddleware,
   IgnoreMiddleware,
   IpMiddleware,
@@ -21,39 +15,34 @@ import {
   UserMiddleware,
 } from '../middleware';
 import { ConnectHandler, HttpHandler, UpgradeHandler } from '../proxy/handler';
-import { HttpServer, HttpsServer } from '../proxy/servers';
 import { IProxyMiddleware } from '../types/proxy';
+import HttpServer from './servers/http';
+import HttpsServer from './servers/https';
+
+const COMMON_MIDDLEWARE_CLASSES: IProxyMiddleware[] = [
+  Container.get(IgnoreMiddleware),
+  Container.get(IpMiddleware),
+  Container.get(UserMiddleware),
+  Container.get(RecordResponseMiddleware),
+  Container.get(RuleMiddleware),
+  Container.get(PluginMiddleware),
+  Container.get(HostMiddleware),
+  Container.get(RecordRequestMiddleware),
+];
 
 @Service()
 export class Proxy {
   private middleware: IProxyMiddlewareFn[] = [];
-  private cache: LRUCache<string, any>;
-  private forwarder: ForwarderMiddleware;
-  private cert: {
-    service: CertificateService;
-    storage: CertificateStorage;
-  };
+
   private handlers: {
     http: HttpHandler;
     connect: ConnectHandler;
     upgrade: UpgradeHandler;
   };
 
-  private httpProxyServer: HttpServer;
-  private httpsProxyServer: HttpsServer;
-
-  private httpsPort: number;
-
-  private builtInMiddleware: IProxyMiddleware[] = [
-    Container.get(IgnoreMiddleware),
-    Container.get(IpMiddleware),
-    Container.get(UserMiddleware),
-    Container.get(RecordResponseMiddleware),
-    Container.get(RuleMiddleware),
-    Container.get(PluginMiddleware),
-    Container.get(HostMiddleware),
-    Container.get(RecordRequestMiddleware),
-  ];
+  @Inject() private forwarder: ForwarderMiddleware;
+  @Inject() private httpProxyServer: HttpServer;
+  @Inject() private httpsProxyServer: HttpsServer;
 
   public ignore(pattern: string) {
     Container.get(IgnoreMiddleware).addPattern(pattern);
@@ -69,29 +58,13 @@ export class Proxy {
   }
 
   public async init() {
-    this.forwarder = new ForwarderMiddleware();
-    this.cache = new LRUCache({
-      max: 500,
-      maxAge: 1000 * 60 * 60,
-    });
-    const certStorage = new CertificateStorage(
-      path.join(os.homedir(), '.front-end-proxy/certificate'),
-    );
-    const certService = new CertificateService(certStorage, this.cache);
-    this.cert = {
-      service: certService,
-      storage: certStorage,
-    };
-    this.httpsPort = await getPort({ port: 8989 });
-
     this.handlers = {
-      connect: new ConnectHandler(this.httpsPort, this.cache),
-      http: new HttpHandler(),
-      upgrade: new UpgradeHandler(),
+      connect: Container.get(ConnectHandler),
+      http: Container.get(HttpHandler),
+      upgrade: Container.get(UpgradeHandler),
     };
 
-    this.httpProxyServer = new HttpServer();
-    this.httpsProxyServer = await HttpsServer.create(this.cert.service);
+    await this.httpsProxyServer.init();
     this.httpProxyServer.setHttpHandler(this.handlers.http);
     this.httpProxyServer.setConnectHandler(this.handlers.connect);
     this.httpProxyServer.setUpgradeHandler(this.handlers.upgrade);
@@ -99,7 +72,7 @@ export class Proxy {
     this.httpsProxyServer.setHttpHandler(this.handlers.http);
     this.httpsProxyServer.setUpgradeHandler(this.handlers.upgrade);
 
-    this.builtInMiddleware.forEach(middleware => this.useMiddleware(middleware));
+    COMMON_MIDDLEWARE_CLASSES.forEach(middleware => this.useMiddleware(middleware));
   }
 
   public listen(port: number = 8001) {
@@ -107,10 +80,9 @@ export class Proxy {
       ...this.middleware,
       this.forwarder.middleware.bind(this.forwarder),
     ]);
-    this.handlers.connect.httpPort = port;
     this.handlers.http.setMiddleware(httpHandlerMiddleware);
     this.handlers.upgrade.setMiddleware(compose(this.middleware));
     this.httpProxyServer.listen(port);
-    this.httpsProxyServer.listen(this.httpsPort);
+    this.httpsProxyServer.listen();
   }
 }

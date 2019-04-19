@@ -3,20 +3,13 @@ import path from 'path';
 
 import { CertificateModel } from '@core/types/certificate';
 
-const fsExists = (p): Promise<boolean> =>
-  new Promise(resolve => {
-    fs.exists(p, exists => {
-      resolve(exists);
-    });
-  });
-
 /**
  * 证书信息存储管理
  */
 export class CertificateStorage {
   constructor(private storagePath: string) {}
   public async has(domain: string): Promise<boolean> {
-    return await fsExists(this.getCertPath(domain));
+    return await fs.pathExists(this.getCertPath(domain));
   }
   public async get(domain: string): Promise<CertificateModel> {
     const cert = {

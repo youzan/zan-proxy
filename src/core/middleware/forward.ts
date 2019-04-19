@@ -4,7 +4,7 @@ import { isNull, isUndefined } from 'lodash';
 import { Service } from 'typedi';
 import URL from 'url';
 
-import { IProxyContext, IProxyMiddleware, NextFunction } from '@core/types/proxy';
+import { IProxyContext, IProxyMiddleware } from '@core/types/proxy';
 
 function convert(req: http.IncomingMessage): RequestOptions {
   const url = URL.parse(req.url);

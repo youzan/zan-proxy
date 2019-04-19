@@ -1,24 +1,20 @@
 import http from 'http';
 import https from 'https';
+import path from 'path';
 import { createSecureContext } from 'tls';
+import { Inject, Service } from 'typedi';
 
-import { CertificateService } from '@core/services';
+import { AppInfoService, CertificateService } from '@core/services';
+import { CertificateStorage } from '@core/storage';
 
+import fillReqUrl from '../../utils/fillReqUrl';
 import { HttpHandler, UpgradeHandler } from '../handler';
-import fillReqUrl from './fillReqUrl';
 
-export class HttpsServer {
-  public static async create(certService: CertificateService) {
-    const httpsServer = new HttpsServer(certService);
-    await httpsServer.init();
-    return httpsServer;
-  }
-
+@Service()
+export default class HttpsServer {
+  @Inject() private appInfoService: AppInfoService;
   private server: https.Server;
-
-  constructor(
-    private certService: CertificateService, // private connectHandler: ConnectHandler
-  ) {}
+  private certService: CertificateService;
 
   public setHttpHandler(httpHandler: HttpHandler) {
     this.server.on('request', (req: http.IncomingMessage, res: http.ServerResponse) => {
@@ -38,11 +34,16 @@ export class HttpsServer {
     });
   }
 
-  public async listen(port: number) {
+  public async listen(port: number = this.appInfoService.appInfo.httpsProxyPort) {
     this.server.listen(port, '0.0.0.0');
   }
 
-  private async init() {
+  public async init() {
+    const certStorage = new CertificateStorage(
+      path.join(this.appInfoService.proxyDataDir, 'certificate'),
+    );
+    this.certService = new CertificateService(certStorage);
+
     const serverCrt = await this.certService.getCertificationForHost('internal_https_server');
     this.server = https.createServer({
       SNICallback: (servername, cb) => {

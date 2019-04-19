@@ -28,6 +28,6 @@ export class PluginMiddleware implements IProxyMiddleware {
     if (!this.pluginMiddlewareCache) {
       this.updateMiddlewareCache();
     }
-    return this.pluginMiddlewareCache(ctx, next);
+    return this.pluginMiddlewareCache ? this.pluginMiddlewareCache(ctx, next) : next();
   }
 }

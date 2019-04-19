@@ -12,12 +12,15 @@ const SELF_ROOT_KEY = '$$SELF_ROOT$$';
  * 证书处理 service
  */
 export class CertificateService {
+  private cache: LRUCache<string, any> = new LRUCache({
+    max: 500,
+    maxAge: 1000 * 60 * 60,
+  });
+
   /**
-   *
    * @param storage 证书存储服务
-   * @param cache 缓存服务
    */
-  constructor(private storage: CertificateStorage, private cache: LRUCache<string, any>) {}
+  constructor(private storage: CertificateStorage) {}
   /**
    * 为域名获取证书
    * @param host
