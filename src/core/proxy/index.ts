@@ -3,6 +3,8 @@ import { Container, Inject, Service } from 'typedi';
 
 import { IProxyMiddlewareFn } from '@core/types/proxy';
 
+import { ConnectHandler, RequestHandler, UpgradeHandler } from '../proxy/handler';
+import { IProxyMiddleware } from '../types/proxy';
 import {
   ForwarderMiddleware,
   HostMiddleware,
@@ -13,9 +15,7 @@ import {
   RecordResponseMiddleware,
   RuleMiddleware,
   UserMiddleware,
-} from '../middleware';
-import { ConnectHandler, RequestHandler, UpgradeHandler } from '../proxy/handler';
-import { IProxyMiddleware } from '../types/proxy';
+} from './middleware';
 import HttpServer from './servers/http';
 import HttpsServer from './servers/https';
 

@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
 
-import { IProxyContext, IProxyMiddleware, NextFunction } from '../types/proxy';
+import { IProxyContext, IProxyMiddleware, NextFunction } from '../../types/proxy';
 
 @Service()
 export class UserMiddleware implements IProxyMiddleware {

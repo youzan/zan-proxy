@@ -1,7 +1,12 @@
 import { Inject, Service } from 'typedi';
 
-import { PluginService } from '../services';
-import { IProxyContext, IProxyMiddleware, IProxyMiddlewareFn, NextFunction } from '../types/proxy';
+import { PluginService } from '../../services';
+import {
+  IProxyContext,
+  IProxyMiddleware,
+  IProxyMiddlewareFn,
+  NextFunction,
+} from '../../types/proxy';
 
 @Service()
 export class PluginMiddleware implements IProxyMiddleware {

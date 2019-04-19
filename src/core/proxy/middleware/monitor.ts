@@ -5,8 +5,8 @@ import Stream from 'stream';
 import { Inject, Service } from 'typedi';
 import URL from 'url';
 
-import { HttpTrafficService } from '../services';
-import { IProxyContext, IProxyMiddleware, NextFunction } from '../types/proxy';
+import { HttpTrafficService } from '../../services';
+import { IProxyContext, IProxyMiddleware, NextFunction } from '../../types/proxy';
 
 /**
  * 记录请求数据中间件

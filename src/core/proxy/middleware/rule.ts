@@ -6,8 +6,8 @@ import URL from 'url';
 
 import { Rule, RuleActionData } from '@core/types/rule';
 
-import { MockDataService, ProfileService, RuleService } from '../services';
-import { IProxyContext, IProxyMiddleware, NextFunction } from '../types/proxy';
+import { MockDataService, ProfileService, RuleService } from '../../services';
+import { IProxyContext, IProxyMiddleware, NextFunction } from '../../types/proxy';
 
 /**
  * 转发规则处理中间件

@@ -2,8 +2,8 @@ import { isNull, isUndefined } from 'lodash';
 import { Inject, Service } from 'typedi';
 import URL from 'url';
 
-import { HostService, ProfileService } from '../services';
-import { IProxyContext, IProxyMiddleware, NextFunction } from '../types/proxy';
+import { HostService, ProfileService } from '../../services';
+import { IProxyContext, IProxyMiddleware, NextFunction } from '../../types/proxy';
 
 /**
  * host 解析中间件

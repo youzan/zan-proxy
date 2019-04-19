@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
 
-import { IProxyContext, IProxyMiddleware, NextFunction } from '../types/proxy';
+import { IProxyContext, IProxyMiddleware, NextFunction } from '../../types/proxy';
 
 /**
  * Ignore 中间件。用于设置 ignore 标识，来告知其他中间件该请求不需要被处理
