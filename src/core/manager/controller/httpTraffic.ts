@@ -12,25 +12,22 @@ export class HttpTrafficController {
   // 获取响应body
   @Get('/getResponseBody')
   public async getResponseBody(@Ctx() ctx: Context) {
-    const userId = ctx.userId;
     const id = ctx.query.id;
-    const content = await this.httpTrafficService.getResponseBody(userId, id);
+    const content = await this.httpTrafficService.getResponseBody(id);
     return content;
   }
 
   @Get('/getRequestBody')
   public async getRequestBody(@Ctx() ctx: Context) {
-    const userId = ctx.userId;
     const id = ctx.query.id;
-    const content = await this.httpTrafficService.getRequestBody(userId, id);
+    const content = await this.httpTrafficService.getRequestBody(id);
     return content;
   }
 
   @Get('/stopRecord')
   public async stopRecord(@Ctx() ctx: Context) {
-    const userId = ctx.userId;
     const stopRecord = ctx.query.stop;
-    await this.httpTrafficService.setStopRecord(userId, stopRecord.toString() === 'true');
+    await this.httpTrafficService.setStopRecord(stopRecord.toString() === 'true');
     return {
       code: 0,
     };
@@ -38,9 +35,8 @@ export class HttpTrafficController {
 
   @Get('/setfilter')
   public async setFilter(@Ctx() ctx: Context) {
-    const userId = ctx.userId;
     const { filter = '' } = ctx.query;
-    await this.httpTrafficService.setFilter(userId, filter);
+    this.httpTrafficService.setFilter(filter);
     return {
       code: 0,
     };
@@ -48,8 +44,7 @@ export class HttpTrafficController {
 
   @Get('/clear')
   public async clear(@Ctx() ctx: Context) {
-    const userId = ctx.userId;
-    await this.httpTrafficService.clear(userId);
+    await this.httpTrafficService.clear();
     return {
       code: 0,
     };

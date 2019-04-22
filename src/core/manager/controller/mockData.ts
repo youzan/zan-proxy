@@ -63,7 +63,7 @@ export class MockDataController {
   @Post('/savedatafromtraffic')
   public async savedatafromtraffic(@Ctx() ctx: Context) {
     const userId = ctx.userId;
-    const content = await this.httpTrafficService.getResponseBody(userId, ctx.request.body.reqid);
+    const content = await this.httpTrafficService.getResponseBody(ctx.request.body.reqid);
     // 获取数据文件内容 在保存
     await this.mockDataService.saveDataEntryFromTraffic(
       userId,

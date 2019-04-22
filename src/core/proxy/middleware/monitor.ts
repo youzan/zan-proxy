@@ -1,5 +1,5 @@
+import decompress from 'decompress-response';
 import http from 'http';
-import inflate from 'inflation';
 import raw from 'raw-body';
 import Stream from 'stream';
 import { Inject, Service } from 'typedi';
@@ -19,37 +19,34 @@ export class RecordRequestMiddleware implements IProxyMiddleware {
    * 获取请求体内容
    */
   async getRequestBody(req: http.IncomingMessage) {
-    return req.body ? Promise.resolve(req.body) : raw(inflate(req), 'utf-8');
+    return req.body ? Promise.resolve(req.body) : raw(decompress(req), 'utf-8');
   }
 
   public async middleware(ctx: IProxyContext, next: NextFunction) {
     if (ctx.ignore) {
       return next();
     }
-    const userID = 'root';
-    const { requestID } = ctx;
-    if (requestID > 0 && this.httpTrafficService.hasMonitor(userID)) {
+    const { trafficId: trafficId } = ctx;
+    if (trafficId > 0 && this.httpTrafficService.hasMonitor) {
       const url = URL.parse(ctx.req.url);
       const { headers, method, httpVersion } = ctx.req;
       this.getRequestBody(ctx.req).then(body => {
-        this.httpTrafficService.actualRequest({
-          id: requestID,
-          originBody: body,
+        this.httpTrafficService.recordActualRequest({
+          id: trafficId,
           requestData: {
             body,
             headers,
             httpVersion,
             method,
             path: url.path,
-            port: url.port || 80,
+            port: parseInt(url.port) || 80,
             protocol: url.protocol,
           },
-          userId: userID,
         });
       });
     }
     ctx.remoteRequestBeginTime = Date.now();
-    await next();
+    await next(); // forward middleware or handler
     ctx.remoteResponseStartTime = Date.now();
   }
 }
@@ -77,7 +74,11 @@ export class RecordResponseMiddleware implements IProxyMiddleware {
       return Promise.resolve(body);
     }
     if (body instanceof Stream) {
-      return raw(inflate(body), 'utf-8');
+      if (body instanceof http.IncomingMessage) {
+        return raw(decompress(body as http.IncomingMessage), 'utf-8');
+      } else {
+        return raw(body as Stream.Readable, 'utf-8');
+      }
     }
   }
 
@@ -86,51 +87,52 @@ export class RecordResponseMiddleware implements IProxyMiddleware {
       return next();
     }
 
-    const userID = 'root';
     const { req } = ctx;
     const urlObj = URL.parse(ctx.req.url);
-    const requestID = this.httpTrafficService.getRequestId(userID, urlObj);
+    const trafficId = this.httpTrafficService.getTrafficId(urlObj);
 
     const clientIp =
       // x-forwarded-for 处理多次代理转发的情况
       (req.headers['x-forwarded-for'] as string) ||
       req.connection.remoteAddress ||
       req.socket.remoteAddress;
-    if (requestID > 0 && this.httpTrafficService.hasMonitor(userID)) {
-      ctx.requestID = requestID;
-      await this.httpTrafficService.requestBegin({
-        clientIp,
-        headers: ctx.req.headers,
-        httpVersion: ctx.req.httpVersion,
-        id: requestID,
-        method: ctx.req.method,
-        urlObj,
-        userId: userID,
+    if (trafficId > 0 && this.httpTrafficService.hasMonitor) {
+      ctx.trafficId = trafficId;
+      await this.httpTrafficService.recordOriginRequest({
+        id: trafficId,
+        originRequest: {
+          clientIp,
+          headers: ctx.req.headers,
+          httpVersion: ctx.req.httpVersion,
+          id: trafficId,
+          method: ctx.req.method,
+          ...urlObj,
+        },
       });
     }
 
     const receiveRequestTime = Date.now();
     await next();
 
-    if (requestID > 0 && this.httpTrafficService.hasMonitor(userID)) {
+    if (trafficId > 0 && this.httpTrafficService.hasMonitor) {
       const { res, remoteRequestBeginTime, remoteResponseStartTime } = ctx;
       const requestEndTime = Date.now();
       const { statusCode } = res;
       const headers = res.getHeaders();
       this.getResponseBody(res).then(body => {
-        this.httpTrafficService.serverReturn({
-          id: requestID,
-          toClientResponse: {
+        this.httpTrafficService.recordResponse({
+          id: trafficId,
+          response: {
             body,
             headers,
             receiveRequestTime,
+            remoteResponseEndTime: receiveRequestTime,
             remoteIp: urlObj.host,
             remoteRequestBeginTime,
             remoteResponseStartTime,
             requestEndTime,
             statusCode,
           },
-          userId: userID,
         });
       });
     }

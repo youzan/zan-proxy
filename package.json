@@ -17,6 +17,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "commander": "^2.19.0",
+    "decompress-response": "^4.2.0",
     "devtron": "~1.4.0",
     "electron-debug": "~2.1.0",
     "electron-devtools-installer": "~2.2.4",

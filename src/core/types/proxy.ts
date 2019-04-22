@@ -18,7 +18,7 @@ export interface IProxyContext {
 
   // middleware append properties
   ignore: boolean;
-  requestID: number;
+  trafficId: number;
   remoteRequestBeginTime: number;
   remoteResponseStartTime: number;
 }

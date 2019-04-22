@@ -23,6 +23,7 @@ export class HostMiddleware implements IProxyMiddleware {
       return next();
     }
 
+    // 转发规则已经设置了响应内容
     const { req, res } = ctx;
     if (!(isNull(res.body) || isUndefined(res.body))) {
       return next();
@@ -30,10 +31,8 @@ export class HostMiddleware implements IProxyMiddleware {
 
     const url = URL.parse(req.url);
     url.hostname = await this.hostService.resolveHost(url.hostname);
-    url.host = url.hostname;
-    if (url.port) {
-      url.host = `${url.host}:${url.port}`;
-    }
+    // 请求url中包含端口信息时，需要补齐端口信息
+    url.host = url.port ? `${url.hostname}:${url.port}` : url.hostname;
     req.url = URL.format(url);
     await next();
   }

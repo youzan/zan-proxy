@@ -9,33 +9,35 @@ import { IProxyContext, IProxyMiddlewareFn } from '@core/types/proxy';
 export class RequestHandler {
   private middleware: ComposedMiddleware<IProxyContext> = () => Promise.resolve(null);
 
+  private responseWriteHandler(ctx: IProxyContext) {
+    const { res } = ctx;
+    if (!res.writable || res.finished) {
+      return false;
+    }
+    const { body } = res;
+    if (!body) {
+      return res.end('');
+    }
+    if (Buffer.isBuffer(body) || typeof body === 'string') {
+      return res.end(body);
+    }
+    // file stream (redirect rule) or request stream
+    if (body instanceof Stream) {
+      return body.pipe(res);
+    }
+    // body is object
+    return res.end(JSON.stringify(body));
+  }
+
+  public setMiddleware(middleware: IProxyMiddlewareFn) {
+    this.middleware = middleware;
+  }
+
   public async handle(req: http.IncomingMessage, res: http.ServerResponse) {
     const context = {
       req,
       res,
     } as IProxyContext;
-    this.middleware(context).then(() => {
-      if (!res.writable || res.finished) {
-        return false;
-      }
-      const { body } = res;
-      if (!body) {
-        return res.end('');
-      }
-      if (Buffer.isBuffer(body)) {
-        return res.end(body);
-      }
-      if ('string' === typeof body) {
-        return res.end(body);
-      }
-      if (body instanceof Stream) {
-        return body.pipe(res);
-      }
-      return res.end(JSON.stringify(body));
-    });
-  }
-
-  public setMiddleware(middleware: IProxyMiddlewareFn) {
-    this.middleware = middleware;
+    this.middleware(context).then(() => this.responseWriteHandler(context));
   }
 }

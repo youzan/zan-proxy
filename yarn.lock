@@ -3591,6 +3591,13 @@ decompress-response@^3.3.0:
   dependencies:
     mimic-response "^1.0.0"
 
+decompress-response@^4.2.0:
+  version "4.2.0"
+  resolved "http://registry.npm.taobao.org/decompress-response/download/decompress-response-4.2.0.tgz#805ca9d1d3cdf17a03951475ad6cdc93115cec3f"
+  integrity sha1-gFyp0dPN8XoDlRR1rWzckxFc7D8=
+  dependencies:
+    mimic-response "^2.0.0"
+
 dedent@^0.7.0:
   version "0.7.0"
   resolved "http://registry.npm.taobao.org/dedent/download/dedent-0.7.0.tgz#2495ddbaf6eb874abb0e1be9df22d2e5a544326c"
@@ -5797,7 +5804,8 @@ indexof@0.0.1:
 
 inflation@^2.0.0:
   version "2.0.0"
-  resolved "https://registry.npmjs.org/inflation/-/inflation-2.0.0.tgz#8b417e47c28f925a45133d914ca1fd389107f30f"
+  resolved "http://registry.npm.taobao.org/inflation/download/inflation-2.0.0.tgz#8b417e47c28f925a45133d914ca1fd389107f30f"
+  integrity sha1-i0F+R8KPklpFEz2RTKH9OJEH8w8=
 
 inflight@^1.0.4, inflight@~1.0.4, inflight@~1.0.6:
   version "1.0.6"
@@ -7634,6 +7642,11 @@ mimic-response@^1.0.0:
   version "1.0.1"
   resolved "http://registry.npm.taobao.org/mimic-response/download/mimic-response-1.0.1.tgz#4923538878eef42063cb8a3e3b0798781487ab1b"
   integrity sha1-SSNTiHju9CBjy4o+OweYeBSHqxs=
+
+mimic-response@^2.0.0:
+  version "2.0.0"
+  resolved "http://registry.npm.taobao.org/mimic-response/download/mimic-response-2.0.0.tgz#996a51c60adf12cb8a87d7fb8ef24c2f3d5ebb46"
+  integrity sha1-mWpRxgrfEsuKh9f7jvJMLz1eu0Y=
 
 mini-css-extract-plugin@0.5.0:
   version "0.5.0"

@@ -21,7 +21,8 @@ export class RuleMiddleware implements IProxyMiddleware {
   /**
    * 处理 mock data 规则
    */
-  private async processMockData(userID: string, data: RuleActionData, ctx: IProxyContext) {
+  private async processMockData(data: RuleActionData, ctx: IProxyContext) {
+    const userID = 'root';
     const { dataId } = data;
     const content = await this.mockDataService.getDataFileContent(userID, dataId);
     const contentType = await this.mockDataService.getDataFileContentType(userID, dataId);
@@ -32,7 +33,7 @@ export class RuleMiddleware implements IProxyMiddleware {
   /**
    * 添加请求头
    */
-  private async processAddRequestHeader(userID: string, data: RuleActionData, ctx: IProxyContext) {
+  private async processAddRequestHeader(data: RuleActionData, ctx: IProxyContext) {
     ctx.req.headers[data.headerKey] = data.headerValue;
   }
 
@@ -112,10 +113,10 @@ export class RuleMiddleware implements IProxyMiddleware {
       const { data } = action;
       switch (action.type) {
         case 'mockData':
-          await this.processMockData(userID, data, ctx);
+          await this.processMockData(data, ctx);
           break;
         case 'addRequestHeader':
-          await this.processAddRequestHeader(userID, data, ctx);
+          await this.processAddRequestHeader(data, ctx);
           break;
         case 'addResponseHeader':
           await this.processAddResponseHeader(data, resHeaders);

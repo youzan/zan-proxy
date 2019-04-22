@@ -34,7 +34,7 @@ export class AppInfoService extends EventEmitter {
    * 存放本地数据的目录
    */
   public get proxyDataDir(): string {
-    return path.join(USER_HOME, '.front-end-proxy');
+    return path.join(USER_HOME, process.env.CONFIG_DIR_NAME || '.front-end-proxy');
   }
 
   /**
@@ -50,6 +50,7 @@ export class AppInfoService extends EventEmitter {
    * 打印运行环境信息
    */
   public printRuntimeInfo() {
+    console.log(`Config Dir: ${this.proxyDataDir}`);
     console.log(`Proxy Port: ${this.appInfo.proxyPort}`);
     console.log(`Manager: http://${this.appInfo.LANIp}:${this.appInfo.managerPort}`);
   }
