@@ -9,20 +9,16 @@ import {
   ForwarderMiddleware,
   HostMiddleware,
   IgnoreMiddleware,
-  IpMiddleware,
   PluginMiddleware,
   RecordRequestMiddleware,
   RecordResponseMiddleware,
   RuleMiddleware,
-  UserMiddleware,
 } from './middleware';
 import HttpServer from './servers/http';
 import HttpsServer from './servers/https';
 
 const COMMON_MIDDLEWARE_CLASSES: IProxyMiddleware[] = [
   Container.get(IgnoreMiddleware),
-  Container.get(IpMiddleware),
-  Container.get(UserMiddleware),
   Container.get(RecordResponseMiddleware),
   Container.get(RuleMiddleware),
   Container.get(PluginMiddleware),

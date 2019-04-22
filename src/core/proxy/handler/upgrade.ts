@@ -20,11 +20,10 @@ export class UpgradeHandler {
 
   public async handle(req: http.IncomingMessage, socket: net.Socket, head: Buffer) {
     const ctx = {
-      head,
       req,
       res: new http.ServerResponse(req),
-      socket,
     } as IProxyContext;
+    // websocket 也要通过中间件处理
     this.middleware(ctx).then(() => {
       const { hostname, port, protocol } = URL.parse(req.url);
       this.proxyServer.ws(req, socket, head, {

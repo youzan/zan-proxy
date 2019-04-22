@@ -1,5 +1,4 @@
 import http from 'http';
-import net from 'net';
 
 export type NextFunction = () => Promise<void>;
 
@@ -14,15 +13,11 @@ declare module 'http' {
 }
 
 export interface IProxyContext {
-  head: Buffer;
   req: http.IncomingMessage;
   res: http.ServerResponse;
-  socket: net.Socket;
 
   // middleware append properties
   ignore: boolean;
-  clientIP: string;
-  userID: string;
   requestID: number;
   remoteRequestBeginTime: number;
   remoteResponseStartTime: number;

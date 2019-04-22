@@ -18,11 +18,6 @@ const PROXY_HOST = '127.0.0.1';
 export class ConnectHandler {
   @Inject() private appInfoService: AppInfoService;
 
-  private cache: LRUCache<string, any> = new LRUCache({
-    max: 500,
-    maxAge: 1000 * 60 * 60,
-  });
-
   private get httpPort() {
     return this.appInfoService.appInfo.proxyPort;
   }
@@ -32,18 +27,13 @@ export class ConnectHandler {
   }
 
   public async handle(req: http.IncomingMessage, socket: net.Socket) {
-    // connect请求时 如何判断连到的目标机器是不是https协议？
     // ws、wss、https协议都会发送connect请求
     const [, targetPort] = req.url.split(':');
-    // 非443则放行,连到http服务器上
-    // proxyHost = host; // ws协议直接和远程服务器链接
+    // 非443端口访问则连到 http 服务器上
     const proxyPort = parseInt(targetPort, 10) === 443 ? this.httpsPort : this.httpPort;
-    let IPKey: string;
-    // 和远程建立链接 并告诉客户端
+    // 和本地对应的服务器建立链接 并告诉客户端连接建立成功
     const conn = net.connect(proxyPort, PROXY_HOST, () => {
-      IPKey = this._getIPKey(conn.address().port);
-      this.cache.set(IPKey, socket.remoteAddress);
-      socket.write('HTTP/' + req.httpVersion + ' 200 OK\r\n\r\n', 'UTF-8', () => {
+      socket.write(`HTTP/${req.httpVersion} 200 OK\r\n\r\n`, 'UTF-8', () => {
         conn.pipe(socket);
         socket.pipe(conn);
       });
@@ -51,19 +41,6 @@ export class ConnectHandler {
 
     conn.on('error', e => {
       console.error(e);
-      this.cache.del(IPKey);
     });
-
-    conn.on('close', () => {
-      this.cache.del(IPKey);
-    });
-  }
-
-  public getIP(port: number) {
-    return this.cache.get(this._getIPKey(port));
-  }
-
-  private _getIPKey(port: number) {
-    return `https_port_${port}`;
   }
 }

@@ -90,7 +90,8 @@ export class RuleMiddleware implements IProxyMiddleware {
       return next();
     }
 
-    const { userID, req } = ctx;
+    const userID = 'root';
+    const { req } = ctx;
     const { method, url } = req;
     const urlObj = URL.parse(url);
     const processRule = this.ruleService.getProcessRule(userID, method, urlObj);

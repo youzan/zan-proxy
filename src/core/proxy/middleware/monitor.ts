@@ -26,7 +26,8 @@ export class RecordRequestMiddleware implements IProxyMiddleware {
     if (ctx.ignore) {
       return next();
     }
-    const { userID, requestID } = ctx;
+    const userID = 'root';
+    const { requestID } = ctx;
     if (requestID > 0 && this.httpTrafficService.hasMonitor(userID)) {
       const url = URL.parse(ctx.req.url);
       const { headers, method, httpVersion } = ctx.req;
@@ -85,14 +86,20 @@ export class RecordResponseMiddleware implements IProxyMiddleware {
       return next();
     }
 
-    const { userID } = ctx;
+    const userID = 'root';
+    const { req } = ctx;
     const urlObj = URL.parse(ctx.req.url);
     const requestID = this.httpTrafficService.getRequestId(userID, urlObj);
 
+    const clientIp =
+      // x-forwarded-for 处理多次代理转发的情况
+      (req.headers['x-forwarded-for'] as string) ||
+      req.connection.remoteAddress ||
+      req.socket.remoteAddress;
     if (requestID > 0 && this.httpTrafficService.hasMonitor(userID)) {
       ctx.requestID = requestID;
       await this.httpTrafficService.requestBegin({
-        clientIp: ctx.clientIP,
+        clientIp,
         headers: ctx.req.headers,
         httpVersion: ctx.req.httpVersion,
         id: requestID,
