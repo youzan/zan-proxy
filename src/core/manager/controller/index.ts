@@ -1,5 +1,5 @@
 export * from './host';
-export * from './httpTraffic';
+export * from './http-traffic';
 export * from './mockData';
 export * from './profile';
 export * from './rule';

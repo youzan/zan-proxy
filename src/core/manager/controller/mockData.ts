@@ -60,13 +60,12 @@ export class MockDataController {
   }
 
   // 从http请求日志中保存 mock 数据
-  @Post('/savedatafromtraffic')
-  public async savedatafromtraffic(@Ctx() ctx: Context) {
-    const userId = ctx.userId;
+  @Post('/saveDataFromTraffic')
+  public async saveDataFromTraffic(@Ctx() ctx: Context) {
     const content = await this.httpTrafficService.getResponseBody(ctx.request.body.reqid);
     // 获取数据文件内容 在保存
     await this.mockDataService.saveDataEntryFromTraffic(
-      userId,
+      'root',
       ctx.request.body.id,
       ctx.request.body.name,
       ctx.request.body.contenttype,

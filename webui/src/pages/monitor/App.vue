@@ -1,6 +1,6 @@
 <template>
   <div id="app" class="app">
-    <div class="op-bar">
+    <div class="action-bar">
       <div class="buttons">
         <el-button @click="requestToggleRecordState" v-if="!state.stopRecord" type="danger">
           <i class="icon-stop" />
@@ -10,7 +10,7 @@
         <el-button icon="delete" @click="requestClear">清空</el-button>
       </div>
       <div class="filter-input">
-        <el-input v-model="filter" placeholder="Filter" icon="search"></el-input>
+        <el-input v-model="filter" placeholder="记录过滤条件" icon="search"></el-input>
       </div>
     </div>
     <div class="monitor">
@@ -20,27 +20,21 @@
   </div>
 </template>
 <script>
-import $ from 'jquery';
 import _ from 'lodash';
-import HttpTraffic from './components/HttpTraffic.vue';
-import RecordTable from './components/RecordTable';
-import RecordDetail from './components/RecordDetail';
-import * as trafficApi from '../../api/traffic';
 import url from 'url';
 import io from 'socket.io-client';
+import RecordTable from './components/RecordTable';
+import RecordDetail from './components/RecordDetail';
+import * as trafficApi from './api';
 
 export default {
   components: {
-    // HttpTraffic,
-    // Detail,
     'record-table': RecordTable,
     'record-detail': RecordDetail,
   },
   data() {
     return {
       isDataCenter: true, // 当前选择的记录
-      width: 0,
-      height: 0, // 记录id 和 row中索引的映射关系
       recordMap: {}, // 当前所有记录
       originRecordArray: [], // 原始记录数组 存放记录id
       filterdRecordArray: [], // 过滤后的数组 存放记录id
@@ -51,7 +45,7 @@ export default {
       requestingClear: false, // 请求清除记录
       state: {
         stopRecord: false, // 停止记录
-        overflow: false, // 打到最大记录数显示
+        overflow: false, // 达到最大记录数显示
       },
       filter: '',
     };
@@ -64,7 +58,7 @@ export default {
       return !!this.recordMap[this.selectId];
     },
     currentRow() {
-      return this.recordMap[this.selectId] || {};
+      return this.recordMap[this.selectId];
     },
     rightClickRow() {
       return this.recordMap[this.rightClickId];
@@ -148,17 +142,24 @@ export default {
     },
   },
   methods: {
+    /**
+     * 切换监听或停止状态
+     */
     requestToggleRecordState() {
       this.state.stopRecord = !this.state.stopRecord;
-      // 向远端发送请求
       trafficApi.setStopRecord(this.state.stopRecord);
     },
+    /**
+     * 清空记录
+     */
     requestClear() {
       this.requestingClear = true;
       this.clear();
       trafficApi.clear();
-      // 向远端发送请求
     },
+    /**
+     * 根据条件过滤记录
+     */
     filterRecords() {
       let filtered = [];
       this.originRecordArray.forEach(id => {
@@ -170,10 +171,6 @@ export default {
       });
       this.filterdRecordArray = filtered;
     },
-    calcSize() {
-      this.width = $(window).width();
-      this.height = $(window).height() - 28;
-    }, // 处理接受到的请求处理数据
     receiveTraffic(rows) {
       if (this.state.stopRecord || this.requestingClear) return;
       _.forEach(rows, row => {
@@ -246,10 +243,6 @@ export default {
     },
   },
   created() {
-    this.calcSize();
-
-    $(window).resize(_.debounce(this.calcSize, 200));
-
     let socket = io('/httptrafic');
     socket.on('rows', this.receiveTraffic);
     socket.on('filter', filter => {
@@ -263,3 +256,42 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.app {
+  overflow: hidden;
+}
+
+.monitor {
+  display: flex;
+  flex: 1;
+}
+
+.action-bar {
+  padding: 10px 20px;
+  display: flex;
+  width: 100%;
+
+  .buttons {
+    display: flex;
+    padding-right: 20px;
+    border-right: 1px solid #e1e3e6;
+    margin-right: 20px;
+  }
+
+  .filter-input {
+    width: 250px;
+  }
+}
+
+.icon-stop {
+  width: 12px;
+  height: 12px;
+  display: inline-block;
+  border-radius: 2px;
+  background-color: #fff;
+  vertical-align: middle;
+  margin-right: 7px;
+  line-height: 1;
+}
+</style>

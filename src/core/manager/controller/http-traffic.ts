@@ -33,7 +33,7 @@ export class HttpTrafficController {
     };
   }
 
-  @Get('/setfilter')
+  @Get('/setFilter')
   public async setFilter(@Ctx() ctx: Context) {
     const { filter = '' } = ctx.query;
     this.httpTrafficService.setFilter(filter);

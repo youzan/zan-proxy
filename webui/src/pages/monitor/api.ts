@@ -1,6 +1,7 @@
 import axios from 'axios';
 import queryString from 'query-string';
-export async function getResponseBody(id) {
+
+export async function getResponseBody(id: number) {
   try {
     let result = await axios.get(`/traffic/getResponseBody?id=${id}`);
     return result.data;
@@ -8,7 +9,8 @@ export async function getResponseBody(id) {
     return '';
   }
 }
-export async function getRequestBody(id) {
+
+export async function getRequestBody(id: number) {
   try {
     let result = await axios.get(`/traffic/getRequestBody?id=${id}`);
     return result.data;
@@ -17,7 +19,7 @@ export async function getRequestBody(id) {
   }
 }
 
-export async function setStopRecord(stop) {
+export async function setStopRecord(stop: boolean) {
   try {
     let result = await axios.get(`/traffic/stopRecord?stop=${stop}`);
     return result.data;
@@ -34,9 +36,9 @@ export async function clear() {
     return '';
   }
 }
-export async function setFilter(filter) {
+export async function setFilter(filter: string) {
   try {
-    let result = await axios.get(`/traffic/setfilter?filter=${filter}`);
+    let result = await axios.get(`/traffic/setFilter?filter=${filter}`);
     return result.data;
   } catch (e) {
     return '';
@@ -46,7 +48,7 @@ export async function setFilter(filter) {
 let pairSplitRegExp = /; */;
 let decode = decodeURIComponent;
 
-function tryDecode(str, decode) {
+function tryDecode(str: string, decode: (str: string) => string) {
   try {
     return decode(str);
   } catch (e) {
@@ -54,12 +56,12 @@ function tryDecode(str, decode) {
   }
 }
 
-export function parseCookie(str, options) {
+export function parseCookie(str: string, options: { decode: (str: string) => string }) {
   if (typeof str !== 'string') {
     throw new TypeError('argument str must be a string');
   }
 
-  var obj = {};
+  var obj: { [key: string]: string } = {};
   var opt = options || {};
   var pairs = str.split(pairSplitRegExp);
   var dec = opt.decode || decode;
@@ -90,7 +92,7 @@ export function parseCookie(str, options) {
   return obj;
 }
 
-export function parseQuery(path) {
+export function parseQuery(path: { indexOf: (arg0: string) => number; split: (arg0: string) => string[]; }) {
   if (!path || path.indexOf('?') < 0) return {};
 
   return queryString.parse(path.split('?')[1]);

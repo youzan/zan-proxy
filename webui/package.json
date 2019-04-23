@@ -10,49 +10,54 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "codemirror": "^5.44.0",
-    "copy-to-clipboard": "^3.0.8",
+    "codemirror": "^5.45.0",
     "element-ui": "1.3.6",
-    "http-status-codes": "^1.3.0",
+    "http-status-codes": "^1.3.2",
     "is-json": "^2.0.1",
-    "jquery": "^3.3.1",
+    "jquery": "^3.4.0",
     "lodash": "^4.17.11",
     "prettytime": "^1.0.0",
     "qrcode-js": "^0.0.2",
     "shell-escape": "^0.2.0",
-    "socket.io-client": "1.7.3",
+    "socket.io-client": "2.2.0",
     "url-search-params": "^1.1.0",
     "uuid": "^3.3.2",
-    "vue": "^2.6.6",
-    "vue-class-component": "^6.0.0",
+    "vue": "^2.6.10",
+    "vue-class-component": "^7.0.2",
     "vue-clipboard2": "^0.3.0",
     "vue-data-center": "^1.0.6",
     "vue-json-tree": "^0.3.3",
-    "vue-property-decorator": "^7.0.0",
-    "vue-router": "^3.0.1",
+    "vue-property-decorator": "^8.1.0",
+    "vue-router": "^3.0.6",
     "vuex": "^3.0.1"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.4.0",
-    "@vue/cli-plugin-eslint": "^3.4.0",
-    "@vue/cli-plugin-typescript": "^3.4.0",
-    "@vue/cli-service": "^3.4.0",
+    "@vue/cli-plugin-babel": "^3.6.0",
+    "@vue/cli-plugin-eslint": "^3.6.0",
+    "@vue/cli-plugin-typescript": "^3.6.0",
+    "@vue/cli-service": "^3.6.0",
     "@vue/eslint-config-prettier": "^4.0.1",
     "@vue/eslint-config-typescript": "^4.0.0",
     "babel-eslint": "^10.0.1",
-    "eslint": "^5.8.0",
+    "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
     "lint-staged": "^8.1.0",
     "node-sass": "^4.9.0",
     "sass-loader": "^7.1.0",
-    "typescript": "~3.2.2",
-    "vue-template-compiler": "^2.5.21"
+    "typescript": "~3.4.4",
+    "vue-template-compiler": "^2.6.10"
   },
   "gitHooks": {
     "pre-commit": "lint-staged"
   },
   "lint-staged": {
-    "*.js": ["vue-cli-service lint", "git add"],
-    "*.vue": ["vue-cli-service lint", "git add"]
+    "*.js": [
+      "vue-cli-service lint",
+      "git add"
+    ],
+    "*.vue": [
+      "vue-cli-service lint",
+      "git add"
+    ]
   }
 }
