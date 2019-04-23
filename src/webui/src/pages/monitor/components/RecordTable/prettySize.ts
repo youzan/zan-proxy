@@ -7,25 +7,22 @@ http://yuilibrary.com/license/
 
 const sizes = ['Bytes', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB'];
 
+interface IPrettySizeOption {
+  size: number;
+  nospace?: boolean;
+  one?: boolean;
+  places?: number;
+}
+
 /**
-Pretty print a size from bytes
-@method pretty
-@param {Number} size The number to pretty print
-@param {Boolean} [nospace=false] Don't print a space
-@param {Boolean} [one=false] Only print one character
-@param {Number} [places=1] Number of decimal places to return
-*/
-
-const prettySize = (size, nospace, one, places) => {
-  if (typeof nospace === 'object') {
-    const opts = nospace;
-    nospace = opts.nospace;
-    one = opts.one;
-    places = opts.places || 1;
-  } else {
-    places = places || 1;
-  }
-
+ * Pretty print a size from bytes
+ * @method pretty
+ * @param {Number} size The number to pretty print
+ * @param {Boolean} [nospace=false] Don't print a space
+ * @param {Boolean} [one=false] Only print one character
+ * @param {Number} [places=1] Number of decimal places to return
+ */
+export default function prettySize({ size, nospace = false, one = false, places = 1 }: IPrettySizeOption) {
   let mysize;
 
   sizes.forEach((unit, id) => {
@@ -52,5 +49,3 @@ const prettySize = (size, nospace, one, places) => {
 
   return mysize;
 };
-
-export default prettySize;

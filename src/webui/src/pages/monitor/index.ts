@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import 'element-ui/lib/theme-default/index.css';
 
 // element-ui

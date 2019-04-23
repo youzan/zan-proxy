@@ -8990,7 +8990,7 @@ vm-browserify@0.0.4:
   dependencies:
     indexof "0.0.1"
 
-vue-class-component@^7.0.1, vue-class-component@^7.0.2:
+vue-class-component@^7.0.1:
   version "7.0.2"
   resolved "http://registry.npm.taobao.org/vue-class-component/download/vue-class-component-7.0.2.tgz#c5f35a91c0e9341532392b84d606a84911fb13bc"
   integrity sha1-xfNakcDpNBUyOSuE1gaoSRH7E7w=

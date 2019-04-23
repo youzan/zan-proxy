@@ -23,7 +23,6 @@
     "url-search-params": "^1.1.0",
     "uuid": "^3.3.2",
     "vue": "^2.6.10",
-    "vue-class-component": "^7.0.2",
     "vue-clipboard2": "^0.3.0",
     "vue-data-center": "^1.0.6",
     "vue-json-tree": "^0.3.3",
