@@ -1,7 +1,8 @@
+import { IncomingHttpHeaders } from 'http';
 import { UrlWithStringQuery } from 'url';
 
 export type ITrafficOriginRequest = UrlWithStringQuery & {
-  headers: object;
+  headers: IncomingHttpHeaders;
   clientIp: string;
   method: string;
   httpVersion: string;

@@ -11,14 +11,14 @@
     </el-row>
     <el-table border align="center" :data="$dc.hostFileList">
       <el-table-column prop="checked" label="启用" width="85">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-checkbox :checked="scope.row.checked" @change="toggleFile(scope.row.name)" :disabled="!$dc.hostState" />
         </template>
       </el-table-column>
       <el-table-column prop="name" label="名字" width="150"></el-table-column>
       <el-table-column prop="description" label="描述" />
       <el-table-column label="操作" :width="136" :context="_self">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <a class="link-btn" :href="'#/edithost?name=' + scope.row.name">
             <el-button type="info" icon="edit" size="mini"></el-button>
           </a>

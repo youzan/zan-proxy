@@ -22,7 +22,12 @@ interface IPrettySizeOption {
  * @param {Boolean} [one=false] Only print one character
  * @param {Number} [places=1] Number of decimal places to return
  */
-export default function prettySize({ size, nospace = false, one = false, places = 1 }: IPrettySizeOption) {
+export default function prettySize({
+  size,
+  nospace = false,
+  one = false,
+  places = 1,
+}: IPrettySizeOption) {
   let mysize;
 
   sizes.forEach((unit, id) => {
@@ -43,9 +48,9 @@ export default function prettySize({ size, nospace = false, one = false, places 
   // zero handling
   // always prints in Bytes
   if (!mysize) {
-    let unit = one ? sizes[0].slice(0, 1) : sizes[0];
+    const unit = one ? sizes[0].slice(0, 1) : sizes[0];
     mysize = '0' + (nospace ? '' : ' ') + unit;
   }
 
   return mysize;
-};
+}

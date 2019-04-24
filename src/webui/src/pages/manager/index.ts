@@ -1,14 +1,14 @@
-import Vue from 'vue';
-import router from './router';
-import DataCenter from 'vue-data-center';
-
 // element-ui
 import ElementUI from 'element-ui';
-import 'element-ui/lib/theme-default/index.css';
-import './index.scss';
-import './iconfont.css';
+import Vue from 'vue';
+import DataCenter from 'vue-data-center';
 
 import App from './App.vue';
+import router from './router';
+
+import 'element-ui/lib/theme-default/index.css';
+import './iconfont.css';
+import './index.scss';
 
 Vue.use(ElementUI);
 Vue.use(DataCenter);
@@ -22,7 +22,7 @@ new Vue({
 document.addEventListener(
   'keydown',
   function(event) {
-    if ((event.ctrlKey || event.metaKey) && event.which == 83) {
+    if ((event.ctrlKey || event.metaKey) && event.which === 83) {
       // Save Function
       event.preventDefault();
       return false;

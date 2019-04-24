@@ -1,5 +1,5 @@
 import { Context } from 'koa';
-import { Controller, Ctx, Get } from 'routing-controllers';
+import { Controller, Ctx, Get, Post } from 'routing-controllers';
 import { Inject, Service } from 'typedi';
 
 import { HttpTrafficService } from '../../services';
@@ -24,25 +24,25 @@ export class HttpTrafficController {
     return content;
   }
 
-  @Get('/stopRecord')
+  @Post('/stopRecord')
   public async stopRecord(@Ctx() ctx: Context) {
-    const stopRecord = ctx.query.stop;
-    await this.httpTrafficService.setStopRecord(stopRecord.toString() === 'true');
+    const { stop } = ctx.request.body;
+    await this.httpTrafficService.setStopRecord(stop);
     return {
       code: 0,
     };
   }
 
-  @Get('/setFilter')
+  @Post('/setFilter')
   public async setFilter(@Ctx() ctx: Context) {
-    const { filter = '' } = ctx.query;
+    const { filter = '' } = ctx.request.body;
     this.httpTrafficService.setFilter(filter);
     return {
       code: 0,
     };
   }
 
-  @Get('/clear')
+  @Post('/clear')
   public async clear(@Ctx() ctx: Context) {
     await this.httpTrafficService.clear();
     return {

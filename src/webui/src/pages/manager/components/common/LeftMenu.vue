@@ -134,7 +134,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .left-menu {
   z-index: 1;
   width: 230px;

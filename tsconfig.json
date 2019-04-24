@@ -20,7 +20,7 @@
     "baseUrl": "./src",
     "paths": {
       "@core/*": ["core/*"],
-      "@cli/*": ["gui/*"],
+      "@cli/*": ["cli/*"],
       "@gui/*": ["gui/*"]
     },
     "typeRoots": [
@@ -38,5 +38,8 @@
   ],
   "include": [
     "./src"
+  ],
+  "exclude": [
+    "./src/webui"
   ]
 }

@@ -16,7 +16,7 @@
     </el-row>
     <el-table border style="width: 100%" row-key="key" :stripe="true" align="center" :data="filecontent.content">
       <el-table-column prop="checked" label="启用" align="center" width="80">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-tooltip class="item" effect="dark" content="勾选后启动这条规则" placement="left">
             <el-checkbox v-model="scope.row.checked" @change="saveFileRightNow"></el-checkbox>
           </el-tooltip>
@@ -28,7 +28,7 @@
         </template>
       </el-table-column>-->
       <el-table-column label="请求方法" :width="100">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <span v-if="scope.row.method">{{ scope.row.method }}</span>
           <span v-else>所有</span>
         </template>
@@ -36,7 +36,7 @@
       <el-table-column prop="match" label="URL特征" />
       <el-table-column prop="name" label="描述" />
       <el-table-column label="转发地址">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           {{
             scope.row.actionList.filter(a => a.type === 'redirect')[0]
               ? scope.row.actionList.filter(a => a.type === 'redirect')[0].data.target
@@ -45,7 +45,7 @@
         </template>
       </el-table-column>
       <el-table-column label="操作" :width="240" align="center" :context="_self">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <div class="actions-container">
             <el-tooltip class="item" effect="dark" content="编辑" placement="left">
               <el-button icon="edit" size="mini" type="primary" @click="dialogEdit(scope.row.key)"></el-button>

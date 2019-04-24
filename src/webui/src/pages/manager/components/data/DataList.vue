@@ -10,7 +10,7 @@
       <el-table-column prop="name" label="名字" align="center" width="300" :sortable="true"></el-table-column>
       <el-table-column prop="contenttype" label="类型" align="center"></el-table-column>
       <el-table-column label="操作" :width="136" align="center" :context="_self">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-button type="info" icon="edit" size="mini" @click="$dc.requestEditDataFile(scope.row)"></el-button>
           <el-button
             type="danger"

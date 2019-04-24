@@ -22,6 +22,14 @@ module.exports = {
       chunks: ['chunk-vendors', 'chunk-common', 'monitor'],
     },
   },
+  configureWebpack: {
+    resolve: {
+      alias: {
+        '@core': rootResolve('src/core'),
+        '@webui': rootResolve('src/webui'),
+      },
+    },
+  },
   devServer: {
     writeToDisk: filepath => {
       return !filepath.includes('.hot-update.');

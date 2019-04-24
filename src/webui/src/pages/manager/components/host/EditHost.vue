@@ -13,17 +13,17 @@
     <el-table border style="width: 100%" align="center" :data="hostarray">
       <el-table-column type="index" width="60"></el-table-column>
       <el-table-column prop="key" label="域名" align="center">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-input v-model.trim="scope.row.key" size="small" placeholder="请输入内容"></el-input>
         </template>
       </el-table-column>
       <el-table-column prop="value" label="ip地址" align="center" width="400">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-input v-model.trim="scope.row.value" size="small" placeholder="请输入内容"></el-input>
         </template>
       </el-table-column>
       <el-table-column label="操作" :width="80" align="center" :context="_self">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-button
             type="danger"
             icon="delete"
