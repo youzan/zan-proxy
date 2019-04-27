@@ -1,6 +1,6 @@
 import * as path from 'path';
 
-const HOME_DIR = process.env.HOME || process.env.USERPROFILE;
+const HOME_DIR = process.env.HOME || (process.env.USERPROFILE as string);
 /**
  * 获取主目录下的文件路径
  *

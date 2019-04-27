@@ -1,10 +1,9 @@
+import { Rule, RuleActionData } from '@core/types/rule';
 import fs from 'fs-extra';
 import http from 'http';
 import mime from 'mime-types';
 import { Inject, Service } from 'typedi';
 import URL from 'url';
-
-import { Rule, RuleActionData } from '@core/types/rule';
 
 import { MockDataService, ProfileService, RuleService } from '../../services';
 import { IProxyContext, IProxyMiddleware, NextFunction } from '../../types/proxy';
@@ -63,7 +62,7 @@ export class RuleMiddleware implements IProxyMiddleware {
     data: RuleActionData,
     ctx: IProxyContext,
   ) {
-    const target = this.profileService.calcPath(urlObj.href, rule.match, data.target);
+    const target = this.profileService.calcPath(urlObj.href as string, rule.match, data.target);
     if (!target) {
       return;
     }
@@ -94,7 +93,7 @@ export class RuleMiddleware implements IProxyMiddleware {
     const userID = 'root';
     const { req } = ctx;
     const { method, url } = req;
-    const urlObj = URL.parse(url);
+    const urlObj = URL.parse(url as string);
     const processRule = this.ruleService.getProcessRule(userID, method, urlObj);
     // 没有转发规则
     if (!processRule) {
@@ -135,7 +134,7 @@ export class RuleMiddleware implements IProxyMiddleware {
 
     // 在响应中设置额外的响应头
     Object.keys(resHeaders).forEach(headerKey => {
-      ctx.res.setHeader(headerKey, resHeaders[headerKey]);
+      ctx.res.setHeader(headerKey, resHeaders[headerKey] as string);
     });
   }
 }

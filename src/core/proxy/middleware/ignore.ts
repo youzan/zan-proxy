@@ -23,7 +23,7 @@ export class IgnoreMiddleware implements IProxyMiddleware {
    * 中间件，根据情况在 ctx 对象上添加 ignore 标识
    */
   public async middleware(ctx: IProxyContext, next: NextFunction) {
-    ctx.ignore = this.patterns.some(pattern => ctx.req.url.includes(pattern));
+    ctx.ignore = this.patterns.some(pattern => !!ctx.req.url && ctx.req.url.includes(pattern));
     await next();
   }
 }

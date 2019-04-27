@@ -10,7 +10,7 @@
     <el-collapse-item title="Headers" name="headers">
       <kv v-for="(item, index) in responseHeaderList" :k="item[0]" :v="item[1]" :key="index"></kv>
     </el-collapse-item>
-    <el-collapse-item name="body" v-if="responseBody">
+    <el-collapse-item name="body" v-loading="bodyLoading" v-if="responseBody">
       <template slot="title">
         Body
         <span class="body-mode-toggle" @click="toggleBodyMode">
@@ -33,8 +33,8 @@ import Vue from 'vue';
 
 import KeyValue from './KeyValue.vue';
 import { Getter } from 'vuex-class';
-import { IRecord } from '@core/types/http-traffic';
 import { getStatusText } from 'http-status-codes';
+import { IClientRecord } from '../../types';
 
 @Component({
   components: {
@@ -46,28 +46,18 @@ export default class Response extends Vue {
   activeNames: string[] = ['general', 'headers', 'body'];
   bodyMode: 'parsed' | 'raw' = 'parsed';
 
+  @Getter
+  currentRecord: IClientRecord;
+
   @Prop(String)
   responseBody: string;
-
-  @Getter
-  currentRecord: IRecord;
-
-  get responseHeader() {
-    try {
-      const headers = Object.assign({}, _get(this.currentRecord.response, 'headers'));
-      delete headers['set-cookie'];
-      return headers;
-    } catch (e) {
-      return {};
-    }
-  }
+  @Prop(Boolean)
+  bodyLoading: boolean;
 
   get responseHeaderList() {
     try {
-      const headers = Object.assign(
-        {},
-        this.currentRecord && 'response' in this.currentRecord && this.currentRecord.response.headers,
-      );
+      const headers = Object.assign({}, this.currentRecord.response && this.currentRecord.response.headers);
+      console.log(headers);
       const setCookie = headers['set-cookie'] as string[];
       delete headers['set-cookie'];
       return Object.keys(headers)

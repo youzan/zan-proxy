@@ -81,8 +81,6 @@ export default {
 
 <style lang="scss">
 .install-body {
-  margin: -50px;
-  padding: 50px;
   font-size: 14px;
   line-height: 1.8;
   background-color: #fff;

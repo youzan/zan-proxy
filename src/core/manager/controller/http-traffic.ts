@@ -1,3 +1,4 @@
+import { isJson } from '@core/utils';
 import { Context } from 'koa';
 import { Controller, Ctx, Get, Post } from 'routing-controllers';
 import { Inject, Service } from 'typedi';
@@ -14,14 +15,14 @@ export class HttpTrafficController {
   public async getResponseBody(@Ctx() ctx: Context) {
     const id = ctx.query.id;
     const content = await this.httpTrafficService.getResponseBody(id);
-    return content;
+    return isJson(content) ? JSON.stringify(content) : content;
   }
 
   @Get('/getRequestBody')
   public async getRequestBody(@Ctx() ctx: Context) {
     const id = ctx.query.id;
     const content = await this.httpTrafficService.getRequestBody(id);
-    return content;
+    return isJson(content) ? JSON.stringify(content) : content;
   }
 
   @Post('/clear')

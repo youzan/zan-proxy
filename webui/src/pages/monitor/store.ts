@@ -1,18 +1,10 @@
-import { IRecord } from '@core/types/http-traffic';
 import Vue from 'vue';
 import Vuex from 'vuex';
 
+import { IClientRecord, IRecordMap, IRootState } from './types';
+
 Vue.use(Vuex);
 
-export interface IRecordMap {
-  [id: string]: IRecord;
-}
-
-export interface IRootState {
-  recordMap: IRecordMap; // 当前所有记录
-  filteredIds: number[]; // 过滤后的数组 存放记录id
-  selectId: string; // 当前选择的记录
-}
 
 const store = new Vuex.Store<IRootState>({
   state: {
@@ -32,7 +24,7 @@ const store = new Vuex.Store<IRootState>({
     setRecordMap(state, recordMap: IRecordMap) {
       state.recordMap = recordMap;
     },
-    modifyRecordMap(state, payload: { id: number; record: IRecord }) {
+    modifyRecordMap(state, payload: { id: number; record: IClientRecord }) {
       state.recordMap[payload.id] = payload.record;
     },
     setFilteredIds(state, filteredIds: number[]) {

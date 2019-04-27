@@ -2,15 +2,14 @@
   <div id="app" class="app">
     <div class="action-bar">
       <div class="buttons">
-        <el-button @click="toggleRecordState" v-if="!stopRecord" type="danger">
-          <i class="icon-stop" />
-          <span>停止</span>
-        </el-button>
-        <el-button @click="toggleRecordState" v-else type="primary" icon="caret-right">记录</el-button>
-        <el-button icon="delete" @click="requestClear">清空</el-button>
+        <el-button @click="toggleRecordState" v-if="stopRecord" type="primary" icon="el-icon-video-play"
+          >记录</el-button
+        >
+        <el-button @click="toggleRecordState" v-else type="danger" icon="el-icon-video-pause">停止</el-button>
+        <el-button icon="el-icon-delete" @click="requestClear">清空</el-button>
       </div>
       <div class="filter-input">
-        <el-input v-model="filter" placeholder="设置过滤条件" icon="search"></el-input>
+        <el-input v-model="filter" placeholder="设置过滤条件" suffix-icon="el-icon-search"></el-input>
       </div>
     </div>
     <div class="monitor">
@@ -31,7 +30,7 @@ import { Component, Watch } from 'vue-property-decorator';
 import Vue from 'vue';
 import { State, Getter, Action, Mutation } from 'vuex-class';
 import { IRecord } from '@core/types/http-traffic';
-import { IRecordMap } from './store';
+import { IRecordMap } from './types';
 
 @Component({
   components: {
@@ -43,9 +42,7 @@ export default class App extends Vue {
   @State
   selectId: string;
   @State
-  recordMap: {
-    [id: string]: IRecord;
-  };
+  recordMap: IRecordMap;
   @State
   filteredIds: number[];
 
@@ -75,20 +72,6 @@ export default class App extends Vue {
   }
 
   /**
-   * 根据条件过滤记录
-   */
-  filterRecords = _.debounce(() => {
-    let filteredIds: number[] = [];
-    Object.keys(this.recordMap).forEach(id => {
-      const r = this.recordMap[id];
-      if (r.request.originUrl.includes(this.filter)) {
-        filteredIds.push(r.id);
-      }
-    });
-    this.setFilteredIds(filteredIds);
-  }, 1000);
-
-  /**
    * 接收 node 端的记录信息
    */
   receiveTrafficRecords(records: IRecord[]) {
@@ -101,7 +84,6 @@ export default class App extends Vue {
 
       // 根据host、path进行过滤
       const request = record.request;
-      console.log(request);
       if (request && request.originUrl.includes(this.filter)) {
         this.addFilteredId(id);
       }
@@ -128,8 +110,13 @@ export default class App extends Vue {
     immediate: false,
   })
   onFilterChanged(val: string, oldVal: string) {
-    // 过滤
-    this.filterRecords();
+    const filteredIds: number[] = Object.keys(this.recordMap)
+      .filter(id => {
+        const r = this.recordMap[id];
+        return r.request.originUrl.includes(this.filter);
+      })
+      .map(Number);
+    this.setFilteredIds(filteredIds);
   }
 
   created() {
@@ -164,16 +151,5 @@ export default class App extends Vue {
   .filter-input {
     width: 250px;
   }
-}
-
-.icon-stop {
-  width: 12px;
-  height: 12px;
-  display: inline-block;
-  border-radius: 2px;
-  background-color: #fff;
-  vertical-align: middle;
-  margin-right: 7px;
-  line-height: 1;
 }
 </style>

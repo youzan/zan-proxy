@@ -1,6 +1,6 @@
+import { isPlainObject } from 'lodash';
 import fetch, { RequestInit } from 'node-fetch';
 import * as qs from 'querystring';
-import { isPlainObject } from 'lodash';
 
 // 默认3s超时
 const DEFAULT_TIMEOUT = 3000;
@@ -23,7 +23,7 @@ function computeUrl(url: string, params?: object) {
  * @param {object} headers
  * @returns
  */
-function computeHeaders(headers: object) {
+function computeHeaders(headers?: object) {
   return Object.assign({}, DEFAULT_HEADER, headers);
 }
 

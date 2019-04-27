@@ -9,7 +9,7 @@ import URL from 'url';
 @Service()
 export class ForwarderMiddleware implements IProxyMiddleware {
   private getRequestOptions(req: http.IncomingMessage): RequestOptions {
-    const url = URL.parse(req.url);
+    const url = URL.parse(req.url as string);
     const isHttps = url.protocol && url.protocol.startsWith('https');
     const port = url.port || (isHttps ? 443 : 80);
     return {
@@ -38,18 +38,19 @@ export class ForwarderMiddleware implements IProxyMiddleware {
       // fix request headers
       // 插件修改 req.body 后，以插件提供的 body 为请求体内容，重新设置 content-length header
       if (req.body && req.body.length) {
-        options.headers['content-length'] = req.body.length;
+        options.headers && (options.headers['content-length'] = req.body.length);
       }
 
       // node 版本（v11.14.0以下）不支持 brolti 算法，需要将 br 从 accept-encoding 中删除
       if (!supportBrotli) {
-        options.headers['accept-encoding'] = 'gzip, deflate';
+        options.headers && (options.headers['accept-encoding'] = 'gzip, deflate');
       }
 
       // create real request
       const proxyReq = client.request(options, proxyRes => {
-        res.statusCode = proxyRes.statusCode;
+        res.statusCode = proxyRes.statusCode as number;
         Object.keys(proxyRes.headers).forEach(headerName => {
+          // @ts-ignore
           res.setHeader(headerName, proxyRes.headers[headerName]);
         });
         ctx.res.body = proxyRes;

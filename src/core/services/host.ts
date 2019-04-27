@@ -1,11 +1,10 @@
+import { IHostFile } from '@core/types/host';
 import EventEmitter from 'events';
 import fs from 'fs-extra';
 import { find, forEach, get } from 'lodash';
 import fetch from 'node-fetch';
 import path from 'path';
 import { Service } from 'typedi';
-
-import { IHostFile } from '@core/types/host';
 
 import { AppInfoService } from './appInfo';
 
@@ -70,7 +69,7 @@ export class HostService extends EventEmitter {
       return hostname;
     }
 
-    let ip: string;
+    let ip: string | undefined;
     const inUsingHosts = this.getInUsingHosts('root');
     ip = inUsingHosts.hostMap[hostname];
     if (ip) {
@@ -192,7 +191,8 @@ export class HostService extends EventEmitter {
     if (!f.name) {
       f.name = url.split('/').slice(-1)[0] || url;
     }
-    if (this.getHostFile(userId, f.name) && this.getHostFile(userId, f.name).checked) {
+    const hostFile = this.getHostFile(userId, f.name);
+    if (hostFile && hostFile.checked) {
       f.checked = true;
     } else {
       f.checked = false;

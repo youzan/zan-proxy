@@ -2,7 +2,7 @@
   <el-collapse v-model="activeNames">
     <el-collapse-item title="General" name="general">
       <div>
-        <kv k="Request URL" :v="href">
+        <kv k="Request URL" :v="parsedOriginUrl.href">
           <a
             class="copy-as-curl"
             v-clipboard:copy="curl"
@@ -11,9 +11,9 @@
             >Copy as cURL</a
           >
         </kv>
-        <kv k="Request Method" :v="method"></kv>
+        <kv k="Request Method" :v="currentRecord.request.method || '-'"></kv>
         <kv k="Protocol" :v="protocol"></kv>
-        <kv k="HTTP Version" :v="httpVersion"></kv>
+        <kv k="HTTP Version" :v="currentRecord.request.httpVersion || '-'"></kv>
       </div>
     </el-collapse-item>
     <el-collapse-item title="Headers" name="headers">
@@ -34,7 +34,9 @@
       </div>
       <div v-else>{{ parsedOriginUrl.query }}</div>
     </el-collapse-item>
-    <el-collapse-item title="Body" name="body" v-if="requestBody">{{ requestBody || '' }}</el-collapse-item>
+    <el-collapse-item title="Body" name="body" v-loading="bodyLoading" v-if="requestBody">{{
+      requestBody || ''
+    }}</el-collapse-item>
   </el-collapse>
 </template>
 
@@ -44,8 +46,10 @@ import url from 'url';
 import qs from 'querystring';
 import { Component, Prop } from 'vue-property-decorator';
 import KeyValue from './KeyValue.vue';
-import makeCurl from './make-curl';
-import { IRecord, ITrafficRecord } from '@core/types/http-traffic';
+import { makeCurl } from '../../utils';
+import { IClientRecord } from '../../types';
+import { Getter } from 'vuex-class';
+import { Message } from 'element-ui';
 
 @Component({
   components: {
@@ -56,32 +60,20 @@ export default class Request extends Vue {
   activeNames = ['general', 'headers', 'query', 'body'];
   queryMode = 'parsed';
 
-  @Prop()
-  currentRecord: IRecord;
+  @Getter
+  currentRecord: IClientRecord;
 
   @Prop(String)
   requestBody: string;
-
-  $message: any;
+  @Prop(Boolean)
+  bodyLoading: boolean;
 
   get parsedOriginUrl() {
     return url.parse(this.currentRecord.request.originUrl);
   }
 
-  get href() {
-    return this.parsedOriginUrl.href;
-  }
-
-  get method() {
-    return this.currentRecord.request.method || '-';
-  }
-
   get protocol() {
-    return this.parsedOriginUrl.protocol.slice(0, -1) || 'http';
-  }
-
-  get httpVersion() {
-    return this.currentRecord.request.httpVersion || '-';
+    return (this.parsedOriginUrl.protocol && this.parsedOriginUrl.protocol.slice(0, -1)) || 'http';
   }
 
   get curl() {
@@ -90,7 +82,7 @@ export default class Request extends Vue {
       href: record.request.originUrl,
       method: record.request.method,
       headers: record.request.headers,
-      auth: this.parsedOriginUrl.auth,
+      auth: this.parsedOriginUrl.auth || '',
       body: this.requestBody || '',
     });
   }
@@ -105,7 +97,7 @@ export default class Request extends Vue {
 
   get requestQueryParams() {
     try {
-      return qs.parse(this.parsedOriginUrl.query) || {};
+      return qs.parse(this.parsedOriginUrl.query || '');
     } catch (e) {
       return {};
     }
@@ -117,10 +109,7 @@ export default class Request extends Vue {
   }
 
   onCopySuccess() {
-    this.$message({
-      type: 'success',
-      message: '已成功复制到粘贴板!',
-    });
+    this.$message.success('已成功复制到粘贴板!');
   }
 
   onCopyFail() {

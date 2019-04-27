@@ -1,11 +1,10 @@
-import * as React from 'react';
-import { observer, inject } from 'mobx-react';
-import { Button, message, Form, Input, Checkbox, Select, Modal, Row, Col } from 'antd';
+import * as api from '@gui/renderer/api';
+import { HostFileStore, PluginStore, RuleFileStore, WorkspaceStore } from '@gui/renderer/store';
+import { Button, Checkbox, Col, Form, Input, message, Modal, Row, Select } from 'antd';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 import throttle from 'lodash/throttle';
-
-import { WorkspaceStore, HostFileStore, RuleFileStore, PluginStore } from '@gui/renderer/store';
-import * as api from '@gui/renderer/api';
+import { inject, observer } from 'mobx-react';
+import * as React from 'react';
 
 import style from './style.m.scss';
 
@@ -126,6 +125,7 @@ class WorkspaceEditor extends React.Component<IProps> {
             return api.removeWorkspace(currentWorkspace.key);
           })
           .then(() => {
+            // @ts-ignore
             this.props.workspaceStore.setCurrentWorkspace(null);
             message.success('删除成功');
           });
@@ -160,7 +160,7 @@ class WorkspaceEditor extends React.Component<IProps> {
   };
 
   private getPopupContainer() {
-    return document.getElementById('workspace-editor-content');
+    return document.getElementById('workspace-editor-content') as HTMLElement;
   }
 
   /**

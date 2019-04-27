@@ -1,9 +1,8 @@
+import { AppInfoService } from '@core/services';
 import http from 'http';
 import LRUCache from 'lru-cache';
 import net from 'net';
 import { Inject, Service } from 'typedi';
-
-import { AppInfoService } from '@core/services';
 
 const PROXY_HOST = '127.0.0.1';
 
@@ -28,7 +27,7 @@ export class ConnectHandler {
 
   public async handle(req: http.IncomingMessage, socket: net.Socket) {
     // ws、wss、https协议都会发送connect请求
-    const [, targetPort] = req.url.split(':');
+    const [, targetPort] = (req.url as string).split(':');
     // 非443端口访问则连到 http 服务器上
     const proxyPort = parseInt(targetPort, 10) === 443 ? this.httpsPort : this.httpPort;
     // 和本地对应的服务器建立链接 并告诉客户端连接建立成功

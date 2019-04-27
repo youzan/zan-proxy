@@ -1,69 +1,68 @@
-const pairSplitRegExp = /; */;
-const decode = decodeURIComponent;
+import { find as _find, isArray, isObject } from 'lodash';
+import shellEscape from 'shell-escape';
 
-function tryDecode(str: string, decode: (str: string) => string) {
-  try {
-    return decode(str);
-  } catch (e) {
-    return str;
-  }
-}
-
-export function parseCookie(str: string) {
-  if (typeof str !== 'string') {
-    throw new TypeError('argument str must be a string');
-  }
-
-  const obj: { [key: string]: string } = {};
-  const pairs = str.split(pairSplitRegExp);
-
-  for (let i = 0; i < pairs.length; i++) {
-    const pair = pairs[i];
-    let eqIdx = pair.indexOf('=');
-
-    // skip things that don't look like key=value
-    if (eqIdx < 0) {
-      continue;
-    }
-
-    const key = pair.substr(0, eqIdx).trim();
-    let val = pair.substr(++eqIdx, pair.length).trim();
-
-    // quoted values
-    if ('"' === val[0]) {
-      val = val.slice(1, -1);
-    }
-
-    // only assign once
-    if (undefined === obj[key]) {
-      obj[key] = tryDecode(val, decode);
-    }
-  }
-
-  return obj;
-}
-
-const contentTypeText: {
+const CONTENT_TYPE_MAP: {
   [contentType: string]: string;
 } = {
   html: 'Document',
   javascript: 'Script',
   css: 'Stylesheet',
   font: 'Font',
-  json: 'JSON',
-  png: 'PNG',
-  jpg: 'JPEG',
-  gif: 'GIF',
+  json: 'Json',
+  png: 'Image',
+  jpg: 'Image',
+  jpeg: 'Image',
+  gif: 'Image',
+  audio: 'Audio',
+  video: 'Video'
 };
 
 export function getContextTypeText(contentType: string) {
-  if (contentType) {
-    Object.keys(contentTypeText).forEach(k => {
-      if (contentType.includes(k)) {
-        return k;
-      }
-    });
+  if (!contentType) {
+    return '';
   }
 
-  return 'XHR';
+  const matchResult = _find(CONTENT_TYPE_MAP, (v, key) => contentType.includes(key));
+  return matchResult ? matchResult : 'XHR';
+}
+
+
+interface IMakeCurlOption {
+  method: string;
+  headers: any;
+  body: any;
+  href: string;
+  auth: string;
+}
+
+export function makeCurl({ method, headers, body, href, auth }: IMakeCurlOption) {
+  const args = ['curl'];
+
+  // method
+  args.push('-X', method || 'GET');
+
+  // username
+  if (auth) {
+    args.push('-u', auth);
+  }
+
+  // headers
+  headers = headers || {};
+  Object.keys(headers).forEach(k => {
+    const v = headers[k];
+    args.push('-H', v ? `${k}: ${v}` : `${k};`);
+  });
+
+  // body
+  if (body) {
+    if (isObject(body) || isArray(body)) {
+      body = JSON.stringify(body);
+    }
+    args.push('--data', body);
+  }
+
+  // url
+  args.push(href);
+
+  return shellEscape(args);
 }

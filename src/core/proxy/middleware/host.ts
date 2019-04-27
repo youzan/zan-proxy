@@ -29,8 +29,8 @@ export class HostMiddleware implements IProxyMiddleware {
       return next();
     }
 
-    const url = URL.parse(req.url);
-    url.hostname = await this.hostService.resolveHost(url.hostname);
+    const url = URL.parse(req.url as string);
+    url.hostname = await this.hostService.resolveHost(url.hostname as string);
     // 请求url中包含端口信息时，需要补齐端口信息
     url.host = url.port ? `${url.hostname}:${url.port}` : url.hostname;
     req.url = URL.format(url);

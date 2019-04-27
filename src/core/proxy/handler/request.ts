@@ -1,13 +1,12 @@
+import { IProxyContext, IProxyMiddlewareFn } from '@core/types/proxy';
 import http from 'http';
 import { ComposedMiddleware } from 'koa-compose';
 import Stream from 'stream';
 import { Service } from 'typedi';
 
-import { IProxyContext, IProxyMiddlewareFn } from '@core/types/proxy';
-
 @Service()
 export class RequestHandler {
-  private middleware: ComposedMiddleware<IProxyContext> = () => Promise.resolve(null);
+  private middleware: ComposedMiddleware<IProxyContext> = () => Promise.resolve();
 
   private responseWriteHandler(ctx: IProxyContext) {
     const { res } = ctx;

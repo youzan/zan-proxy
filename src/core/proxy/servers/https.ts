@@ -1,9 +1,8 @@
+import { AppInfoService, CertificateService } from '@core/services';
 import http from 'http';
 import https from 'https';
 import { createSecureContext } from 'tls';
 import { Inject, Service } from 'typedi';
-
-import { AppInfoService, CertificateService } from '@core/services';
 
 import { fillReqUrl } from '../../utils';
 import { RequestHandler, UpgradeHandler } from '../handler';
@@ -43,14 +42,14 @@ export default class HttpsServer {
       SNICallback: (servername, cb) => {
         this.certService.getCertificationForHost(servername).then(crt => {
           const ctx = createSecureContext({
-            cert: crt.cert,
-            key: crt.key,
+            cert: crt && crt.cert,
+            key: crt && crt.key,
           });
           cb(null, ctx);
         });
       },
-      cert: serverCrt.cert,
-      key: serverCrt.key,
+      cert: serverCrt && serverCrt.cert,
+      key: serverCrt && serverCrt.key,
     });
   }
 }

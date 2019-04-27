@@ -1,7 +1,7 @@
 <template>
   <div class="left-menu">
     <h2>Zan Proxy</h2>
-    <el-menu class="el-menu-vertical-demo" theme="dark" :default-active="defaultActive" @select="handleSelect">
+    <el-menu theme="dark" :default-active="defaultActive" @select="handleSelect">
       <template v-for="(item, index) in menuList">
         <div :key="index">
           <el-submenu :index="index + ''" v-if="item.children">
@@ -142,9 +142,13 @@ export default {
   user-select: none;
   position: relative;
   overflow-x: hidden;
-  background-image: linear-gradient(#3b3e8f, #6f73d7);
+  background-color: #4b4eac;
 
   h2 {
+    position: fixed;
+    z-index: 10;
+    width: 230px;
+    background-color: #4b4eac;
     color: #fff;
     font-size: 20px;
     line-height: 72px;
@@ -171,6 +175,9 @@ export default {
 
   .el-menu {
     background-color: transparent;
+    border-right: none;
+    position: relative;
+    top: 72px;
   }
 
   .el-submenu__title,

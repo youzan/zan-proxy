@@ -7,8 +7,9 @@ import npm from 'npm';
 import path from 'path';
 import { Service } from 'typedi';
 
-import { IPluginClass, IPluginInfo, IPluginModule } from '../types/plugin';
 import { AppInfoService } from './appInfo';
+
+import { IPluginClass, IPluginInfo, IPluginModule } from '../types/plugin';
 
 const key = 'zanproxy-plugins';
 
@@ -32,7 +33,7 @@ export class PluginService extends EventEmitter {
 
   public getPlugins(): IPluginInfo[] {
     try {
-      return JSON.parse(this.store.getItem(key));
+      return JSON.parse(this.store.getItem(key) || '[]');
     } catch {
       return [];
     }

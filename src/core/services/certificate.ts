@@ -1,9 +1,8 @@
+import { CertificateModel } from '@core/types/certificate';
 import { promisify } from 'es6-promisify';
 import parseDomain from 'parse-domain';
 import pem from 'pem';
 import { Inject, Service } from 'typedi';
-
-import { CertificateModel } from '@core/types/certificate';
 
 import { CertificateStorage } from '../storage';
 
@@ -53,8 +52,8 @@ export class CertificateService {
       altNames: [host],
       commonName: host,
       days: 365 * 10,
-      serviceCertificate: root.cert,
-      serviceKey: root.key,
+      serviceCertificate: root && root.cert,
+      serviceKey: root && root.key,
     });
     return {
       cert: res.certificate,

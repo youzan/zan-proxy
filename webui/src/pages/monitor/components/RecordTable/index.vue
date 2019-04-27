@@ -1,5 +1,12 @@
 <template>
-  <el-table :data="records" stripe border :row-class-name="tableRowClassName" @row-click="onRowClicked">
+  <el-table
+    class="record-list"
+    :data="records"
+    stripe
+    border
+    :row-class-name="getTableRowClassName"
+    @row-click="onRowClicked"
+  >
     <!-- Url -->
     <el-table-column label="Url">
       <template v-slot="scope">
@@ -62,9 +69,8 @@ import { getStatusText } from 'http-status-codes';
 import prettyTime from 'prettytime';
 
 import prettySize from './prettySize';
-import { IRecord, ITrafficRecord } from '@core/types/http-traffic';
 import { getContextTypeText } from '../../utils';
-import { IRecordMap } from '../../store';
+import { IRecordMap, IClientRecord } from '../../types';
 
 @Component
 export default class RecordTable extends Vue {
@@ -74,9 +80,9 @@ export default class RecordTable extends Vue {
   filteredIds: number[];
 
   @Getter
-  currentRecord: IRecord;
+  currentRecord: IClientRecord;
 
-  tableRowClassName(row: IRecord) {
+  getTableRowClassName({ row }: { row: IClientRecord; rowIndex: number }) {
     if (this.currentRecord && row.id === this.currentRecord.id) {
       return 'record-row record-row__selected';
     }
@@ -84,7 +90,7 @@ export default class RecordTable extends Vue {
   }
 
   @Emit('select')
-  onRowClicked(row: IRecord) {
+  onRowClicked(row: IClientRecord) {
     return row.id;
   }
 
@@ -93,14 +99,13 @@ export default class RecordTable extends Vue {
     return filteredIds.map(id => {
       const record = recordMap[id];
       const { request, response } = record;
-      const { originUrl, method } = request;
-      const parsedOriginUrl = url.parse(originUrl);
-      const splited = parsedOriginUrl.pathname.split('/');
+      const parsedOriginUrl = url.parse((request && request.originUrl) || '');
+      const splited = (parsedOriginUrl.pathname && parsedOriginUrl.pathname.split('/')) || [];
       const { search, port, hostname } = parsedOriginUrl;
       return {
         id,
         urlText: (splited.slice(-1).join('') || '') + (search || '') || '/',
-        method,
+        method: request && request.method,
         hostpath: (port ? `${hostname}:${port}` : parsedOriginUrl.hostname) + splited.slice(0, -1).join('/'),
         statusCode: response && response.statusCode,
         statusText: response && getStatusText(response.statusCode),
@@ -133,12 +138,19 @@ export default class RecordTable extends Vue {
 </style>
 
 <style lang="scss">
+.record-list {
+  .el-table__header-wrapper th {
+    background-color: #92b4ff;
+    color: #fff;
+  }
+}
+
 .record-row {
   cursor: pointer;
 
   &__selected td {
     color: #fff;
-    background-color: #20a0ff !important;
+    background-color: #67abff !important;
 
     .sub-text {
       color: #fff;

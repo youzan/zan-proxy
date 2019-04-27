@@ -1,13 +1,12 @@
-import { Container, Service } from 'typedi';
-import { dialog, Notification, ipcMain, MenuItemConstructorOptions } from 'electron';
+import { APP_STATES } from '@gui/common/constants';
+import { WORKSPACE_EVENTS } from '@gui/common/events';
+import BaseManager from '@gui/main/core/base-manager';
+import { homePath, setIpcReplier, showNotify } from '@gui/main/utils';
+import { dialog, ipcMain, MenuItemConstructorOptions, Notification } from 'electron';
 import logger from 'electron-log';
 import * as fs from 'fs-extra';
+import { Container, Service } from 'typedi';
 import uuid from 'uuid/v4';
-
-import { showNotify, setIpcReplier, homePath } from '@gui/main/utils';
-import BaseManager from '@gui/main/core/base-manager';
-import { WORKSPACE_EVENTS } from '@gui/common/events';
-import { APP_STATES } from '@gui/common/constants';
 
 import helper from './helper';
 
@@ -137,7 +136,7 @@ export default class WorkspaceManager extends BaseManager {
    */
   private deactivateWorkspace = async (workspace: ZanProxyMac.IWorkspace) => {
     const ws = this.workspaces.find(ws => ws.key === workspace.key);
-    ws.checked = false;
+    ws && (ws.checked = false);
     await helper.deactivateWorkspace(workspace);
     await this.application.emitAllManager('workspace:deactivate', workspace);
     await this.syncUpdate();

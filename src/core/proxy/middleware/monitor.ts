@@ -33,15 +33,16 @@ export class RecordRequestMiddleware implements IProxyMiddleware {
       // x-forwarded-for 处理多次代理转发的情况
       (req.headers['x-forwarded-for'] as string) ||
       req.connection.remoteAddress ||
-      req.socket.remoteAddress;
+      req.socket.remoteAddress ||
+      '';
     this.httpTrafficService.recordRequest(
       {
         id: trafficId,
         request: {
-          originUrl: req._proxyOriginUrl || req.url,
-          actualUrl: req.url,
+          originUrl: req._proxyOriginUrl || req.url || '',
+          actualUrl: req.url || '',
           httpVersion,
-          method,
+          method: method || 'GET',
           headers,
           clientIp,
         },
@@ -128,12 +129,14 @@ export class RecordResponseMiddleware implements IProxyMiddleware {
     ctx.timeTrack = {
       receiveRequest: Date.now(),
     } as ICtxTimeTrack;
-
     const trafficId = this.httpTrafficService.getTrafficId();
+
+    if (!trafficId) {
+      return next();
+    }
+
     ctx.trafficId = trafficId;
-
     await next();
-
     if (trafficId > 0 && this.httpTrafficService.hasMonitor) {
       this.recordResponse(ctx);
     }

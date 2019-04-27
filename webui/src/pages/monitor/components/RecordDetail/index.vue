@@ -5,10 +5,10 @@
     </span>
     <el-tabs v-model="activeName" type="border-card" v-if="hasCurrent">
       <el-tab-pane label="Request" name="Request">
-        <request :requestBody="requestBody"></request>
+        <request :requestBody="requestBody" :bodyLoading="fetchingRequestBody"></request>
       </el-tab-pane>
       <el-tab-pane label="Response" name="Response">
-        <response :responseBody="responseBody"></response>
+        <response :responseBody="responseBody" :bodyLoading="fetchingResponseBody"></response>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -16,12 +16,13 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { Prop, Emit, Component } from 'vue-property-decorator';
+import { Prop, Emit, Component, Watch } from 'vue-property-decorator';
 
 import Request from './Request.vue';
 import Response from './Response.vue';
-import { IRecord } from '@core/types/http-traffic';
 import { Getter } from 'vuex-class';
+import { IClientRecord } from '../../types';
+import * as api from '../../api';
 
 @Component({
   components: {
@@ -33,11 +34,38 @@ export default class RecordDetail extends Vue {
   @Getter
   hasCurrent: boolean;
   @Getter
-  currentRow: IRecord;
+  currentRecord: IClientRecord;
 
-  requestBody: string;
-  responseBody: string;
+  requestBody: string = '';
+  fetchingRequestBody: boolean = false;
+
+  responseBody: string = '';
+  fetchingResponseBody: boolean = false;
+
   activeName: string = 'Request';
+
+  async fetchRequestBody(id: number) {
+    this.fetchingRequestBody = true;
+    const data = await api.getRequestBody(id);
+    this.requestBody = data;
+    this.fetchingRequestBody = false;
+  }
+
+  async fetchResponseBody(id: number) {
+    this.fetchingResponseBody = true;
+    const data = await api.getResponseBody(id);
+    this.responseBody = data;
+    this.fetchingResponseBody = false;
+  }
+
+  @Watch('currentRecord')
+  fetchRecordBody() {
+    const { id, request } = this.currentRecord;
+    if (request.method === 'POST') {
+      this.fetchRequestBody(id);
+    }
+    this.fetchResponseBody(id);
+  }
 }
 </script>
 
