@@ -3,6 +3,7 @@
     "target": "esnext",
     "module": "esnext",
     "strict": true,
+    "strictNullChecks": false,
     "lib": [
       "esnext",
       "dom",
@@ -28,7 +29,8 @@
       "@webui/*": ["./src/*"]
     },
     "types": [
-      "webpack-env"
+      "webpack-env",
+      "element-ui"
     ]
   },
   "include": [

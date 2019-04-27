@@ -151,7 +151,6 @@ export default {
       hostFileList: [],
       // rule文件列表
       ruleFileList: [],
-      filters: [],
       dataList: [],
       // 新增数据文件对话框使用数据
       addDataFileForm: {
@@ -184,9 +183,6 @@ export default {
     },
     hostState() {
       return this.profile.enableHost || false;
-    },
-    filterState() {
-      return this.profile.enableFilter || false;
     },
     selectedHost() {
       return this.hostFileList.filter(h => h.checked).map(h => h.name);
@@ -223,14 +219,6 @@ export default {
           this.$message.error(`出错了,请刷新页面，${serverData.msg}`);
         }
       });
-    },
-
-    async switchFilter(value) {
-      if (this.profile.enableFilter) {
-        profileApi.disableFilter();
-      } else {
-        profileApi.enableFilter();
-      }
     },
 
     async switchRule(value) {
@@ -482,10 +470,6 @@ export default {
 
     socket.on('rulefilelist', data => {
       this.ruleFileList = data;
-    });
-
-    socket.on('filters', data => {
-      this.filters = data;
     });
 
     socket.on('datalist', data => {

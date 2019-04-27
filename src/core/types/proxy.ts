@@ -5,6 +5,7 @@ export type NextFunction = () => Promise<void>;
 declare module 'http' {
   interface IncomingMessage {
     body: any;
+    _proxyOriginUrl: string;
   }
 
   interface ServerResponse {
@@ -12,15 +13,22 @@ declare module 'http' {
   }
 }
 
+export interface ICtxTimeTrack {
+  receiveRequest: number;
+  sendRemoteRequest: number;
+  receiveRemoteResponse: number;
+  finishRequest: number;
+}
+
 export interface IProxyContext {
+  ctx: {};
   req: http.IncomingMessage;
   res: http.ServerResponse;
 
   // middleware append properties
   ignore: boolean;
   trafficId: number;
-  remoteRequestBeginTime: number;
-  remoteResponseStartTime: number;
+  timeTrack: ICtxTimeTrack;
 }
 
 export type IProxyMiddlewareFn = (ctx: IProxyContext, next?: NextFunction) => Promise<any>;

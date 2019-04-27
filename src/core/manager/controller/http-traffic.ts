@@ -24,29 +24,9 @@ export class HttpTrafficController {
     return content;
   }
 
-  @Post('/stopRecord')
-  public async stopRecord(@Ctx() ctx: Context) {
-    const { stop } = ctx.request.body;
-    await this.httpTrafficService.setStopRecord(stop);
-    return {
-      code: 0,
-    };
-  }
-
-  @Post('/setFilter')
-  public async setFilter(@Ctx() ctx: Context) {
-    const { filter = '' } = ctx.request.body;
-    this.httpTrafficService.setFilter(filter);
-    return {
-      code: 0,
-    };
-  }
-
   @Post('/clear')
   public async clear(@Ctx() ctx: Context) {
-    await this.httpTrafficService.clear();
-    return {
-      code: 0,
-    };
+    await this.httpTrafficService.resetTrafficId();
+    return true;
   }
 }

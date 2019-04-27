@@ -1,3 +1,4 @@
+import { ICtxTimeTrack, IProxyContext, IProxyMiddleware, NextFunction } from '@core/types/proxy';
 import decompress from 'decompress-response';
 import http from 'http';
 import raw from 'raw-body';
@@ -6,7 +7,6 @@ import { Inject, Service } from 'typedi';
 import URL from 'url';
 
 import { HttpTrafficService } from '../../services';
-import { IProxyContext, IProxyMiddleware, NextFunction } from '../../types/proxy';
 
 /**
  * 记录请求数据中间件
@@ -18,36 +18,50 @@ export class RecordRequestMiddleware implements IProxyMiddleware {
   /**
    * 获取请求体内容
    */
-  async getRequestBody(req: http.IncomingMessage) {
-    return req.body ? Promise.resolve(req.body) : raw(decompress(req), 'utf-8');
+  private async getRequestBody(req: http.IncomingMessage) {
+    return raw(decompress(req), req.headers['content-encoding'] || 'utf-8');
+  }
+
+  /**
+   * 记录 request 信息
+   */
+  private async recordRequest(ctx: IProxyContext) {
+    const { req, trafficId } = ctx;
+    const { headers, method, httpVersion } = req;
+    const body = await this.getRequestBody(req);
+    const clientIp =
+      // x-forwarded-for 处理多次代理转发的情况
+      (req.headers['x-forwarded-for'] as string) ||
+      req.connection.remoteAddress ||
+      req.socket.remoteAddress;
+    this.httpTrafficService.recordRequest(
+      {
+        id: trafficId,
+        request: {
+          originUrl: req._proxyOriginUrl || req.url,
+          actualUrl: req.url,
+          httpVersion,
+          method,
+          headers,
+          clientIp,
+        },
+      },
+      body,
+    );
   }
 
   public async middleware(ctx: IProxyContext, next: NextFunction) {
     if (ctx.ignore) {
       return next();
     }
-    const { trafficId: trafficId } = ctx;
+
+    const { trafficId } = ctx;
     if (trafficId > 0 && this.httpTrafficService.hasMonitor) {
-      const url = URL.parse(ctx.req.url);
-      const { headers, method, httpVersion } = ctx.req;
-      this.getRequestBody(ctx.req).then(body => {
-        this.httpTrafficService.recordActualRequest({
-          id: trafficId,
-          requestData: {
-            body,
-            headers,
-            httpVersion,
-            method,
-            path: url.path,
-            port: parseInt(url.port) || 80,
-            protocol: url.protocol,
-          },
-        });
-      });
+      this.recordRequest(ctx);
     }
-    ctx.remoteRequestBeginTime = Date.now();
+    ctx.timeTrack.sendRemoteRequest = Date.now();
     await next(); // forward middleware or handler
-    ctx.remoteResponseStartTime = Date.now();
+    ctx.timeTrack.receiveRemoteResponse = Date.now();
   }
 }
 
@@ -82,59 +96,46 @@ export class RecordResponseMiddleware implements IProxyMiddleware {
     }
   }
 
+  /**
+   * 记录 response 信息
+   */
+  private async recordResponse(ctx: IProxyContext) {
+    const { res, timeTrack, trafficId } = ctx;
+    const { statusCode } = res;
+    const headers = res.getHeaders();
+
+    timeTrack.finishRequest = Date.now();
+    this.getResponseBody(res).then(body => {
+      this.httpTrafficService.recordResponse(
+        {
+          id: trafficId,
+          response: {
+            statusCode,
+            headers,
+            timeTrack,
+          },
+        },
+        body,
+      );
+    });
+  }
+
   public async middleware(ctx: IProxyContext, next: NextFunction) {
     if (ctx.ignore) {
       return next();
     }
 
-    const { req } = ctx;
-    const urlObj = URL.parse(ctx.req.url);
-    const trafficId = this.httpTrafficService.getTrafficId(urlObj);
+    ctx.timeTrack = {
+      receiveRequest: Date.now(),
+    } as ICtxTimeTrack;
 
-    const clientIp =
-      // x-forwarded-for 处理多次代理转发的情况
-      (req.headers['x-forwarded-for'] as string) ||
-      req.connection.remoteAddress ||
-      req.socket.remoteAddress;
-    if (trafficId > 0 && this.httpTrafficService.hasMonitor) {
-      ctx.trafficId = trafficId;
-      await this.httpTrafficService.recordOriginRequest({
-        id: trafficId,
-        originRequest: {
-          clientIp,
-          headers: ctx.req.headers,
-          httpVersion: ctx.req.httpVersion,
-          id: trafficId,
-          method: ctx.req.method,
-          ...urlObj,
-        },
-      });
-    }
+    const trafficId = this.httpTrafficService.getTrafficId();
+    ctx.trafficId = trafficId;
 
-    const receiveRequestTime = Date.now();
     await next();
 
     if (trafficId > 0 && this.httpTrafficService.hasMonitor) {
-      const { res, remoteRequestBeginTime, remoteResponseStartTime } = ctx;
-      const requestEndTime = Date.now();
-      const { statusCode } = res;
-      const headers = res.getHeaders();
-      this.getResponseBody(res).then(body => {
-        this.httpTrafficService.recordResponse({
-          id: trafficId,
-          response: {
-            body,
-            headers,
-            receiveRequestTime,
-            remoteResponseEndTime: receiveRequestTime,
-            remoteIp: urlObj.host,
-            remoteRequestBeginTime,
-            remoteResponseStartTime,
-            requestEndTime,
-            statusCode,
-          },
-        });
-      });
+      this.recordResponse(ctx);
     }
   }
 }

@@ -1,14 +1,10 @@
-import { promisify } from 'es6-promisify';
 import EventEmitter from 'events';
 import fs from 'fs-extra';
 import { find, forEach } from 'lodash';
 import path from 'path';
 import { Service } from 'typedi';
-import { AppInfoService } from './appInfo';
 
-const fsReadFile = promisify(fs.readFile);
-const fsWriteFile = promisify(fs.writeFile);
-const fsUnlink = promisify(fs.unlink);
+import { AppInfoService } from './appInfo';
 
 /**
  * 数据mock
@@ -48,7 +44,7 @@ export class MockDataService extends EventEmitter {
   public async getDataFileContent(userId, dataId) {
     const dataFilePath = this._getDataFilePath(userId, dataId);
     try {
-      return await fsReadFile(dataFilePath, { encoding: 'utf-8' });
+      return await fs.readFile(dataFilePath, { encoding: 'utf-8' });
     } catch (e) {
       return '';
     }
@@ -112,7 +108,7 @@ export class MockDataService extends EventEmitter {
     // 删除文件
     for (const rId of toRemove) {
       const dataPath = this._getDataFilePath(userId, rId);
-      await fsUnlink(dataPath);
+      await fs.remove(dataPath);
     }
   }
 
@@ -124,7 +120,7 @@ export class MockDataService extends EventEmitter {
    */
   public async saveDataFileContent(userId, dataFileId, content) {
     const dataFilePath = this._getDataFilePath(userId, dataFileId);
-    await fsWriteFile(dataFilePath, content, { encoding: 'utf-8' });
+    await fs.writeFile(dataFilePath, content, { encoding: 'utf-8' });
   }
 
   /**
@@ -142,7 +138,7 @@ export class MockDataService extends EventEmitter {
     await fs.writeJson(listFilePath, dataList, { encoding: 'utf-8' });
     // 保存数据文件
     const dataFilePath = this._getDataFilePath(userId, dataFileId);
-    await fsWriteFile(dataFilePath, content, { encoding: 'utf-8' });
+    await fs.writeFile(dataFilePath, content, { encoding: 'utf-8' });
   }
 
   /**

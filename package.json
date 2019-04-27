@@ -29,7 +29,6 @@
     "fs-extra": "^7.0.1",
     "get-port": "^4.2.0",
     "http-proxy": "^1.17.0",
-    "inflation": "^2.0.0",
     "inquirer": "^6.2.2",
     "ip": "^1.1.5",
     "koa": "^2.7.0",

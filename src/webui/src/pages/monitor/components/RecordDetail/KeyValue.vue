@@ -5,10 +5,18 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: ['k', 'v'],
-};
+<script lang="ts">
+import { Component, Prop } from 'vue-property-decorator';
+import Vue from 'vue';
+
+@Component
+export default class KeyValue extends Vue {
+  @Prop(String)
+  k: string;
+
+  @Prop(String)
+  v: string;
+}
 </script>
 
 <style lang="scss">

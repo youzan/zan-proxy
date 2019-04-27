@@ -1,39 +1,32 @@
-import { IncomingHttpHeaders } from 'http';
-import { UrlWithStringQuery } from 'url';
+import { IncomingHttpHeaders, OutgoingHttpHeaders } from 'http';
 
-export type ITrafficOriginRequest = UrlWithStringQuery & {
+import { ICtxTimeTrack } from './proxy';
+
+export interface ITrafficStatus {
+  overflow: boolean;
+}
+
+export interface ITrafficRequest {
+  originUrl: string;
+  actualUrl: string;
   headers: IncomingHttpHeaders;
   clientIp: string;
-  method: string;
-  httpVersion: string;
-};
-
-export interface ITrafficRequestData {
-  headers: object;
   httpVersion: string;
   method: string;
-  path: string;
-  port: number;
-  protocol: string;
-  body: any;
 }
 
 export interface ITrafficResponse {
-  headers: object;
-  receiveRequestTime: number;
-  remoteIp: string;
-  remoteRequestBeginTime: number;
-  remoteResponseEndTime: number;
-  remoteResponseStartTime: number;
-  requestEndTime: number;
   statusCode: number;
+  headers: OutgoingHttpHeaders;
+  timeTrack: ICtxTimeTrack;
 }
 
 export type ITrafficRecord<KEY extends string, DATA_TYPE> = {
   id: number;
 } & Record<KEY, DATA_TYPE>;
 
-export type IRecord =
-  | ITrafficRecord<'originRequest', ITrafficOriginRequest>
-  | ITrafficRecord<'requestData', ITrafficRequestData>
-  | ITrafficRecord<'response', ITrafficResponse>;
+export interface IRecord {
+  id: number;
+  request?: ITrafficRequest;
+  response?: ITrafficResponse;
+}

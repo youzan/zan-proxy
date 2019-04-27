@@ -9,9 +9,9 @@ declare module 'vue-data-center' {
   export default plugin;
 }
 
-declare module 'element-ui' {
-  const ui: any;
-  export default ui;
+declare module 'vue-json-tree' {
+  const component: any;
+  export default component;
 }
 
 declare module 'vue-clipboard2' {
@@ -27,10 +27,4 @@ declare module 'prettytime' {
 
   function prettytime(ms: number, options?: Partial<IOptions>): string;
   export default prettytime;
-}
-
-declare module "vue/types/vue" {
-  interface Vue {
-    $message: any;
-  }
 }

@@ -1,42 +1,52 @@
 <template>
   <el-table :data="records" stripe border :row-class-name="tableRowClassName" @row-click="onRowClicked">
-    <el-table-column label="Name">
-      <template slot-scope="scope">
-        <div class="name-container" :title="scope.row.originRequest.href">
-          <div class="name text">{{ scope.row.name }}</div>
-          <div class="foot">{{ scope.row.hostpath }}</div>
-        </div>
-      </template>
-    </el-table-column>
-    <el-table-column label="Status" width="180">
-      <template slot-scope="scope">
-        <div class="status-container">
-          <div class="code text">{{ (scope.row.response && scope.row.response.statusCode) || '--' }}</div>
-          <div class="foot">{{ (scope.row.response && scope.row.response.statusText) || '' }}</div>
+    <!-- Url -->
+    <el-table-column label="Url">
+      <template v-slot="scope">
+        <div class="url-container">
+          <div class="name text">{{ scope.row.urlText }}</div>
+          <div class="sub-text">{{ scope.row.hostpath }}</div>
         </div>
       </template>
     </el-table-column>
 
-    <el-table-column label="Type" width="180">
-      <template slot-scope="scope">
-        <div class="type-container">
-          <div class="type text">{{ (scope.row.response && scope.row.response.contentTypeText) || '--' }}</div>
-          <div class="foot">{{ (scope.row.response && scope.row.response.contentType) || '' }}</div>
+    <!-- Method -->
+    <el-table-column label="Method" width="150" prop="method"></el-table-column>
+
+    <!-- Response Status -->
+    <el-table-column label="Status" width="150">
+      <template v-slot="scope">
+        <div class="status-container">
+          <div class="code text">{{ scope.row.statusCode || '--' }}</div>
+          <div class="sub-text">{{ scope.row.statusText || '' }}</div>
         </div>
       </template>
     </el-table-column>
-    <el-table-column label="Method" width="180" prop="originRequest.method"></el-table-column>
-    <el-table-column label="Size" width="180">
-      <template slot-scope="scope">
+
+    <!-- Content-Type -->
+    <el-table-column label="Content-Type" width="200">
+      <template v-slot="scope">
+        <div class="content-type-container">
+          <div class="type text">{{ scope.row.contentTypeText || '--' }}</div>
+          <div class="sub-text">{{ scope.row.contentType || '' }}</div>
+        </div>
+      </template>
+    </el-table-column>
+
+    <!-- Response Size -->
+    <el-table-column label="Size" width="150">
+      <template v-slot="scope">
         <div class="size-container">
-          <div class="size text">{{ (scope.row.response && scope.row.response.size) || '--' }}</div>
+          <div class="size text">{{ scope.row.size || '--' }}</div>
         </div>
       </template>
     </el-table-column>
-    <el-table-column label="Duration">
-      <template slot-scope="scope">
+
+    <!-- Request Duration -->
+    <el-table-column label="Duration" width="150">
+      <template v-slot="scope">
         <div class="duration-container">
-          <div class="duration text">{{ (scope.row.response && scope.row.response.duration) || '--' }}</div>
+          <div class="duration text">{{ scope.row.duration || '--' }}</div>
         </div>
       </template>
     </el-table-column>
@@ -44,113 +54,68 @@
 </template>
 
 <script lang="ts">
-import { getStatusText } from 'http-status-codes';
-import { Prop, Component } from 'vue-property-decorator';
 import Vue from 'vue';
+import url from 'url';
+import { Prop, Emit, Component } from 'vue-property-decorator';
+import { Getter, State } from 'vuex-class';
+import { getStatusText } from 'http-status-codes';
+import prettyTime from 'prettytime';
 
 import prettySize from './prettySize';
-import prettyTime from 'prettytime';
-import { IRecord, ITrafficOriginRequest, ITrafficRecord } from '@core/types/http-traffic';
-
-const contentTypeText = {
-  html: 'Document',
-  javascript: 'Script',
-  css: 'Stylesheet',
-  font: 'Font',
-  json: 'JSON',
-  png: 'PNG',
-  jpg: 'JPEG',
-  gif: 'GIF',
-};
+import { IRecord, ITrafficRecord } from '@core/types/http-traffic';
+import { getContextTypeText } from '../../utils';
+import { IRecordMap } from '../../store';
 
 @Component
 export default class RecordTable extends Vue {
-  @Prop()
-  currentRow: IRecord;
+  @State
+  recordMap: IRecordMap;
+  @State
+  filteredIds: number[];
 
-  @Prop()
-  recordMap: {
-    [id: string]: IRecord;
-  };
+  @Getter
+  currentRecord: IRecord;
 
-  @Prop()
-  filterdRecordArray: IRecord[];
-
-  tableRowClassName(row) {
-    if (this.currentRow && row.id === this.currentRow.id) {
-      return 'record-selected';
+  tableRowClassName(row: IRecord) {
+    if (this.currentRecord && row.id === this.currentRecord.id) {
+      return 'record-row record-row__selected';
     }
-    return '';
+    return 'record-row';
   }
 
-  onRowClicked(row) {
-    this.$emit('select', row.id);
+  @Emit('select')
+  onRowClicked(row: IRecord) {
+    return row.id;
   }
 
   get records() {
-    const { recordMap, filterdRecordArray } = this;
-    return filterdRecordArray.map(filteredRecord => {
-      const record: any = recordMap[filteredRecord.id];
-      const splited = record.originRequest.pathname.split('/');
-      record.name = record.originRequest.search || '';
-      record.hostpath = record.originRequest.hostname || '';
-      if (record.originRequest.port) {
-        record.hostpath += `:${record.originRequest.port}`;
-      }
-      if (splited.length) {
-        record.name = splited.slice(-1)[0] + record.name;
-      }
-      if (!record.name) {
-        record.name = '/';
-      }
-      if (splited.length > 1) {
-        record.hostpath += splited.slice(0, -1).join('/');
-      }
-      if (record.response && record.response.statusCode) {
-        record.response.statusText = getStatusText(record.response.statusCode);
-      }
-      if (record.response && record.response.headers) {
-        const { headers } = record.response;
-        Object.keys(headers).forEach(k => {
-          headers[k.toLowerCase()] = headers[k];
-        });
-        if (headers['content-type']) {
-          const contentType = headers['content-type'];
-          record.response.contentType = contentType;
-          record.response.contentTypeText = 'XHR';
-          Object.keys(contentTypeText).forEach(k => {
-            if (contentType.includes(k)) {
-              record.response.contentTypeText = contentTypeText[k];
-            }
-          });
-        }
-        if (headers['content-length']) {
-          record.response.size = prettySize({ size: headers['content-length'] });
-        }
-      }
-      if (record.response && record.response.receiveRequestTime && record.response.requestEndTime) {
-        record.response.duration = prettyTime(record.response.requestEndTime - record.response.receiveRequestTime);
-      }
-      return record;
+    const { recordMap, filteredIds } = this;
+    return filteredIds.map(id => {
+      const record = recordMap[id];
+      const { request, response } = record;
+      const { originUrl, method } = request;
+      const parsedOriginUrl = url.parse(originUrl);
+      const splited = parsedOriginUrl.pathname.split('/');
+      const { search, port, hostname } = parsedOriginUrl;
+      return {
+        id,
+        urlText: (splited.slice(-1).join('') || '') + (search || '') || '/',
+        method,
+        hostpath: (port ? `${hostname}:${port}` : parsedOriginUrl.hostname) + splited.slice(0, -1).join('/'),
+        statusCode: response && response.statusCode,
+        statusText: response && getStatusText(response.statusCode),
+        contentType: response && response.headers['content-type'],
+        contentTypeText: response && getContextTypeText(response.headers['content-type'] as string),
+        size: response && prettySize({ size: parseInt(response.headers['content-length'] as string) || 0 }),
+        duration:
+          response && prettyTime(response.timeTrack.finishRequest - response.timeTrack.receiveRequest, { short: true }),
+      };
     });
   }
 }
 </script>
 
-<style lang="scss">
-.record-selected td {
-  color: #fff;
-  background-color: #20a0ff !important;
-}
-
-.record-selected td .foot {
-  color: #fff !important;
-}
-
-.el-table__row {
-  cursor: pointer;
-}
-
+<style lang="scss" scoped>
 .text {
   width: 100%;
   white-space: nowrap;
@@ -158,11 +123,26 @@ export default class RecordTable extends Vue {
   text-overflow: ellipsis;
 }
 
-.foot {
+.sub-text {
   color: #aaa;
   font-size: 12px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+</style>
+
+<style lang="scss">
+.record-row {
+  cursor: pointer;
+
+  &__selected td {
+    color: #fff;
+    background-color: #20a0ff !important;
+
+    .sub-text {
+      color: #fff;
+    }
+  }
 }
 </style>

@@ -11,7 +11,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "codemirror": "^5.45.0",
-    "element-ui": "1.3.6",
+    "element-ui": "^2.8.2",
     "http-status-codes": "^1.3.2",
     "is-json": "^2.0.1",
     "jquery": "^3.4.0",

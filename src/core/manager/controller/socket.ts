@@ -32,37 +32,22 @@ export class SocketController {
    * http流量监控 webSocket 连接
    */
   private initHttpTraffic() {
-    const socket = this.io.of('/httptrafic');
+    const socket = this.io.of('/http-trafic');
     // 客户端发起连接请求
     socket.on('connection', client => {
       this.httpTrafficService.incMonitor();
-      // 推送过滤器，状态
-      const state = this.httpTrafficService.status;
-      client.emit('state', state);
-      const filter = this.httpTrafficService.filter;
-      client.emit('filter', filter);
-      client.emit('clear');
+
       client.on('disconnect', () => {
         this.httpTrafficService.decMonitor();
       });
     });
 
     // 监听logRespository事件
-    this.httpTrafficService.on('traffic', rows => {
-      socket.emit('rows', rows);
-    });
-    // 过滤器改变
-    this.httpTrafficService.on('filter', filter => {
-      socket.emit('filter', filter);
+    this.httpTrafficService.on('records', records => {
+      socket.emit('records', records);
     });
     // 状态改变
-    this.httpTrafficService.on('state-change', state => {
-      socket.emit('state', state);
-    });
-    // 清空
-    this.httpTrafficService.on('clear', () => {
-      socket.emit('clear');
-      const state = this.httpTrafficService.status;
+    this.httpTrafficService.on('state', state => {
       socket.emit('state', state);
     });
   }

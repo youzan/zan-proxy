@@ -2,259 +2,141 @@
   <div id="app" class="app">
     <div class="action-bar">
       <div class="buttons">
-        <el-button @click="requestToggleRecordState" v-if="!state.stopRecord" type="danger">
+        <el-button @click="toggleRecordState" v-if="!stopRecord" type="danger">
           <i class="icon-stop" />
           <span>停止</span>
         </el-button>
-        <el-button @click="requestToggleRecordState" v-else type="primary" icon="caret-right">记录</el-button>
+        <el-button @click="toggleRecordState" v-else type="primary" icon="caret-right">记录</el-button>
         <el-button icon="delete" @click="requestClear">清空</el-button>
       </div>
       <div class="filter-input">
-        <el-input v-model="filter" placeholder="记录过滤条件" icon="search"></el-input>
+        <el-input v-model="filter" placeholder="设置过滤条件" icon="search"></el-input>
       </div>
     </div>
     <div class="monitor">
-      <record-table @select="setCurrentRowIndex"></record-table>
-      <record-detail @close="setCurrentRowIndex(null)"></record-detail>
+      <record-table @select="setSelectId"></record-table>
+      <record-detail @close="setSelectId('')"></record-detail>
     </div>
   </div>
 </template>
-<script>
+
+<script lang="ts">
 import _ from 'lodash';
 import url from 'url';
 import io from 'socket.io-client';
-import RecordTable from './components/RecordTable';
-import RecordDetail from './components/RecordDetail';
+import RecordTable from './components/RecordTable/index.vue';
+import RecordDetail from './components/RecordDetail/index.vue';
 import * as trafficApi from './api';
+import { Component, Watch } from 'vue-property-decorator';
+import Vue from 'vue';
+import { State, Getter, Action, Mutation } from 'vuex-class';
+import { IRecord } from '@core/types/http-traffic';
+import { IRecordMap } from './store';
 
-export default {
+@Component({
   components: {
     'record-table': RecordTable,
     'record-detail': RecordDetail,
   },
-  data() {
-    return {
-      isDataCenter: true, // 当前选择的记录
-      recordMap: {}, // 当前所有记录
-      originRecordArray: [], // 原始记录数组 存放记录id
-      filterdRecordArray: [], // 过滤后的数组 存放记录id
-      selectId: '', //当前选择的记录
-      rightClickId: '', // 右击的id
-      currentRequestBody: '', // 选择记录的请求body
-      currentResponseBody: '', // 选择记录的响应body
-      requestingClear: false, // 请求清除记录
-      state: {
-        stopRecord: false, // 停止记录
-        overflow: false, // 达到最大记录数显示
-      },
-      filter: '',
-    };
-  },
-  computed: {
-    total() {
-      return this.filterdRecordArray.length;
-    },
-    hasCurrent() {
-      return !!this.recordMap[this.selectId];
-    },
-    currentRow() {
-      return this.recordMap[this.selectId];
-    },
-    rightClickRow() {
-      return this.recordMap[this.rightClickId];
-    }, // 原始请求的header键值对
-    originRequestHeader() {
-      try {
-        return this.currentRow.originRequest.headers;
-      } catch (e) {
-        return {};
-      }
-    },
-    originRequestCookie() {
-      try {
-        return trafficApi.parseCookie(this.currentRow.originRequest.headers.cookie || '');
-      } catch (e) {
-        return {};
-      }
-    },
-    originRequestQueryParams() {
-      try {
-        return trafficApi.parseQuery(this.currentRow.originRequest.path);
-      } catch (e) {
-        return {};
-      }
-    }, // 当前请求的header键值对
-    requestHeader() {
-      try {
-        return this.currentRow.requestData.headers;
-      } catch (e) {
-        return {};
-      }
-    },
-    requestCookie() {
-      try {
-        return trafficApi.parseCookie(this.currentRow.requestData.headers.cookie || '');
-      } catch (e) {
-        return {};
-      }
-    },
-    requestQueryParams() {
-      try {
-        return trafficApi.parseQuery(this.currentRow.requestData.path);
-      } catch (e) {
-        return {};
-      }
-    },
+})
+export default class App extends Vue {
+  @State
+  selectId: string;
+  @State
+  recordMap: {
+    [id: string]: IRecord;
+  };
+  @State
+  filteredIds: number[];
 
-    responseHeader() {
-      try {
-        let headers = Object.assign({}, this.currentRow.response.headers);
-        delete headers['set-cookie'];
-        return headers;
-      } catch (e) {
-        return {};
-      }
-    },
-    responseHeaderList() {
-      try {
-        const headers = Object.assign({}, this.currentRow.response.headers);
-        const setCookie = headers['set-cookie'];
-        delete headers['set-cookie'];
-        return Object.keys(headers)
-          .map(key => [key, headers[key]])
-          .concat(setCookie.map(scValue => ['set-cookie', scValue]));
-      } catch (e) {
-        return {};
-      }
-    },
-    setCookies() {
-      try {
-        return this.currentRow.response.headers['set-cookie'] || [];
-      } catch (e) {
-        return [];
-      }
-    },
+  @Getter
+  hasCurrent: boolean;
+  @Getter
+  currentRow: IRecord;
 
-    timeline() {
-      return {
-        请求: '',
-      };
-    },
-  },
-  methods: {
-    /**
-     * 切换监听或停止状态
-     */
-    requestToggleRecordState() {
-      this.state.stopRecord = !this.state.stopRecord;
-      trafficApi.setStopRecord(this.state.stopRecord);
-    },
-    /**
-     * 清空记录
-     */
-    requestClear() {
-      this.requestingClear = true;
-      this.clear();
-      trafficApi.clear();
-    },
-    /**
-     * 根据条件过滤记录
-     */
-    filterRecords() {
-      let filtered = [];
-      this.originRecordArray.forEach(id => {
-        let r = this.recordMap[id];
-        let originRequest = r.originRequest;
-        if (originRequest && originRequest.href.includes(this.filter)) {
-          filtered.push(r.id);
-        }
-      });
-      this.filterdRecordArray = filtered;
-    },
-    receiveTraffic(rows) {
-      if (this.state.stopRecord || this.requestingClear) return;
-      _.forEach(rows, row => {
-        let id = row.id;
-        let hasRecieved = !!this.recordMap[id];
-        let record = this.recordMap[id] || {};
-        Object.assign(record, row);
+  filter: string = ''; // 过滤字段
+  stopRecord: boolean = false; // 停止记录
+  requestingClear: boolean = false; // 正在请求清除记录
 
-        this.$set(this.recordMap, id, record);
+  /**
+   * 切换监听或停止状态
+   */
+  toggleRecordState() {
+    this.stopRecord = !this.stopRecord;
+  }
 
-        if (!hasRecieved) {
-          this.originRecordArray.push(id);
-        }
-        // 根据host、path进行过滤
-        let originRequest = row.originRequest;
-        if (originRequest && originRequest.href.includes(this.filter)) {
-          this.filterdRecordArray.push(id);
-        }
-      });
-    },
-    async setCurrentRowIndex(id) {
-      if (this.selectId == id) return;
-      this.selectId = id;
-      this.currentRequestBody = '';
-      this.currentResponseBody = '';
-      let currentRow = this.recordMap[id];
-      if (!currentRow) {
-        return;
+  /**
+   * 清空记录
+   */
+  requestClear() {
+    this.requestingClear = true;
+    this.clear();
+    trafficApi.clear();
+  }
+
+  /**
+   * 根据条件过滤记录
+   */
+  filterRecords = _.debounce(() => {
+    let filteredIds: number[] = [];
+    Object.keys(this.recordMap).forEach(id => {
+      const r = this.recordMap[id];
+      if (r.request.originUrl.includes(this.filter)) {
+        filteredIds.push(r.id);
       }
-      if (currentRow.originRequest.method === 'POST') {
-        // 请求后端 拿数据
-        this.currentRequestBody = await trafficApi.getRequestBody(id);
+    });
+    this.setFilteredIds(filteredIds);
+  }, 1000);
+
+  /**
+   * 接收 node 端的记录信息
+   */
+  receiveTrafficRecords(records: IRecord[]) {
+    if (this.stopRecord || this.requestingClear) return;
+    _.forEach(records, record => {
+      const id = record.id;
+      const hasRecieved = !!this.recordMap[id];
+
+      this.modifyRecordMap({ id, record: hasRecieved ? { ...this.recordMap[id], ...record } : record });
+
+      // 根据host、path进行过滤
+      const request = record.request;
+      console.log(request);
+      if (request && request.originUrl.includes(this.filter)) {
+        this.addFilteredId(id);
       }
-      // 如果是html json数据 向后端请求拿数据
-      try {
-        if (/(text)|(javascript)|(json)/i.test(currentRow.response.headers['content-type'])) {
-          // 请求后端 拿数据
-          this.currentResponseBody = await trafficApi.getResponseBody(id);
-        }
-      } catch (e) {
-        console.log(e);
-      }
-    },
-    setRightClickedRecordId(id) {
-      this.rightClickId = id;
-    },
-    setFilter(filter) {
-      this.filter = filter;
-    },
-    setState(state) {
-      this.state = state;
-    },
-    clear() {
-      this.recordMap = {};
-      this.originRecordArray = [];
-      this.filterdRecordArray = [];
-      this.currentRequestBody = '';
-      this.currentResponseBody = '';
-    },
-  },
-  watch: {
-    // 监听过滤器变化
-    filter: {
-      handler: _.debounce(function() {
-        // 过滤
-        this.filterRecords();
-        trafficApi.setFilter(this.filter);
-      }, 1000),
-      deep: true,
-    },
-  },
+    });
+  }
+
+  @Mutation
+  setRecordMap: (recordMap: IRecordMap) => void;
+  @Mutation
+  modifyRecordMap: (payload: { id: number; record: IRecord }) => void;
+  @Mutation
+  setSelectId: (id: string) => void;
+
+  @Mutation
+  setFilteredIds: (ids: number[]) => void;
+  @Mutation
+  addFilteredId: (id: number) => void;
+
+  @Mutation
+  clear: () => void;
+
+  // 监听过滤器变化
+  @Watch('filter', {
+    immediate: false,
+  })
+  onFilterChanged(val: string, oldVal: string) {
+    // 过滤
+    this.filterRecords();
+  }
+
   created() {
-    let socket = io('/httptrafic');
-    socket.on('rows', this.receiveTraffic);
-    socket.on('filter', filter => {
-      this.setFilter(filter);
-    });
-    socket.on('state', this.setState);
-    socket.on('clear', () => {
-      this.requestingClear = false;
-      this.clear();
-    });
-  },
-};
+    let socket = io('/http-trafic');
+    socket.on('records', this.receiveTrafficRecords);
+  }
+}
 </script>
 
 <style lang="scss" scoped>

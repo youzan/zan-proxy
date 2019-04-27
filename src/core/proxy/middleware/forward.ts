@@ -1,11 +1,10 @@
+import { IProxyContext, IProxyMiddleware } from '@core/types/proxy';
+import { supportBrotli } from '@core/utils';
 import http from 'http';
 import https, { RequestOptions } from 'https';
 import { isNull, isUndefined } from 'lodash';
 import { Service } from 'typedi';
 import URL from 'url';
-
-import { IProxyContext, IProxyMiddleware } from '@core/types/proxy';
-import { supportBrotli } from '@core/utils';
 
 @Service()
 export class ForwarderMiddleware implements IProxyMiddleware {
@@ -37,12 +36,13 @@ export class ForwarderMiddleware implements IProxyMiddleware {
       const client = options.protocol && options.protocol.startsWith('https') ? https : http;
 
       // fix request headers
+      // 插件修改 req.body 后，以插件提供的 body 为请求体内容，重新设置 content-length header
       if (req.body && req.body.length) {
         options.headers['content-length'] = req.body.length;
       }
 
+      // node 版本（v11.14.0以下）不支持 brolti 算法，需要将 br 从 accept-encoding 中删除
       if (!supportBrotli) {
-        // decode暂不支持 brolti 算法
         options.headers['accept-encoding'] = 'gzip, deflate';
       }
 

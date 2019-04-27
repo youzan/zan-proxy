@@ -16,5 +16,6 @@ export function fillReqUrl(req: http.IncomingMessage, protocal: ISupportProtocal
   if (protocal.includes('ws')) {
     urlStr = urlStr.replace(/(wss?:)/, '$1//');
   }
+  req._proxyOriginUrl = urlStr;
   req.url = urlStr;
 }

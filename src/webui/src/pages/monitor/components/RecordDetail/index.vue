@@ -1,36 +1,47 @@
 <template>
-  <div class="record-detail" :class="{ show: $dc.hasCurrent }">
+  <div class="record-detail" :class="{ show: hasCurrent }">
     <span class="close-button" @click="$emit('close')">
       <i class="el-icon-close"></i>
     </span>
-    <el-tabs v-model="activeName" type="border-card" v-if="$dc.hasCurrent">
+    <el-tabs v-model="activeName" type="border-card" v-if="hasCurrent">
       <el-tab-pane label="Request" name="Request">
-        <request></request>
+        <request :requestBody="requestBody"></request>
       </el-tab-pane>
       <el-tab-pane label="Response" name="Response">
-        <response></response>
+        <response :responseBody="responseBody"></response>
       </el-tab-pane>
     </el-tabs>
   </div>
 </template>
 
-<script>
-import Request from './Request';
-import Response from './Response';
-export default {
+<script lang="ts">
+import Vue from 'vue';
+import { Prop, Emit, Component } from 'vue-property-decorator';
+
+import Request from './Request.vue';
+import Response from './Response.vue';
+import { IRecord } from '@core/types/http-traffic';
+import { Getter } from 'vuex-class';
+
+@Component({
   components: {
     request: Request,
     response: Response,
   },
-  data() {
-    return {
-      activeName: 'Request',
-    };
-  },
-};
+})
+export default class RecordDetail extends Vue {
+  @Getter
+  hasCurrent: boolean;
+  @Getter
+  currentRow: IRecord;
+
+  requestBody: string;
+  responseBody: string;
+  activeName: string = 'Request';
+}
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .record-detail {
   background-color: #fff;
   height: 100%;
@@ -44,23 +55,18 @@ export default {
   transition: left 0.5s;
   overflow-y: auto;
   word-break: break-all;
-}
-.record-detail.show {
-  left: calc(100% - 600px);
-}
-.record-detail .close-button {
-  position: absolute;
-  top: 10px;
-  right: 30px;
-  z-index: 10;
-  cursor: pointer;
-  color: rgb(115, 115, 115);
-}
-.toggle-mode-button {
-  float: right;
-  color: #ccc;
-  font-size: 12px;
-  cursor: pointer;
-  margin-right: 15px;
+
+  &.show {
+    left: calc(100% - 600px);
+  }
+
+  .close-button {
+    position: absolute;
+    top: 10px;
+    right: 30px;
+    z-index: 10;
+    cursor: pointer;
+    color: rgb(115, 115, 115);
+  }
 }
 </style>
