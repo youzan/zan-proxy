@@ -4,7 +4,7 @@
   "description": "前端代理",
   "main": "./dist/main.js",
   "scripts": {
-    "dev:ui": "cd ./src/webui && yarn serve",
+    "dev:ui": "cd ./webui && yarn serve",
     "dev:cli": "rm -rf dist && NODE_ENV=development node .build/cli/dev-runner.js",
     "dev:gui": "rm -rf dist && NODE_ENV=development node .build/gui/dev-runner.js",
     "build:ui": "cd ./webui && yarn run build",

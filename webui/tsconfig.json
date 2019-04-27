@@ -3,7 +3,6 @@
     "target": "esnext",
     "module": "esnext",
     "strict": true,
-    "strictNullChecks": false,
     "lib": [
       "esnext",
       "dom",
@@ -25,13 +24,9 @@
     "emitDecoratorMetadata": true,
     "baseUrl": ".",
     "paths": {
-      "@core/*": ["../core/*"],
+      "@core/*": ["../src/core/*"],
       "@webui/*": ["./src/*"]
-    },
-    "types": [
-      "webpack-env",
-      "element-ui"
-    ]
+    }
   },
   "include": [
     "src/**/*.ts",

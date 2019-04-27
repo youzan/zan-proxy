@@ -1,6 +1,6 @@
 const path = require('path');
 
-const rootResolve = (...ps) => path.resolve(__dirname, '../../', ...ps);
+const rootResolve = (...ps) => path.resolve(__dirname, '../', ...ps);
 
 module.exports = {
   lintOnSave: false,
