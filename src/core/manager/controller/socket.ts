@@ -46,10 +46,6 @@ export class SocketController {
     this.httpTrafficService.on('records', records => {
       socket.emit('records', records);
     });
-    // 状态改变
-    this.httpTrafficService.on('state', state => {
-      socket.emit('state', state);
-    });
   }
 
   /**

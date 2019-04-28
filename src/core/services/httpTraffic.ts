@@ -10,11 +10,8 @@ import fs from 'fs-extra';
 import path from 'path';
 import rimraf from 'rimraf';
 import { Service } from 'typedi';
-import { UrlWithStringQuery } from 'url';
 
 import { AppInfoService } from './appInfo';
-
-const MAX_LOG_COUNT = 500;
 
 @Service()
 export class HttpTrafficService extends EventEmitter {
@@ -35,15 +32,6 @@ export class HttpTrafficService extends EventEmitter {
 
   private trafficDir: string;
 
-  public get status(): ITrafficStatus {
-    return {
-      /**
-       * 是否超过最大记录数量
-       */
-      overflow: this.trafficIdPointer > MAX_LOG_COUNT,
-    };
-  }
-
   constructor(appInfoService: AppInfoService) {
     super();
     const proxyDataDir = appInfoService.proxyDataDir;
@@ -54,6 +42,13 @@ export class HttpTrafficService extends EventEmitter {
     setInterval(() => {
       this.sendCachedData();
     }, 2000);
+    this.clearTrafficDir();
+  }
+
+  /**
+   * 清空请求响应体存储目录
+   */
+  private clearTrafficDir() {
     try {
       rimraf.sync(this.trafficDir);
       fs.mkdirSync(this.trafficDir);
@@ -84,21 +79,11 @@ export class HttpTrafficService extends EventEmitter {
 
     // 获取当前ip
     const currentId = ++this.trafficIdPointer;
-
-    // 超过500个请求则不再记录
-    if (currentId > MAX_LOG_COUNT) {
-      return null;
-    }
-
-    if (currentId > MAX_LOG_COUNT) {
-      const state = this.status;
-      // 向监控窗推送通知
-      this.emit('state', state);
-    }
     return currentId;
   }
 
-  public resetTrafficId() {
+  public clear() {
+    this.clearTrafficDir();
     this.trafficIdPointer = 0;
   }
 
@@ -116,7 +101,7 @@ export class HttpTrafficService extends EventEmitter {
   public decMonitor() {
     this.monitorCount--;
     if (this.monitorCount === 0) {
-      this.resetTrafficId();
+      this.clear();
     }
   }
 
@@ -151,7 +136,9 @@ export class HttpTrafficService extends EventEmitter {
    */
   public async getRequestBody(trafficId: string | number) {
     const saveRequestPath = this.getRequestBodyPath(trafficId);
-    return await fs.readFile(saveRequestPath, { encoding: 'utf-8' });
+    if (await fs.pathExists(saveRequestPath)) {
+      return fs.readFile(saveRequestPath, { encoding: 'utf-8' });
+    }
   }
 
   /**
@@ -159,7 +146,9 @@ export class HttpTrafficService extends EventEmitter {
    */
   public async getResponseBody(trafficId: string | number) {
     const saveResponsePath = this.getResponseBodyPath(trafficId);
-    return await fs.readFile(saveResponsePath, { encoding: 'utf-8' });
+    if (await fs.pathExists(saveResponsePath)) {
+      return fs.readFile(saveResponsePath, { encoding: 'utf-8' });
+    }
   }
 
   /**

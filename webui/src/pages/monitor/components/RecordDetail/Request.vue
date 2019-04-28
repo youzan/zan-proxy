@@ -1,41 +1,44 @@
 <template>
   <el-collapse v-model="activeNames">
+    <!-- basic info -->
     <el-collapse-item title="General" name="general">
-      <div>
-        <kv k="Request URL" :v="parsedOriginUrl.href">
-          <a
-            class="copy-as-curl"
-            v-clipboard:copy="curl"
-            v-clipboard:success="onCopySuccess"
-            v-clipboard:error="onCopyFail"
-            >Copy as cURL</a
-          >
-        </kv>
-        <kv k="Request Method" :v="currentRecord.request.method || '-'"></kv>
-        <kv k="Protocol" :v="protocol"></kv>
-        <kv k="HTTP Version" :v="currentRecord.request.httpVersion || '-'"></kv>
-      </div>
+      <kv k="Request URL" :v="parsedOriginUrl.href">
+        <el-link
+          type="primary"
+          class="copy-as-curl"
+          v-clipboard:copy="curl"
+          v-clipboard:success="onCopySuccess"
+          v-clipboard:error="onCopyFail"
+          >Copy as cURL
+        </el-link>
+      </kv>
+      <kv k="Request Method" :v="currentRecord.request.method || '-'"></kv>
+      <kv k="Protocol" :v="protocol"></kv>
+      <kv k="HTTP Version" :v="currentRecord.request.httpVersion || '-'"></kv>
     </el-collapse-item>
+
+    <!-- request headers -->
     <el-collapse-item title="Headers" name="headers">
-      <div>
-        <kv v-for="(value, key) in requestHeader" :k="key" :v="value" :key="key"></kv>
-      </div>
+      <kv v-for="(value, key) in requestHeader" :k="key" :v="value" :key="key"></kv>
     </el-collapse-item>
+
+    <!-- request query -->
     <el-collapse-item name="query" v-if="Object.keys(requestQueryParams).length">
       <template slot="title">
         Query
-        <span class="query-mode-toggle" @click="toggleQueryMode">
-          <span v-if="queryMode === 'parsed'">View Source</span>
-          <span v-else>View Parsed</span>
-        </span>
+        <el-link class="query-mode-toggle" @click="toggleQueryMode">
+          {{ queryMode === 'parsed' ? 'View Source' : 'View Parsed' }}
+        </el-link>
       </template>
       <div v-if="queryMode === 'parsed'">
         <kv v-for="(value, key) in requestQueryParams" :k="key" :v="value" :key="key"></kv>
       </div>
       <div v-else>{{ parsedOriginUrl.query }}</div>
     </el-collapse-item>
-    <el-collapse-item title="Body" name="body" v-loading="bodyLoading" v-if="requestBody">{{
-      requestBody || ''
+
+    <!-- request body -->
+    <el-collapse-item title="Body" name="body" v-if="requestBody" v-loading="bodyLoading">{{
+      requestBody
     }}</el-collapse-item>
   </el-collapse>
 </template>
@@ -122,7 +125,9 @@ export default class Request extends Vue {
 .copy-as-curl {
   cursor: pointer;
   margin-left: 15px;
-  color: #20a0ff;
+  font-size: 13px;
+  line-height: 18px;
+  vertical-align: text-bottom;
 }
 
 .query-mode-toggle {
@@ -130,6 +135,7 @@ export default class Request extends Vue {
   color: #ccc;
   font-size: 12px;
   cursor: pointer;
-  margin-right: 15px;
+  line-height: 100%;
+  margin-left: 15px;
 }
 </style>

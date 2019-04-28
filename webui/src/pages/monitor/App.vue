@@ -65,10 +65,11 @@ export default class App extends Vue {
   /**
    * 清空记录
    */
-  requestClear() {
+  async requestClear() {
     this.requestingClear = true;
     this.clear();
-    trafficApi.clear();
+    await trafficApi.clear();
+    this.requestingClear = false;
   }
 
   /**

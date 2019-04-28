@@ -68,8 +68,7 @@ import { Getter, State } from 'vuex-class';
 import { getStatusText } from 'http-status-codes';
 import prettyTime from 'prettytime';
 
-import prettySize from './prettySize';
-import { getContextTypeText } from '../../utils';
+import { getContextTypeText, prettySize } from '../../utils';
 import { IRecordMap, IClientRecord } from '../../types';
 
 @Component
@@ -111,7 +110,7 @@ export default class RecordTable extends Vue {
         statusText: response && getStatusText(response.statusCode),
         contentType: response && response.headers['content-type'],
         contentTypeText: response && getContextTypeText(response.headers['content-type'] as string),
-        size: response && prettySize({ size: parseInt(response.headers['content-length'] as string) || 0 }),
+        size: response && prettySize({ size: parseInt(response.headers['content-length'] as string) }),
         duration:
           response && prettyTime(response.timeTrack.finishRequest - response.timeTrack.receiveRequest, { short: true }),
       };

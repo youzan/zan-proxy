@@ -60,6 +60,10 @@ export default class RecordDetail extends Vue {
 
   @Watch('currentRecord')
   fetchRecordBody() {
+    if (!this.currentRecord) {
+      return;
+    }
+
     const { id, request } = this.currentRecord;
     if (request.method === 'POST') {
       this.fetchRequestBody(id);

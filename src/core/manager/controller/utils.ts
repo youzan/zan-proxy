@@ -1,10 +1,9 @@
+import { RuleFile } from '@core/types/rule';
 import fs from 'fs-extra';
 import { Context } from 'koa';
 import path from 'path';
 import { Controller, Ctx, Get } from 'routing-controllers';
 import { Inject, Service } from 'typedi';
-
-import { RuleFile } from '@core/types/rule';
 
 import { AppInfoService, HostService, RuleService } from '../../services';
 
@@ -75,7 +74,7 @@ export class UtilsController {
                           ${matchScripts.join('\n')}
                           return direct;\n\
                      }`;
-    ctx.set('Content-Type', 'application/x-javascript-config');
+    ctx.set('Content-Type', 'application/x-ns-proxy-autoconfig');
     return pac;
   }
 }
