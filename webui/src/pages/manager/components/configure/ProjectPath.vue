@@ -23,7 +23,7 @@
         <template v-slot="scope">
           <el-button
             type="danger"
-            icon="delete"
+            icon="el-icon-delete"
             size="mini"
             @click="deleteParam(scope.row, scope.$index, projectPathArray)"
           />

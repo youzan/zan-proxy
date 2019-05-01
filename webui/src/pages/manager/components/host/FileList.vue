@@ -20,14 +20,14 @@
       <el-table-column label="操作" :width="136" :context="_self">
         <template v-slot="scope">
           <a class="link-btn" :href="'#/edithost?name=' + scope.row.name">
-            <el-button type="info" icon="edit" size="mini"></el-button>
+            <el-button type="info" icon="el-icon-edit" size="mini"></el-button>
           </a>
           <a class="link-btn" :href="'/host/download?name=' + scope.row.name" target="_blank">
-            <el-button type="info" icon="share" size="mini"></el-button>
+            <el-button type="info" icon="el-icon-share" size="mini"></el-button>
           </a>
           <el-button
             type="danger"
-            icon="delete"
+            icon="el-icon-delete"
             size="mini"
             @click="onDeleteFile(scope.row, scope.$index, user_list)"
           />

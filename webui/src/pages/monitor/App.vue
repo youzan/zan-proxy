@@ -48,8 +48,6 @@ export default class App extends Vue {
 
   @Getter
   hasCurrent: boolean;
-  @Getter
-  currentRow: IRecord;
 
   filter: string = ''; // 过滤字段
   stopRecord: boolean = false; // 停止记录

@@ -3,7 +3,7 @@
     <el-collapse-item title="General" name="general">
       <div>
         <key-value k="Status Code" :v="status"></key-value>
-        <key-value k="Response size" :v="currentRecord.response.size"></key-value>
+        <key-value k="Response size" :v="size"></key-value>
         <key-value v-if="duration" k="Duration" :v="duration"></key-value>
       </div>
     </el-collapse-item>

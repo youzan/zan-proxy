@@ -3,7 +3,7 @@
     <!-- 顶部导航 -->
     <header class="head-nav">
       <span class="dropdown-label">Host 设置：</span>
-      <el-dropdown menu-align="start" :hide-on-click="false" @command="selectHostFile">
+      <el-dropdown :hide-on-click="false" @command="selectHostFile">
         <el-button type="text">
           {{ hostState ? selectedHost.join('，') : '禁用' }}
           <i class="el-icon-caret-bottom el-icon--right" />
@@ -34,7 +34,7 @@
                 </el-switch>
       </span>-->
       <span class="dropdown-label">请求转发：</span>
-      <el-dropdown :hide-on-click="false" menu-align="start" @command="selectRuleFile">
+      <el-dropdown :hide-on-click="false" @command="selectRuleFile">
         <el-button type="text">
           {{ ruleState ? selectedRuleFiles.join('，') : '禁用' }}
           <i
@@ -508,7 +508,7 @@ export default {
 
 <style lang="scss">
 .el-dropdown-menu {
-  max-height: 500px;
+  max-height: 400px;
   overflow-y: auto;
 }
 .dropdown-label {

@@ -48,34 +48,34 @@
         <template v-slot="scope">
           <div class="actions-container">
             <el-tooltip class="item" effect="dark" content="编辑" placement="left">
-              <el-button icon="edit" size="mini" type="primary" @click="dialogEdit(scope.row.key)"></el-button>
+              <el-button icon="el-icon-edit" size="mini" type="primary" @click="dialogEdit(scope.row.key)" />
             </el-tooltip>
             <el-tooltip class="item" effect="dark" content="删除" placement="top">
               <el-button
                 type="danger"
-                icon="delete"
+                icon="el-icon-delete"
                 size="mini"
                 @click="onDeleteRow(scope.row, scope.$index, filecontent.content)"
-              ></el-button>
+              />
             </el-tooltip>
             <el-tooltip class="item" effect="dark" content="复制" placement="left">
               <el-button
-                icon="document"
+                icon="el-icon-document"
                 size="mini"
                 @click="onDuplicateRow(scope.row, scope.$index, filecontent.content)"
-              ></el-button>
+              />
             </el-tooltip>
             <el-tooltip class="item" effect="dark" content="测试规则" placement="left">
-              <el-button type="blue" icon="search" size="mini" @click="testMatchRuleRequest(scope.row)"></el-button>
+              <el-button type="blue" icon="el-icon-search" size="mini" @click="testMatchRuleRequest(scope.row)" />
             </el-tooltip>
             <el-tooltip class="item" effect="dark" content="提高优先级" placement="left">
               <el-button
                 type="blue"
-                icon="caret-top"
+                icon="el-icon-caret-top"
                 size="mini"
                 :disabled="scope.$index === 0"
                 @click="onMoveUpRule(scope.$index)"
-              ></el-button>
+              />
             </el-tooltip>
           </div>
         </template>

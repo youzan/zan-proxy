@@ -30,12 +30,17 @@ body {
 
   .el-dropdown {
     margin-right: 30px;
+    display: inline;
   }
 
   .el-button--small {
     padding: 9px 12px;
     border-radius: 3px;
   }
+}
+
+.el-button--mini {
+  padding: 4px 8px;
 }
 
 .left-fixed-right-auto {
@@ -51,6 +56,7 @@ body {
 
 .main-content {
   padding: 102px 40px 40px;
+  min-height: 100%;
   background-color: #fff;
 
   &__title {
@@ -80,47 +86,6 @@ body {
     height: 22px;
     border: none;
     background-color: #ff4949;
-  }
-
-  .el-table {
-    border: none;
-    background-color: transparent;
-
-    &__body-wrapper {
-      table {
-        border-spacing: 0 8px;
-      }
-    }
-
-    & &__row {
-      color: #455a64;
-
-      &:hover {
-        > td {
-          background-color: #fff;
-        }
-      }
-
-      td:first-of-type {
-        color: #4b5265;
-        font-weight: bold;
-      }
-    }
-
-    &::before,
-    &::after {
-      display: none;
-    }
-
-    th.is-leaf,
-    td {
-      border: none;
-    }
-
-    .cell {
-      padding-top: 5px;
-      padding-bottom: 5px;
-    }
   }
 }
 

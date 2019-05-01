@@ -9,7 +9,7 @@
     </div>
     <div class="footer">
       <el-dropdown @command="onSetDisabled">
-        <el-button type="primary" icon="setting" @click="e => e.stopPropagation()">
+        <el-button type="primary" icon="el-icon-setting" @click="e => e.stopPropagation()">
           {{ disabledText }}
         </el-button>
         <el-dropdown-menu slot="dropdown">
@@ -23,7 +23,7 @@
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
-      <el-button type="danger" icon="delete" @click="onDelete">卸载</el-button>
+      <el-button type="danger" icon="el-icon-delete" @click="onDelete">卸载</el-button>
     </div>
   </div>
 </template>

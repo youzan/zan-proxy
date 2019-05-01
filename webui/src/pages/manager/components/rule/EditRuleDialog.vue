@@ -24,10 +24,10 @@
         <div class="action-container" v-for="(action, index) in rule.actionList" :key="index">
           <action-detail :action="action" />
           <el-tooltip class="item" effect="dark" content="删除" placement="right">
-            <el-button type="danger" icon="minus" size="mini" @click="removeAction(index)"> </el-button>
+            <el-button type="danger" icon="el-icon-minus" size="mini" @click="removeAction(index)"> </el-button>
           </el-tooltip>
         </div>
-        <el-button type="primary" icon="plus" size="mini" @click="addAction">
+        <el-button type="primary" icon="el-icon-plus" size="mini" @click="addAction">
           添加请求动作
         </el-button>
       </el-form-item>
