@@ -17,10 +17,10 @@
 <script lang="ts">
 import Vue from 'vue';
 import { Prop, Emit, Component, Watch } from 'vue-property-decorator';
+import { Getter } from 'vuex-class';
 
 import Request from './Request.vue';
 import Response from './Response.vue';
-import { Getter } from 'vuex-class';
 import { IClientRecord } from '../../types';
 import * as api from '../../api';
 
@@ -60,6 +60,9 @@ export default class RecordDetail extends Vue {
 
   @Watch('currentRecord')
   fetchRecordBody() {
+    this.requestBody = '';
+    this.responseBody = '';
+
     if (!this.currentRecord) {
       return;
     }

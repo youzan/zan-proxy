@@ -2,7 +2,7 @@
   <el-collapse v-model="activeNames">
     <!-- basic info -->
     <el-collapse-item title="General" name="general">
-      <kv k="Request URL" :v="parsedOriginUrl.href">
+      <key-value k="Request URL" :v="parsedOriginUrl.href">
         <el-link
           type="primary"
           class="copy-as-curl"
@@ -11,35 +11,33 @@
           v-clipboard:error="onCopyFail"
           >Copy as cURL
         </el-link>
-      </kv>
-      <kv k="Request Method" :v="currentRecord.request.method || '-'"></kv>
-      <kv k="Protocol" :v="protocol"></kv>
-      <kv k="HTTP Version" :v="currentRecord.request.httpVersion || '-'"></kv>
+      </key-value>
+      <key-value k="Request Method" :v="currentRecord.request.method || '-'"></key-value>
+      <key-value k="Protocol" :v="protocol"></key-value>
+      <key-value k="HTTP Version" :v="currentRecord.request.httpVersion || '-'"></key-value>
     </el-collapse-item>
 
     <!-- request headers -->
     <el-collapse-item title="Headers" name="headers">
-      <kv v-for="(value, key) in requestHeader" :k="key" :v="value" :key="key"></kv>
+      <key-value v-for="(value, key) in requestHeader" :k="key" :v="value" :key="key"></key-value>
     </el-collapse-item>
 
     <!-- request query -->
     <el-collapse-item name="query" v-if="Object.keys(requestQueryParams).length">
       <template slot="title">
         Query
-        <el-link class="query-mode-toggle" @click="toggleQueryMode">
+        <el-link class="mode-toggle" @click="toggleQueryMode">
           {{ queryMode === 'parsed' ? 'View Source' : 'View Parsed' }}
         </el-link>
       </template>
       <div v-if="queryMode === 'parsed'">
-        <kv v-for="(value, key) in requestQueryParams" :k="key" :v="value" :key="key"></kv>
+        <key-value v-for="(value, key) in requestQueryParams" :k="key" :v="value" :key="key"></key-value>
       </div>
       <div v-else>{{ parsedOriginUrl.query }}</div>
     </el-collapse-item>
 
     <!-- request body -->
-    <el-collapse-item title="Body" name="body" v-if="requestBody" v-loading="bodyLoading">{{
-      requestBody
-    }}</el-collapse-item>
+    <body-collapse-item :loading="bodyLoading" :body="requestBody" :contentType="contentType" />
   </el-collapse>
 </template>
 
@@ -49,6 +47,8 @@ import url from 'url';
 import qs from 'querystring';
 import { Component, Prop } from 'vue-property-decorator';
 import KeyValue from './KeyValue.vue';
+import BodyCollapseItem from './BodyCollapseItem.vue';
+import _get from 'lodash/get';
 import { makeCurl } from '../../utils';
 import { IClientRecord } from '../../types';
 import { Getter } from 'vuex-class';
@@ -56,12 +56,14 @@ import { Message } from 'element-ui';
 
 @Component({
   components: {
-    kv: KeyValue,
+    KeyValue,
+    BodyCollapseItem,
   },
 })
 export default class Request extends Vue {
   activeNames = ['general', 'headers', 'query', 'body'];
   queryMode = 'parsed';
+  bodyMode = 'parsed';
 
   @Getter
   currentRecord: IClientRecord;
@@ -106,9 +108,18 @@ export default class Request extends Vue {
     }
   }
 
+  get contentType() {
+    return _get(this.currentRecord.request, "headers['content-type']", '');
+  }
+
   toggleQueryMode(e: MouseEvent) {
     e.stopPropagation();
     this.queryMode = this.queryMode === 'parsed' ? 'raw' : 'parsed';
+  }
+
+  toggleBodyMode(e: MouseEvent) {
+    e.stopPropagation();
+    this.bodyMode = this.bodyMode === 'parsed' ? 'raw' : 'parsed';
   }
 
   onCopySuccess() {
@@ -130,7 +141,7 @@ export default class Request extends Vue {
   vertical-align: text-bottom;
 }
 
-.query-mode-toggle {
+.mode-toggle {
   float: right;
   color: #ccc;
   font-size: 12px;

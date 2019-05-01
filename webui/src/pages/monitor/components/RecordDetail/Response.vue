@@ -2,46 +2,36 @@
   <el-collapse v-model="activeNames">
     <el-collapse-item title="General" name="general">
       <div>
-        <kv k="Status Code" :v="status"></kv>
-        <kv k="Response size" :v="currentRecord.response.size"></kv>
-        <kv v-if="duration" k="Duration" :v="duration"></kv>
+        <key-value k="Status Code" :v="status"></key-value>
+        <key-value k="Response size" :v="currentRecord.response.size"></key-value>
+        <key-value v-if="duration" k="Duration" :v="duration"></key-value>
       </div>
     </el-collapse-item>
     <el-collapse-item title="Headers" name="headers">
-      <kv v-for="(item, index) in responseHeaderList" :k="item[0]" :v="item[1]" :key="index"></kv>
+      <key-value v-for="(item, index) in responseHeaderList" :k="item[0]" :v="item[1]" :key="index"></key-value>
     </el-collapse-item>
-    <el-collapse-item name="body" v-loading="bodyLoading" v-if="responseBody">
-      <template slot="title">
-        Body
-        <el-link class="body-mode-toggle" @click="toggleBodyMode">
-          {{ bodyMode === 'parsed' ? 'View Source' : 'View Parsed' }}
-        </el-link>
-      </template>
-      <json-tree v-if="bodyMode === 'parsed' && contentType.includes('json')" :data="responseBody"></json-tree>
-      <div v-else>{{ responseBody }}</div>
-    </el-collapse-item>
+    <body-collapse-item :loading="bodyLoading" :body="responseBody" :contentType="contentType" />
   </el-collapse>
 </template>
 
 <script lang="ts">
 import { Component, Prop } from 'vue-property-decorator';
-// @ts-ignore
-import JsonTree from 'vue-json-tree';
 import { getStatusText } from 'http-status-codes';
 import { Getter } from 'vuex-class';
 import _get from 'lodash/get';
 import Vue from 'vue';
 import prettyTime from 'prettytime';
 
+import BodyCollapseItem from './BodyCollapseItem.vue';
 import KeyValue from './KeyValue.vue';
 import { IClientRecord } from '../../types';
 
-import { getContextTypeText, prettySize } from '../../utils';
+import { prettySize } from '../../utils';
 
 @Component({
   components: {
-    kv: KeyValue,
-    'json-tree': JsonTree,
+    KeyValue,
+    BodyCollapseItem,
   },
 })
 export default class Response extends Vue {
@@ -60,14 +50,12 @@ export default class Response extends Vue {
     try {
       const headers = Object.assign({}, this.currentRecord.response && this.currentRecord.response.headers);
       const setCookie = headers['set-cookie'] as string[];
-      console.log(headers);
       const normalHeaders = Object.keys(headers)
         .filter(key => key !== 'set-cookie')
         .map(key => [key, headers[key]]);
 
       return setCookie ? [...normalHeaders, ...setCookie.map(scValue => ['set-cookie', scValue])] : normalHeaders;
     } catch (e) {
-      console.log(e);
       return {};
     }
   }
@@ -92,19 +80,14 @@ export default class Response extends Vue {
     return response && prettySize({ size: parseInt(response.headers['content-length'] as string) });
   }
 
-  get contentType() {
-    return _get(this.currentRecord.response, "headers['content-type']");
-  }
-
-  toggleBodyMode(e: MouseEvent) {
-    e.stopPropagation();
-    this.bodyMode = this.bodyMode === 'parsed' ? 'raw' : 'parsed';
+  get contentType(): string {
+    return _get(this.currentRecord.response, "headers['content-type']", '');
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.body-mode-toggle {
+.mode-toggle {
   color: #ccc;
   font-size: 12px;
   cursor: pointer;
