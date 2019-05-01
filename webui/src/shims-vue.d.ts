@@ -19,6 +19,11 @@ declare module 'vue-clipboard2' {
   export default plugin;
 }
 
+declare module 'qrcode-js' {
+  const content: any;
+  export default content;
+}
+
 declare module 'prettytime' {
   interface IOptions {
     decimals: number;
