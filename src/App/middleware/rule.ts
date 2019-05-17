@@ -88,6 +88,7 @@ export const rule = ({
               httpsAgent: new https.Agent({ rejectUnauthorized: false })
             })
             ctx.res.body = res.data
+            ctx.res.headers = res.headers
             ctx.res.statusCode = res.status
           } else if (target.startsWith('http') || target.startsWith('ws')) {
             ctx.req.url = target;
