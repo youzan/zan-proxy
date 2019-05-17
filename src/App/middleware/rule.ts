@@ -1,4 +1,6 @@
 import fs from 'fs';
+import axios from 'axios';
+import https from 'https';
 import mime from 'mime-types';
 import URL from 'url';
 import { MockDataService, ProfileService, RuleService } from '../services';
@@ -78,7 +80,16 @@ export const rule = ({
             continue;
           }
           ctx.res.setHeader('zan-proxy-target', target);
-          if (target.startsWith('http') || target.startsWith('ws')) {
+          if (target.startsWith('https')) {
+            const res = await axios({
+              method: ctx.req.method,
+              url: target,
+              data: ctx.req.body,
+              httpsAgent: new https.Agent({ rejectUnauthorized: false })
+            })
+            ctx.res.body = res.data
+            ctx.res.statusCode = res.status
+          } else if (target.startsWith('http') || target.startsWith('ws')) {
             ctx.req.url = target;
           } else {
             const exists = await fsExists(target);
