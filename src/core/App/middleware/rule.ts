@@ -1,7 +1,8 @@
 import fs from 'fs';
+import axios from 'axios';
+import https from 'https';
 import mime from 'mime-types';
 import URL from 'url';
-import * as got from 'got';
 import { MockDataService, ProfileService, RuleService } from '../services';
 
 const fsExists = p => {
@@ -75,20 +76,16 @@ export const rule = ({
           ctx.res.setHeader('zan-proxy-target', target);
           // 先处理 https
           if (target.startsWith('https')) {
-            const gotRes = await got.get(target, {
+            const res = await axios({
+              method: ctx.req.method,
+              url: target,
+              data: ctx.req.body,
               // 忽略本地自签名证书授权
-              rejectUnauthorized: false,
-              throwHttpErrors: false,
-            });
-            // set response info
-            ctx.res.statusCode = gotRes.statusCode;
-            ctx.res.statusMessage = gotRes.statusMessage;
-            for (const headerName in gotRes.headers) {
-              if (gotRes.headers.hasOwnProperty(headerName)) {
-                ctx.res.setHeader(headerName, gotRes.headers[headerName]);
-              }
-            }
-            ctx.res.body = gotRes.body;
+              httpsAgent: new https.Agent({ rejectUnauthorized: false })
+            })
+            ctx.res.body = res.data
+            ctx.res.headers = res.headers
+            ctx.res.statusCode = res.status
           } else if (target.startsWith('http') || target.startsWith('ws')) {
             ctx.req.url = target;
           } else {
