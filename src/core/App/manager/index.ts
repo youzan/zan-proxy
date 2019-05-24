@@ -77,9 +77,9 @@ export class Manager {
     this._initManger();
   }
 
-  public listen(port) {
+  public listen(port, host?) {
     // 启动server
-    this.server.listen(port);
+    this.server.listen(port, host);
   }
 
   // http流量监控界面
