@@ -41,7 +41,7 @@ program
   .description('start ZanProxy server')
   .option('-p, --proxy_port [value]', 'set the proxy port')
   .option('-m, --manager_port [value]', 'set the manager server port')
-  .option('-mh, --manager_host [value]', 'set the manager server host')
+  .option('--manager_host [value]', 'set the manager server host')
   .option('--no-update', 'do not check if update available')
   .option('--no-sync', 'do not sync remote rules')
   .parse(process.argv);
