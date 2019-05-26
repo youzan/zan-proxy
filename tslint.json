@@ -1,11 +1,6 @@
 {
   "defaultSeverity": "error",
-  "extends": [
-    "tslint:recommended",
-    "tslint-react",
-    "tslint-config-prettier",
-    "tslint-eslint-rules"
-  ],
+  "extends": ["tslint:recommended", "tslint-react", "tslint-config-prettier", "tslint-eslint-rules"],
   "linterOptions": {
     "exclude": ["test/**/*.ts", "dist/**/*", "webui/**/*", "**/*.d.ts"]
   },
@@ -24,13 +19,7 @@
     ],
     "curly": true,
     "semicolon": [true, "always", "ignore-bound-class-methods"],
-    "quotemark": [
-      true,
-      "single",
-      "jsx-double",
-      "avoid-escape",
-      "avoid-template"
-    ],
+    "quotemark": [true, "single", "jsx-double", "avoid-escape", "avoid-template"],
     "arrow-parens": [true, "ban-single-arg-parens"],
     "trailing-comma": [
       true,
@@ -86,12 +75,7 @@
         "variable-declaration": "onespace"
       }
     ],
-    "variable-name": [
-      true,
-      "check-format",
-      "allow-pascal-case",
-      "allow-leading-underscore"
-    ],
+    "variable-name": [true, "check-format", "allow-pascal-case", "allow-leading-underscore"],
     "ter-max-len": [
       true,
       {

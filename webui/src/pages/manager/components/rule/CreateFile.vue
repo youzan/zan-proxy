@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import ruleApi from '../../../../api/rule';
+import * as ruleApi from '../../api/rule';
 export default {
   name: 'app',
   data() {

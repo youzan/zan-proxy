@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import profileApi from '../../../../api/profile';
+import * as profileApi from '../../api/profile';
 import forEach from 'lodash/forEach';
 
 export default {

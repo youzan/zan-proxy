@@ -14,17 +14,18 @@ export default class App {
   /**
    * 初始化应用
    */
-  public async init(proxyPort: number, managerPort: number) {
+  public async init(proxyPort: number, managerPort: number, managerHost: string) {
     const httpsProxyPort = await getPort({ port: 8989 });
     this.appInfoService.setAppInfo({
-      proxyPort,
+      managerHost,
       managerPort,
+      proxyPort,
       httpsProxyPort,
     });
     await this.proxy.init();
     await this.manager.init();
     this.proxy.ignore(`127.0.0.1:${managerPort}`);
-    this.proxy.ignore(`${this.appInfoService.appInfo.LANIp}:${managerPort}`);
+    this.proxy.ignore(`${this.appInfoService.appInfo.managerHost}:${managerPort}`);
   }
 
   /**
@@ -32,7 +33,10 @@ export default class App {
    */
   public start() {
     this.proxy.listen(this.appInfoService.appInfo.proxyPort);
-    this.manager.listen(this.appInfoService.appInfo.managerPort);
+    this.manager.listen(
+      this.appInfoService.appInfo.managerPort,
+      this.appInfoService.appInfo.managerHost,
+    );
     this.appInfoService.printRuntimeInfo();
   }
 }

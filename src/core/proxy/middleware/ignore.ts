@@ -16,7 +16,9 @@ export class IgnoreMiddleware implements IProxyMiddleware {
    * 添加 ignore 匹配条件
    */
   public addPattern(pattern: string) {
-    this.patterns.push(pattern);
+    if (!this.patterns.includes(pattern)) {
+      this.patterns.push(pattern);
+    }
   }
 
   /**

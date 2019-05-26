@@ -6,10 +6,10 @@ import path from 'path';
 import { Service } from 'typedi';
 
 export interface AppInfo {
+  managerHost: string;
   managerPort: number;
   proxyPort: number;
   httpsProxyPort: number;
-  LANIp: string;
 }
 
 // 用户home目录
@@ -24,7 +24,7 @@ export class AppInfoService extends EventEmitter {
     /**
      * 局域网 ip
      */
-    LANIp: ip.address(),
+    managerHost: ip.address(),
     proxyPort: 8001,
     httpsProxyPort: 8989,
     managerPort: 40001,
@@ -52,6 +52,6 @@ export class AppInfoService extends EventEmitter {
   public printRuntimeInfo() {
     console.log(`Config Dir: ${this.proxyDataDir}`);
     console.log(`Proxy Port: ${this.appInfo.proxyPort}`);
-    console.log(`Manager: http://${this.appInfo.LANIp}:${this.appInfo.managerPort}`);
+    console.log(`Manager: http://${this.appInfo.managerHost}:${this.appInfo.managerPort}`);
   }
 }

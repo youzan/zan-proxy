@@ -3,7 +3,7 @@
  */
 import axios from 'axios';
 
-export function saveFile(content) {
+export function saveFile(content: any) {
   return axios.post('/profile/savefile', content);
 }
 

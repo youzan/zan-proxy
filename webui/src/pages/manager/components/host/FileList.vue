@@ -37,7 +37,7 @@
   </div>
 </template>
 <script>
-import hostApi from '../../../../api/host';
+import * as hostApi from '../../api/host';
 import _ from 'lodash';
 
 export default {

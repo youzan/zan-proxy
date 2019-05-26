@@ -84,8 +84,8 @@ export class Manager {
     Container.get(SocketController).init(this.server);
   }
 
-  public listen(port: number) {
+  public listen(port: number, host: string) {
     // 启动server
-    this.server.listen(port);
+    this.server.listen(port, host);
   }
 }

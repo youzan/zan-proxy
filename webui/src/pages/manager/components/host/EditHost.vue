@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import hostApi from '../../../../api/host';
+import * as hostApi from '../../api/host';
 import forEach from 'lodash/forEach';
 export default {
   name: 'app',

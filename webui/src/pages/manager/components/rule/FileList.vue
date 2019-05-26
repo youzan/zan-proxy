@@ -77,7 +77,7 @@
   </div>
 </template>
 <script>
-import ruleApi from '../../../../api/rule';
+import * as ruleApi from '../../api/rule';
 import _ from 'lodash';
 export default {
   name: 'rulefilelist',

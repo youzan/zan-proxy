@@ -29,7 +29,7 @@ export class UtilsController {
    */
   @Get('/pac')
   public async pac(@Ctx() ctx: Context) {
-    const ip = this.appInfoService.appInfo.LANIp;
+    const ip = this.appInfoService.appInfo.managerHost;
     const port = this.appInfoService.appInfo.proxyPort;
 
     const matchScripts: string[] = [];

@@ -41,6 +41,7 @@ program
   .description('start ZanProxy server')
   .option('-p, --proxy_port [value]', 'set the proxy port')
   .option('-m, --manager_port [value]', 'set the manager server port')
+  .option('--manager_host [value]', 'set the manager server host')
   .option('--no-update', 'do not check if update available')
   .option('--no-sync', 'do not sync remote rules')
   .parse(process.argv);
@@ -55,8 +56,9 @@ async function run() {
     await syncHost();
   }
   const managerPort = program.manager_port || 40001;
-  const url = `http://${ip.address()}:${managerPort}`;
-  await start(program.proxy_port, program.manager_port);
+  const managerHost = program.manager_host || ip.address();
+  const url = `http://${managerHost}:${managerPort}`;
+  await start(program.proxy_port, program.manager_port, program.manager_host);
   open(url);
 }
 

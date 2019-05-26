@@ -112,13 +112,13 @@
 
 <script>
 import LeftMenu from './components/common/LeftMenu';
-import hostApi from '../../api/host';
-import ruleApi from '../../api/rule';
-import profileApi from '../../api/profile';
+import * as hostApi from './api/host';
+import * as ruleApi from './api/rule';
+import * as profileApi from './api/profile';
+import * as dataApi from './api/data';
 import Vue from 'vue';
 import $ from 'jquery';
 import _ from 'lodash';
-import dataApi from '../../api/data';
 import uuidV4 from 'uuid/v4';
 import CodeMirror from 'codemirror';
 import isJSON from 'is-json';

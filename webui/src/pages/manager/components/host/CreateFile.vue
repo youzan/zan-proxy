@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import hostApi from '../../../../api/host';
+import * as hostApi from '../../api/host';
 export default {
   name: 'app',
   data() {
