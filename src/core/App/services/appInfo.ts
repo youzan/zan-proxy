@@ -82,6 +82,16 @@ export class AppInfoService extends EventEmitter {
   }
 
   /**
+   * 设置真实的 ui host
+   * @param uiport
+   */
+  public setRealUiHost(uihost) {
+    this.setAppInfo({
+      pcIp: uihost,
+    });
+  }
+
+  /**
    * 真实的代理端口
    * @returns {string}
    */
