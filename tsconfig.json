@@ -1,10 +1,7 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "lib": [
-      "dom",
-      "esnext"
-    ],
+    "lib": ["dom", "esnext"],
     "jsx": "react",
     "moduleResolution": "node",
     "module": "esnext",
@@ -24,23 +21,11 @@
       "@cli/*": ["cli/*"],
       "@gui/*": ["gui/*"]
     },
-    "typeRoots": [
-      "./node_modules/@types",
-      "./src/gui/types",
-      "./src/gui/main/managers",
-      "./src/gui/plugins"
-    ],
+    "typeRoots": ["./node_modules/@types", "./src/gui/types", "./src/gui/main/managers", "./src/gui/plugins"],
     "sourceMap": true,
     "strictBindCallApply": true,
     "outDir": "./dist"
   },
-  "files": [
-    "src/global.d.ts"
-  ],
-  "include": [
-    "./src"
-  ],
-  "exclude": [
-    "./src/webui"
-  ]
+  "files": ["src/global.d.ts"],
+  "include": ["./src"]
 }

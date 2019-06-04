@@ -31,9 +31,10 @@ module.exports = {
     },
   },
   devServer: {
+    host: '127.0.0.1',
+    port: 8081,
     inline: true,
-    port: 8080,
-    public: 'localhost:8080',
+    public: '127.0.0.1:8081',
     writeToDisk: filepath => {
       return !filepath.includes('.hot-update.');
     },

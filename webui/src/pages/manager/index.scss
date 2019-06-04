@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
   height: 100%;
 }
 
@@ -26,7 +27,7 @@ body {
   height: 72px;
   line-height: 72px;
   padding-left: 35px;
-  box-shadow: 0 1px 2px rgba(0,0,0,.1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 
   .el-dropdown {
     margin-right: 30px;
@@ -61,16 +62,16 @@ body {
 
   &__title {
     font-size: 24px;
-    line-height: 52px;
+    line-height: 36px;
     margin-bottom: 20px;
   }
 
   .el-input__inner {
     /* width: 60%; */
-    border-color: rgba(176, 183, 223, .5);
+    border-color: rgba(176, 183, 223, 0.5);
 
     &:hover {
-      border-color: rgba(176, 183, 223, .8);
+      border-color: rgba(176, 183, 223, 0.8);
     }
 
     &:focus {

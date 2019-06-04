@@ -2,8 +2,9 @@ import fs from 'fs-extra';
 import Koa, { Context } from 'koa';
 import koaMount from 'koa-mount';
 import path from 'path';
-import { Controller, Ctx, Get, NotFoundError, Post } from 'routing-controllers';
+import { Controller, Ctx, Get, InternalServerError, Post } from 'routing-controllers';
 import { Inject, Service } from 'typedi';
+import { map } from 'lodash';
 
 import { PluginService } from '@core/services';
 
@@ -17,10 +18,7 @@ export class PluginController {
     const { name } = ctx.request.body;
     await this.pluginManager.remove(name);
     this.pluginManager.refreshPlugins();
-    return {
-      message: 'ok',
-      status: 200,
-    };
+    return true;
   }
 
   @Get('/list')
@@ -33,10 +31,7 @@ export class PluginController {
         )),
       })),
     );
-    return {
-      status: 200,
-      data: allPluginInfo,
-    };
+    return allPluginInfo;
   }
 
   @Post('/add')
@@ -50,12 +45,11 @@ export class PluginController {
       await this.pluginManager.add(name, npmConfig);
       this.pluginManager.refreshPlugins();
     } catch (err) {
-      throw new NotFoundError(err.message);
+      const errorMsg = `安装插件${name}失败`;
+      console.error(errorMsg);
+      throw new InternalServerError(errorMsg);
     }
-    return {
-      message: 'ok',
-      status: 200,
-    };
+    return true;
   }
 
   @Post('/disabled')
@@ -63,10 +57,7 @@ export class PluginController {
     const { name, disabled } = ctx.request.body;
     this.pluginManager.setAttrs(name, { disabled });
     this.pluginManager.refreshPlugins();
-    return {
-      message: 'ok',
-      status: 200,
-    };
+    return true;
   }
 
   public mountCustomPlugins(app: Koa) {

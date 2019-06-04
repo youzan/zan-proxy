@@ -9,8 +9,7 @@
           v-clipboard:copy="curl"
           v-clipboard:success="onCopySuccess"
           v-clipboard:error="onCopyFail"
-          >Copy as cURL
-        </el-link>
+        >Copy as cURL</el-link>
       </key-value>
       <key-value k="Request Method" :v="currentRecord.request.method || '-'"></key-value>
       <key-value k="Protocol" :v="protocol"></key-value>
@@ -26,9 +25,10 @@
     <el-collapse-item name="query" v-if="Object.keys(requestQueryParams).length">
       <template slot="title">
         Query
-        <el-link class="mode-toggle" @click="toggleQueryMode">
-          {{ queryMode === 'parsed' ? 'View Source' : 'View Parsed' }}
-        </el-link>
+        <el-link
+          class="mode-toggle"
+          @click="toggleQueryMode"
+        >{{ queryMode === 'parsed' ? 'View Source' : 'View Parsed' }}</el-link>
       </template>
       <div v-if="queryMode === 'parsed'">
         <key-value v-for="(value, key) in requestQueryParams" :k="key" :v="value" :key="key"></key-value>
@@ -37,7 +37,7 @@
     </el-collapse-item>
 
     <!-- request body -->
-    <body-collapse-item :loading="bodyLoading" :body="requestBody" :contentType="contentType" />
+    <body-collapse-item :loading="bodyLoading" :body="requestBody" :contentType="contentType"/>
   </el-collapse>
 </template>
 
@@ -123,11 +123,11 @@ export default class Request extends Vue {
   }
 
   onCopySuccess() {
-    this.$message.success('已成功复制到粘贴板!');
+    Message.success('已成功复制到粘贴板!');
   }
 
   onCopyFail() {
-    this.$message.error('复制失败，请重试');
+    Message.error('复制失败，请重试');
   }
 }
 </script>
