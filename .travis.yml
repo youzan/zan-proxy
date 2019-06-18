@@ -10,7 +10,7 @@ branches:
   - dev
 install:
 - |
-    npm install
+    yarn
 script:
 - |
-    npm run test
+    yarn test
