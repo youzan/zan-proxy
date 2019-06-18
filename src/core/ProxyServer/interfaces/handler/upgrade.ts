@@ -1,5 +1,5 @@
-import { middleware } from './../middleware';
+import { Middleware } from './../middleware';
 export interface UpgradeHandler {
   handle(req, socket, head);
-  setMiddleware(m: middleware);
+  setMiddleware(m: Middleware);
 }

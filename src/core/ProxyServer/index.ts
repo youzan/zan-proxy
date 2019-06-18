@@ -18,7 +18,7 @@ import {
   ConnectHandler as IConnectHandler,
   Forwarder as IForwarder,
   HttpHandler as IHttpHandler,
-  middleware,
+  Middleware,
   UpgradeHandler as IUpgradeHandler,
 } from './interfaces';
 import { HttpServer, HttpsServer } from './servers';
@@ -63,7 +63,7 @@ export class ProxyServer {
     this.httpsProxyServer.listen(this.httpsPort);
   }
 
-  public use(fn: middleware) {
+  public use(fn: Middleware) {
     if (typeof fn !== 'function') {
       throw new TypeError('middleware must be a function!');
     }

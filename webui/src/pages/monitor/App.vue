@@ -250,7 +250,7 @@ export default {
 
     $(window).resize(_.debounce(this.calcSize, 200));
 
-    let socket = io('/httptrafic');
+    let socket = io('/httptraffic');
     socket.on('rows', this.receiveTraffic);
     socket.on('filter', filter => {
       this.setFilter(filter);

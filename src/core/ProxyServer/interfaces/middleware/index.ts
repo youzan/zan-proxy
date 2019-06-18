@@ -1,1 +1,1 @@
-export type middleware = (ctx, next?) => any;
+export type Middleware = (ctx, next?) => any;

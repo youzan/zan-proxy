@@ -84,7 +84,7 @@ export class Manager {
 
   // http流量监控界面
   private _initTraffic() {
-    const socket = this.io.of('/httptrafic');
+    const socket = this.io.of('/httptraffic');
     // 客户端发起连接请求
     socket.on('connection', client => {
       const userId = this._getUserId(client);
