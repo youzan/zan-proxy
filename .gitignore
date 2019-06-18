@@ -24,3 +24,5 @@ docs/_book
 
 # gui ignore
 build
+
+package-lock.json
