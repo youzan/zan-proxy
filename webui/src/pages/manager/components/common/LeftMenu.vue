@@ -3,7 +3,7 @@
     <h2 class="title">Zan Proxy</h2>
     <el-menu theme="dark" :default-active="$route.path" @select="handleSelect">
       <el-menu-item v-for="item in menuList" :key="item.name" :index="item.link">
-        <i class="iconfont" :class="item.icon"/>
+        <i class="iconfont" :class="item.icon" />
         <span class="menu-name">{{ item.name }}</span>
       </el-menu-item>
     </el-menu>
@@ -46,7 +46,7 @@ const menuList: IMenuItem[] = [
   {
     name: '自定义 mock 数据',
     icon: 'icon-suoding',
-    link: '/datalist',
+    link: '/mock',
   },
   {
     name: '请求监控',

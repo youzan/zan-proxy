@@ -6,7 +6,7 @@ import path from 'path';
 import { Service } from 'typedi';
 import uuid from 'uuid/v4';
 
-import { Rule, RuleAction, RuleActionData, RuleFile } from '@core/types/rule';
+import { ORule, IRuleAction, IRuleActionData, IRuleFile } from '@core/types/rule';
 
 import { AppInfoService } from './appInfo';
 
@@ -14,7 +14,7 @@ export const ErrNameExists = new Error('name exists');
 
 @Service()
 export class RuleService extends EventEmitter {
-  public rules: { [user: string]: { [name: string]: RuleFile } };
+  public rules: { [user: string]: { [name: string]: IRuleFile } };
   private usingRuleCache: object;
   private ruleSaveDir: string;
   constructor(appInfoService: AppInfoService) {
@@ -112,7 +112,7 @@ export class RuleService extends EventEmitter {
   }
 
   // 保存规则文件(可能是远程、或者本地)
-  public async saveRuleFile(userId, ruleFile: RuleFile) {
+  public async saveRuleFile(userId, ruleFile: IRuleFile) {
     const userRuleMap = this.rules[userId] || {};
     const originRuleFile = userRuleMap[ruleFile.name];
     if (originRuleFile) {
@@ -164,7 +164,7 @@ export class RuleService extends EventEmitter {
    * @param method
    * @param urlObj
    */
-  public getProcessRule(userId, method, urlObj): Rule | null {
+  public getProcessRule(userId, method, urlObj): ORule | null {
     let candidateRule = null;
     const inusingRules = this.getUsingRules(userId);
     for (const rule of inusingRules) {
@@ -177,7 +177,7 @@ export class RuleService extends EventEmitter {
     return candidateRule;
   }
 
-  public async importRemoteRuleFile(userId, url): Promise<RuleFile> {
+  public async importRemoteRuleFile(userId, url): Promise<IRuleFile> {
     const ruleFile = await this.fetchRemoteRuleFile(url);
     ruleFile.content.forEach(rule => {
       if (rule.action && !rule.actionList) {
@@ -197,19 +197,19 @@ export class RuleService extends EventEmitter {
         remoteRule.actionList = [remoteRule.action];
       }
       const actionList = remoteRule.actionList.map(remoteAction => {
-        const actionData: RuleActionData = {
+        const actionData: IRuleActionData = {
           dataId: '',
           headerKey: remoteAction.data.headerKey || '',
           headerValue: remoteAction.data.headerValue || '',
           target: remoteAction.data.target || '',
         };
-        const action: RuleAction = {
+        const action: IRuleAction = {
           data: actionData,
           type: remoteAction.type,
         };
         return action;
       });
-      const rule: Rule = {
+      const rule: ORule = {
         actionList,
         checked: remoteRule.checked,
         key: remoteRule.key || uuid(),
@@ -256,8 +256,8 @@ export class RuleService extends EventEmitter {
     }
     const ruleMap = this.rules[userId] || {};
     // 计算使用中的规则
-    const rulesLocal: Rule[] = [];
-    const rulesRemote: Rule[] = [];
+    const rulesLocal: ORule[] = [];
+    const rulesRemote: ORule[] = [];
     forEach(ruleMap, (file, filename) => {
       // 转发规则未被选中
       if (!file.checked) {

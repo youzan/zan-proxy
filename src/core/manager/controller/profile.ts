@@ -12,24 +12,18 @@ export class ProfileController {
   @Post('/savefile')
   public async saveFile(@Ctx() ctx: Context) {
     this.profileService.setProfile(ctx.request.body);
-    return {
-      code: 0,
-    };
+    return true;
   }
 
   @Post('/setRuleState')
   public async setRuleState(@Ctx() ctx: Context) {
     await this.profileService.setEnableRule(!!ctx.query.rulestate);
-    return {
-      code: 0,
-    };
+    return true;
   }
 
   @Post('/setHostState')
   public async setHostState(@Ctx() ctx: Context) {
     await this.profileService.setEnableHost(!!ctx.query.hoststate);
-    return {
-      code: 0,
-    };
+    return true;
   }
 }

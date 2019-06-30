@@ -9,7 +9,7 @@
         :delete="deletePlugin"
         :setDisabled="setPluginDisabled"
       />
-      <add-btn :add="addPlugin" />
+      <add-btn :add="addPlugin"/>
     </div>
   </div>
 </template>
@@ -38,7 +38,7 @@ export default class PluginPage extends Vue {
    * 获取插件列表
    */
   fetchPluginList() {
-    axios.get<IClientPluginInfo[]>('/plugins/list').then(res => {
+    return axios.get<IClientPluginInfo[]>('/plugins/list').then(res => {
       this.plugins = res.data;
     });
   }
@@ -46,73 +46,64 @@ export default class PluginPage extends Vue {
   /**
    * 删除插件
    */
-  deletePlugin(name: string) {
+  async deletePlugin(name: string) {
     const loading = this.$loading({
       lock: true,
       text: '删除中...',
       spinner: 'el-icon-loading',
       background: 'rgba(0, 0, 0, 0.7)',
     });
-    return api
-      .removePlugin({ name })
-      .then(() => {
-        Message.success('删除成功，重启后生效');
-        this.fetchPluginList();
-      })
-      .catch(() => {
-        Message.error('删除失败，请重试');
-      })
-      .finally(() => {
-        loading.close();
-      });
+    try {
+      await api.removePlugin({ name });
+      Message.success('删除成功，重启后生效');
+      await this.fetchPluginList();
+    } catch {
+      Message.error('删除失败，请重试');
+    } finally {
+      loading.close();
+    }
   }
 
   /**
    * 添加插件
    */
-  addPlugin(name: string, registry: string) {
+  async addPlugin(name: string, registry: string) {
     const loading = this.$loading({
       lock: true,
       text: '添加中...',
       spinner: 'el-icon-loading',
       background: 'rgba(0, 0, 0, 0.7)',
     });
-    return api
-      .addPlugin({ name, registry })
-      .then(() => {
-        Message.success('添加成功，重启后生效');
-        this.fetchPluginList();
-      })
-      .catch(() => {
-        this.$message.error('添加失败，请重试');
-      })
-      .finally(() => {
-        loading.close();
-      });
+    try {
+      await api.addPlugin({ name, registry });
+      Message.success('添加成功，重启后生效');
+      await this.fetchPluginList();
+    } catch {
+      Message.error('添加失败，请重试');
+    } finally {
+      loading.close();
+    }
   }
 
   /**
    * 禁用或启用插件
    */
-  setPluginDisabled(name: string, disabled: boolean) {
+  async setPluginDisabled(name: string, disabled: boolean) {
     const loading = this.$loading({
       lock: true,
       text: '设置中...',
       spinner: 'el-icon-loading',
       background: 'rgba(0, 0, 0, 0.7)',
     });
-    return api
-      .togglePlugin({ name, disabled })
-      .then(() => {
-        Message.success('设置成功，重启后生效');
-        this.fetchPluginList();
-      })
-      .catch(() => {
-        Message.error('设置失败，请重试');
-      })
-      .finally(() => {
-        loading.close();
-      });
+    try {
+      await api.togglePlugin({ name, disabled });
+      Message.success('设置成功，重启后生效');
+      await this.fetchPluginList();
+    } catch {
+      Message.error('设置失败，请重试');
+    } finally {
+      loading.close();
+    }
   }
 
   mounted() {

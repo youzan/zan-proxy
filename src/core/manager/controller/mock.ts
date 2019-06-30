@@ -12,67 +12,40 @@ import { HttpTrafficService, MockDataService } from '../../services';
  * 数据文件相关api
  */
 @Service()
-@Controller('/data')
+@Controller('/mock')
 export class MockDataController {
   @Inject() private mockDataService: MockDataService;
   @Inject() private httpTrafficService: HttpTrafficService;
 
   // 获取mock数据列表
-  @Get('/getdatalist')
+  @Get('/list')
   public async getDataList(@Ctx() ctx: Context) {
     const userId = ctx.userId;
     const dataList = await this.mockDataService.getMockDataList(userId);
-    return {
-      code: 0,
-      data: dataList,
-    };
+    return dataList;
   }
 
   // 保存数据列表
-  @Post('/savedatalist')
+  @Post('/list')
   public async saveDataList(@Ctx() ctx: Context) {
     const userId = ctx.userId;
     this.mockDataService.saveMockDataList(userId, ctx.request.body);
-    return {
-      code: 0,
-    };
+    return true;
   }
 
   // 读取数据文件
-  @Get('/getdatafile')
+  @Get('/data')
   public async getDataFile(@Ctx() ctx: Context) {
     const userId = ctx.userId;
     const content = await this.mockDataService.getDataFileContent(userId, ctx.query.id);
-    return {
-      code: 0,
-      data: content,
-    };
+    return { content };
   }
 
   // 保存数据文件
-  @Post('/savedatafile')
+  @Post('/data')
   public async saveDataFile(@Ctx() ctx: Context) {
     const userId = ctx.userId;
     await this.mockDataService.saveDataFileContent(userId, ctx.query.id, ctx.request.body.content);
-    return {
-      code: 0,
-    };
-  }
-
-  // 从http请求日志中保存 mock 数据
-  @Post('/saveDataFromTraffic')
-  public async saveDataFromTraffic(@Ctx() ctx: Context) {
-    const content = await this.httpTrafficService.getResponseBody(ctx.request.body.reqid);
-    // 获取数据文件内容 在保存
-    await this.mockDataService.saveDataEntryFromTraffic(
-      'root',
-      ctx.request.body.id,
-      ctx.request.body.name,
-      ctx.request.body.contenttype,
-      content,
-    );
-    return {
-      code: 0,
-    };
+    return true;
   }
 }

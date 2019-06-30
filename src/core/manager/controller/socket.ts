@@ -9,6 +9,7 @@ import {
   ProfileService,
   RuleService,
 } from '../../services';
+import { IProfile } from '../../types/profile';
 
 @Service()
 export class SocketController {
@@ -71,12 +72,12 @@ export class SocketController {
       const ruleFileList = await this.ruleService.getRuleFileList(userId);
       client.emit('rulefilelist', ruleFileList);
       // 数据文件列表
-      const dataList = await this.mockDataService.getMockDataList(userId);
-      client.emit('datalist', dataList);
+      const mockDataList = await this.mockDataService.getMockDataList(userId);
+      client.emit('mockDataList', mockDataList);
     });
 
     // 个人配置
-    this.profileService.on('data-change', profile => {
+    this.profileService.on('data-change', (profile: IProfile) => {
       socket.emit('profile', profile);
     });
     // host文件变化
@@ -88,8 +89,8 @@ export class SocketController {
       socket.emit('rulefilelist', ruleFilelist);
     });
     // mock文件列表
-    this.mockDataService.on('data-change', (userId, dataFilelist) => {
-      socket.emit('datalist', dataFilelist);
+    this.mockDataService.on('data-change', (userId, mockFilelist) => {
+      socket.emit('mockDataList', mockFilelist);
     });
   }
 }

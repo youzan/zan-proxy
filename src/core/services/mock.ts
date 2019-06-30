@@ -42,7 +42,7 @@ export class MockDataService extends EventEmitter {
    * @param dataId
    */
   public async getDataFileContent(userId, dataId) {
-    const dataFilePath = this._getDataFilePath(userId, dataId);
+    const dataFilePath = this.getDataFilePath(userId, dataId);
     try {
       return await fs.readFile(dataFilePath, { encoding: 'utf-8' });
     } catch (e) {
@@ -52,7 +52,7 @@ export class MockDataService extends EventEmitter {
 
   /**
    * 获取数据文件的 content type
-   * {id:'',contenttype:'',name:''}
+   * {id:'',contentType:'',name:''}
    * @returns {*}
    */
   public async getDataFileContentType(userId, dataId) {
@@ -64,7 +64,7 @@ export class MockDataService extends EventEmitter {
     if (!finded) {
       return '';
     }
-    return finded.contenttype + ';charset=utf-8';
+    return finded.contentType + ';charset=utf-8';
   }
 
   /**
@@ -78,7 +78,7 @@ export class MockDataService extends EventEmitter {
 
   public async setMockDataList(userId, mocklist) {
     this.mockDataList[userId] = mocklist;
-    const listFilePath = this._getMockEntryPath(userId);
+    const listFilePath = this.getMockEntryPath(userId);
     await fs.writeJson(listFilePath, mocklist, { encoding: 'utf-8' });
     // 发送消息通知
     this.emit('data-change', userId, this.getMockDataList(userId));
@@ -107,7 +107,7 @@ export class MockDataService extends EventEmitter {
 
     // 删除文件
     for (const rId of toRemove) {
-      const dataPath = this._getDataFilePath(userId, rId);
+      const dataPath = this.getDataFilePath(userId, rId);
       await fs.remove(dataPath);
     }
   }
@@ -119,25 +119,7 @@ export class MockDataService extends EventEmitter {
    * @param content
    */
   public async saveDataFileContent(userId, dataFileId, content) {
-    const dataFilePath = this._getDataFilePath(userId, dataFileId);
-    await fs.writeFile(dataFilePath, content, { encoding: 'utf-8' });
-  }
-
-  /**
-   * 用户从监控窗保存一个数据文件
-   */
-  public async saveDataEntryFromTraffic(userId, dataFileId, fileName, contentType, content) {
-    const dataList = this.mockDataList[userId] || [];
-    dataList.push({
-      contenttype: contentType,
-      id: dataFileId,
-      name: fileName,
-    });
-    // 保存mock数据文件列表
-    const listFilePath = this._getMockEntryPath(userId);
-    await fs.writeJson(listFilePath, dataList, { encoding: 'utf-8' });
-    // 保存数据文件
-    const dataFilePath = this._getDataFilePath(userId, dataFileId);
+    const dataFilePath = this.getDataFilePath(userId, dataFileId);
     await fs.writeFile(dataFilePath, content, { encoding: 'utf-8' });
   }
 
@@ -147,7 +129,7 @@ export class MockDataService extends EventEmitter {
    * @param dataId
    * @private
    */
-  private _getDataFilePath(userId, dataId) {
+  private getDataFilePath(userId, dataId) {
     const p = path.join(this.mockDataDir, userId + '_' + dataId);
     if (!fs.existsSync(p)) {
       return p;
@@ -165,7 +147,7 @@ export class MockDataService extends EventEmitter {
    * @param userId
    * @private
    */
-  private _getMockEntryPath(userId) {
+  private getMockEntryPath(userId) {
     return path.join(this.mockListDir, userId + '.json');
   }
 }

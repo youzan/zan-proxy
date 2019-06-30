@@ -1,4 +1,4 @@
-import { Rule, RuleActionData } from '@core/types/rule';
+import { ORule, IRuleActionData } from '@core/types/rule';
 import fs from 'fs-extra';
 import http from 'http';
 import mime from 'mime-types';
@@ -20,7 +20,7 @@ export class RuleMiddleware implements IProxyMiddleware {
   /**
    * 处理 mock data 规则
    */
-  private async processMockData(data: RuleActionData, ctx: IProxyContext) {
+  private async processMockData(data: IRuleActionData, ctx: IProxyContext) {
     const userID = 'root';
     const { dataId } = data;
     const content = await this.mockDataService.getDataFileContent(userID, dataId);
@@ -32,7 +32,7 @@ export class RuleMiddleware implements IProxyMiddleware {
   /**
    * 添加请求头
    */
-  private async processAddRequestHeader(data: RuleActionData, ctx: IProxyContext) {
+  private async processAddRequestHeader(data: IRuleActionData, ctx: IProxyContext) {
     ctx.req.headers[data.headerKey] = data.headerValue;
   }
 
@@ -40,7 +40,7 @@ export class RuleMiddleware implements IProxyMiddleware {
    * 添加响应头
    */
   private async processAddResponseHeader(
-    data: RuleActionData,
+    data: IRuleActionData,
     resHeaders: http.OutgoingHttpHeaders,
   ) {
     resHeaders[data.headerKey] = data.headerValue;
@@ -58,8 +58,8 @@ export class RuleMiddleware implements IProxyMiddleware {
    */
   private async processRedirect(
     urlObj: URL.UrlWithStringQuery,
-    rule: Rule,
-    data: RuleActionData,
+    rule: ORule,
+    data: IRuleActionData,
     ctx: IProxyContext,
   ) {
     const target = this.profileService.calcPath(urlObj.href as string, rule.match, data.target);

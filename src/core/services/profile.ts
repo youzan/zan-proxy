@@ -5,15 +5,7 @@ import path from 'path';
 import { Service } from 'typedi';
 
 import { AppInfoService } from './appInfo';
-
-export interface IProfile {
-  /** 是否启用host解析 */
-  enableHost: boolean;
-  /** 是否启用转发规则 */
-  enableRule: boolean;
-  /** 工程路径配置 */
-  projectPath: object;
-}
+import { IProfile } from '../types/profile';
 
 const DEFAULT_PROFILE: IProfile = {
   enableHost: true,
@@ -74,7 +66,7 @@ export class ProfileService extends EventEmitter {
   /**
    * 更新配置信息
    */
-  public setProfile(profile) {
+  public setProfile(profile: IProfile) {
     this.profile = profile;
 
     // 将数据写入文件
@@ -98,12 +90,8 @@ export class ProfileService extends EventEmitter {
   /**
    * 替换redirect中的变量引用,
    * 如果引用的变量不存在，则不做替换
-   * @param clientIp
-   * @param href
-   * @param match
-   * @param target
    */
-  public calcPath(href: string, match, target) {
+  public calcPath(href: string, match: string, target: string) {
     if (match) {
       const matchList = href.match(new RegExp(match));
       forEach(matchList, (value, index) => {

@@ -1,5 +1,5 @@
 const path = require('path');
-
+const MonacoEditorWebpackPlugin = require('monaco-editor-webpack-plugin');
 const rootResolve = (...ps) => path.resolve(__dirname, '../', ...ps);
 
 module.exports = {
@@ -29,6 +29,26 @@ module.exports = {
         '@webui': rootResolve('src/webui'),
       },
     },
+    plugins: [
+      new MonacoEditorWebpackPlugin({
+        languages: ['html', 'json', 'javascript', 'typescript'],
+        features: [
+          'accessibilityHelp',
+          'bracketMatching',
+          'find',
+          'folding',
+          'format',
+          'hover',
+          'inPlaceReplace',
+          'inspectTokens',
+          'multicursor',
+          'parameterHints',
+          'smartSelect',
+          'suggest',
+          'wordHighlighter',
+        ],
+      }),
+    ],
   },
   devServer: {
     host: '127.0.0.1',

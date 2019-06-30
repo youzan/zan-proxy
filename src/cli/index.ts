@@ -55,11 +55,11 @@ async function run() {
     await syncRule();
     await syncHost();
   }
+  const proxyPort = program.proxy_port || 8001;
   const managerPort = program.manager_port || 40001;
-  const managerHost = program.manager_host || ip.address();
-  const url = `http://${managerHost}:${managerPort}`;
-  await start(program.proxy_port, program.manager_port, program.manager_host);
-  open(url);
+  const managerHost = program.manager_host || '0.0.0.0';
+  await start(proxyPort, managerPort, managerHost);
+  open(`http://localhost:${managerPort}`);
 }
 
 run();

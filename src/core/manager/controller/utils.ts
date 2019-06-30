@@ -1,4 +1,4 @@
-import { RuleFile } from '@core/types/rule';
+import { IRuleFile } from '@core/types/rule';
 import fs from 'fs-extra';
 import { Context } from 'koa';
 import path from 'path';
@@ -37,7 +37,9 @@ export class UtilsController {
     const userIDs = Object.keys(this.ruleService.rules);
     for (const userID of userIDs) {
       const userRuleFilesMap = this.ruleService.rules[userID];
-      const userRuleFiles: RuleFile[] = Object.keys(userRuleFilesMap).map(k => userRuleFilesMap[k]);
+      const userRuleFiles: IRuleFile[] = Object.keys(userRuleFilesMap).map(
+        k => userRuleFilesMap[k],
+      );
       for (const ruleFile of userRuleFiles) {
         for (const rule of ruleFile.content) {
           matchScripts.push(`if (url.indexOf("${rule.match}") > -1) { return zProxy; }`);

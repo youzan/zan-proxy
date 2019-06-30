@@ -2,7 +2,7 @@ import ora from 'ora';
 import Container from 'typedi';
 
 import { RuleService } from './services';
-import { RuleFile } from './types/rule';
+import { IRuleFile } from './types/rule';
 
 const userId = 'root';
 
@@ -13,7 +13,7 @@ const syncRemoteRules = async () => {
   console.log('开始同步远程规则集');
   const ruleService = Container.get(RuleService);
   const userRuleFilesMap = ruleService.getRuleFileList(userId);
-  const userRuleFiles: RuleFile[] = Object.values(userRuleFilesMap);
+  const userRuleFiles: IRuleFile[] = Object.values(userRuleFilesMap);
   for (const ruleFile of userRuleFiles) {
     if (ruleFile.meta && ruleFile.meta.remote) {
       const spinner = ora(`同步规则集${ruleFile.name}中`).start();

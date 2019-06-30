@@ -1,33 +1,33 @@
-export interface Rule {
+export interface ORule {
   name: string;
   key: string;
   method: string;
   match: string;
   checked: boolean;
-  actionList: RuleAction[];
+  actionList: IRuleAction[];
 }
 
-export interface RuleAction {
+export interface IRuleAction {
   type: string;
-  data: RuleActionData;
+  data: IRuleActionData;
 }
 
-export interface RuleActionData {
+export interface IRuleActionData {
   target: string;
   dataId: string;
   headerKey: string;
   headerValue: string;
 }
 
-export interface RuleFile {
-  meta: RuleFileMeta;
+export interface IRuleFile {
+  meta: IRuleFileMeta;
   checked: boolean;
   name: string;
   description: string;
-  content: Rule[];
+  content: ORule[];
 }
 
-export interface RuleFileMeta {
+export interface IRuleFileMeta {
   remote: boolean;
   url?: string;
   ETag?: string;

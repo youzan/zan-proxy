@@ -1,6 +1,6 @@
 export * from './host';
 export * from './http-traffic';
-export * from './mockData';
+export * from './mock';
 export * from './profile';
 export * from './rule';
 export * from './utils';
