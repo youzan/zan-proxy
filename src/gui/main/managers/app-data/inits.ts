@@ -4,13 +4,17 @@ import * as sudo from 'sudo-prompt';
 import logger from 'electron-log';
 
 import { homePath } from '@gui/main/utils';
+import { Container } from 'typedi';
+import { AppInfoService } from '@core/services';
 
 const execIcon = {
   name: 'Zan Proxy',
   icns: path.resolve(global.__static, 'icon.icns'),
 };
 
-const certPath = homePath('.front-end-proxy/certificate/root/zproxy.crt.pem');
+const certPath = homePath(
+  `${Container.get(AppInfoService).proxyDataDir}/certificate/root/zproxy.crt.pem`,
+);
 /**
  * 初始化签名证书文件
  */

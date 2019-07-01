@@ -2,13 +2,12 @@ import 'reflect-metadata';
 import promiseFinally from 'promise.prototype.finally';
 import program from 'commander';
 import path from 'path';
-import ip from 'ip';
 import open from 'open';
 import selfUpdate from './selfUpdate';
 import start from '@core/start';
 import syncHost from '@core/syncHost';
 import syncRule from '@core/syncRule';
-import resetDataFiles from '@core/resetDataFiles';
+import resetDataFiles, { migrateFromOld } from '@core/resetDataFiles';
 
 import packageInfo from '../../package.json';
 promiseFinally.shim();
@@ -47,6 +46,7 @@ program
   .parse(process.argv);
 
 async function run() {
+  migrateFromOld();
   resetDataFiles();
   if (program.update) {
     await selfUpdate();

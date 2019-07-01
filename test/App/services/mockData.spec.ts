@@ -1,4 +1,3 @@
-import chai from 'chai';
 import fs from 'fs';
 import 'mocha';
 import path from 'path';

@@ -33,7 +33,7 @@ export class ProfileService extends EventEmitter {
 
     const proxyDataDir = appInfoService.proxyDataDir;
     // 修改为单用户模式，但是为了保证兼容，需要使用之前的配置保存文件路径
-    this.profileSaveFile = path.join(proxyDataDir, 'profile/root.json');
+    this.profileSaveFile = path.join(proxyDataDir, 'profile.json');
 
     try {
       this.profile = fs.readJsonSync(this.profileSaveFile);

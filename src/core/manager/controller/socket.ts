@@ -10,6 +10,7 @@ import {
   RuleService,
 } from '../../services';
 import { IProfile } from '../../types/profile';
+import { IMockRecord } from '@core/types/mock';
 
 @Service()
 export class SocketController {
@@ -72,7 +73,7 @@ export class SocketController {
       const ruleFileList = await this.ruleService.getRuleFileList(userId);
       client.emit('rulefilelist', ruleFileList);
       // 数据文件列表
-      const mockDataList = await this.mockDataService.getMockDataList(userId);
+      const mockDataList = await this.mockDataService.getMockList();
       client.emit('mockDataList', mockDataList);
     });
 
@@ -89,7 +90,7 @@ export class SocketController {
       socket.emit('rulefilelist', ruleFilelist);
     });
     // mock文件列表
-    this.mockDataService.on('data-change', (userId, mockFilelist) => {
+    this.mockDataService.on('data-change', (mockFilelist: IMockRecord[]) => {
       socket.emit('mockDataList', mockFilelist);
     });
   }

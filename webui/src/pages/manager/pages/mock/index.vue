@@ -2,19 +2,19 @@
   <div>
     <div class="main-content__title">Mock 数据文件列表</div>
     <div class="action-wrapper">
-      <el-button size="small" @click="requestAddDataFile()">新增数据文件</el-button>
+      <el-button size="small" @click="createMockData">新增数据文件</el-button>
     </div>
     <el-table border :data="dataList">
       <el-table-column prop="name" label="名字" align="center" :width="400" :sortable="true"></el-table-column>
       <el-table-column prop="contentType" label="类型" :width="400" align="center"></el-table-column>
       <el-table-column label="操作" align="center" :context="_self">
         <template v-slot="scope">
-          <el-button type="info" icon="el-icon-edit" size="mini" @click="requestEditDataFile(scope.row)"></el-button>
+          <el-button type="info" icon="el-icon-edit" size="mini" @click="editMockData(scope.row)"></el-button>
           <el-button
             type="danger"
             icon="el-icon-delete"
             size="mini"
-            @click="deleteDataFile(scope.row, scope.$index)"
+            @click="deleteMockData(scope.row, scope.$index)"
           ></el-button>
         </template>
       </el-table-column>
@@ -115,7 +115,7 @@ export default class Mock extends Vue {
     ],
     content: [
       {
-        validator: (rule, value, callback) => {
+        validator: (rule: any, value: any, callback: (error?: Error) => void) => {
           const model = editor.getModel();
           if (!model) {
             return;
@@ -141,7 +141,10 @@ export default class Mock extends Vue {
     Monaco.editor.setModelLanguage(model, language);
   }
 
-  async deleteDataFile(entry: IMockRecord, index: number) {
+  /**
+   * 删除mock数据
+   */
+  async deleteMockData(entry: IMockRecord, index: number) {
     try {
       await this.$confirm(`此操作将永久删除该数据文件: ${entry.name}, 是否继续?`, '提示', {
         type: 'warning',
@@ -149,10 +152,7 @@ export default class Mock extends Vue {
       this.dataList.splice(index, 1);
       try {
         await dataApi.saveDataList(this.dataList);
-        this.$message({
-          type: 'success',
-          message: '删除成功!',
-        });
+        this.$message.success('删除成功!');
       } catch (error) {
         this.$message.error(`出错了，${error}`);
       }
@@ -161,36 +161,42 @@ export default class Mock extends Vue {
     }
   }
 
-  requestAddDataFile() {
+  /**
+   * 创建新 mock 数据
+   */
+  createMockData() {
     this.showDialog(
       {
         id: uuidV4(),
         name: 'mock 数据',
-        contentType: 'application/json',
+        contentType: languageContentTypeMap.json,
       },
       true,
     );
   }
 
-  requestEditDataFile(entry: IMockRecord) {
-    this.showDialog(entry, false);
+  /**
+   * 修改 mock 数据
+   */
+  editMockData(record: IMockRecord) {
+    this.showDialog(record, false);
   }
 
   /**
    * 打开 mock 数据编辑弹框
    */
-  async showDialog(entry: IMockRecord, isNew: boolean) {
+  async showDialog(record: IMockRecord, isNew: boolean) {
     this.mockDataForm.isNew = isNew;
-    this.mockDataForm.id = entry.id;
-    this.mockDataForm.name = entry.name;
-    this.mockDataForm.contentType = entry.contentType;
+    this.mockDataForm.id = record.id;
+    this.mockDataForm.name = record.name;
+    this.mockDataForm.contentType = record.contentType;
     this.mockDataForm.content = '';
     if (!isNew) {
       try {
         const response = await dataApi.getDataFile(this.mockDataForm.id);
         this.mockDataForm.content = response.data.content;
       } catch (error) {
-        this.$message.error(`出错了，${error}`);
+        this.$message.error(`获取 mock 数据失败，${error}`);
       }
     }
     this.dialogVisible = true;
@@ -222,6 +228,9 @@ export default class Mock extends Vue {
     }
   }
 
+  /**
+   * 保存 mock 数据
+   */
   async saveMockData() {
     const mockDataFormRef = this.$refs['mockDataForm'] as ElForm;
 
@@ -232,29 +241,29 @@ export default class Mock extends Vue {
     }
 
     if (this.mockDataForm.isNew) {
+      // 创建新记录
       this.dataList.push({
         id: this.mockDataForm.id,
         name: this.mockDataForm.name,
         contentType: this.mockDataForm.contentType,
       });
+    } else {
+      // 修改旧记录
+      const record = this.dataList.find(record => record.id === this.mockDataForm.id);
+      if (record) {
+        record.name = this.mockDataForm.name;
+        record.contentType = this.mockDataForm.contentType;
+      }
     }
+
     try {
       await Promise.all([
         dataApi.saveDataList(this.dataList),
-        dataApi.saveDataFile(this.mockDataForm.id, editor.getValue()).then(response => {
-          mockDataFormRef.resetFields();
-          // this.mockDataForm.name = '';
-          // this.mockDataForm.id = '';
-          // this.mockDataForm.contentType = '';
-          // this.mockDataForm.content = '';
-          this.dialogVisible = false;
-          editor.setValue('');
-        }),
+        dataApi.saveDataFile(this.mockDataForm.id, editor.getValue()),
       ]);
-      this.$message({
-        type: 'success',
-        message: '保存成功!',
-      });
+      mockDataFormRef.resetFields();
+      this.dialogVisible = false;
+      this.$message.success('保存成功!');
     } catch (error) {
       this.$message.error(`出错了，${error}`);
     }

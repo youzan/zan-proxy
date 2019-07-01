@@ -3,7 +3,10 @@
     <h1>快速开始</h1>
     <h2>一、说明</h2>
 
-    <p>由于<code>zanProxy</code>默认不修改系统代理设置，所以在 chrome 上使用代理功能时需要依赖第三方 chrome 插件。</p>
+    <p>
+      由于
+      <code>zanProxy</code>默认不修改系统代理设置，所以在 chrome 上使用代理功能时需要依赖第三方 chrome 插件。
+    </p>
     <p><code>zanProxy</code>依赖 openssl 生成证书，使用 proxy 前请先安装 openssl (版本建议在 0.9.8 以上)。</p>
 
     <h2>二、chrome 插件安装</h2>
@@ -13,17 +16,16 @@
       <a
         href="https://chrome.google.com/webstore/detail/proxy-switchyomega/padekgcemlokbadohgkifijomclgjgif?hl=en-US"
         target="_blank"
+        >点击安装代理插件</a
       >
-        点击安装代理插件
-      </a>
     </p>
 
     <h4>插件使用说明</h4>
 
     <ol>
       <li>
-        安装完插件后请设置插件代理地址为<code>127.0.0.1</code>，代理协议: http，端口为
-        <code>zanProxy</code>代理端口(默认8001)。
+        安装完插件后请设置插件代理地址为
+        <code>127.0.0.1</code>，代理协议: http，端口为 <code>zanProxy</code>代理端口(默认8001)。
       </li>
       <li>
         如不清楚如何配置 SwitchyOmega，请参考
@@ -64,12 +66,25 @@ import qrcode from 'qrcode-js';
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 
-const certUrl = `http://${location.hostname}:${location.port || 80}/utils/rootCA.crt`;
+import { getIp } from '../../api/utils';
 
 @Component
 export default class Intro extends Vue {
-  url = certUrl;
-  imgUrl = qrcode.toDataURL(certUrl, 4);
+  ip = location.hostname;
+
+  get url() {
+    return `http://${this.ip}:${location.port || 80}/utils/rootCA.crt`;
+  }
+
+  get imgUrl() {
+    return qrcode.toDataURL(this.url, 4);
+  }
+
+  created() {
+    getIp().then(res => {
+      this.ip = res.data;
+    });
+  }
 }
 </script>
 

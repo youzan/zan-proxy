@@ -9,7 +9,7 @@ export function saveDataList(content: any) {
 }
 
 export function getDataFile(id: string) {
-  return axios.get(`/mock/data?id=${id}`);
+  return axios.get<{ content: string }>(`/mock/data?id=${id}`);
 }
 
 export function saveDataFile(id: string, content: any) {

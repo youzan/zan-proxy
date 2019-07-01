@@ -1,6 +1,3 @@
-/**
- * Created by tsxuehu on 17/1/9.
- */
 import axios from 'axios';
 import _ from 'lodash';
 
@@ -25,7 +22,7 @@ export function deleteFile(name: string) {
   return axios.get(`/rule/deletefile?name=${encodeURIComponent(name)}`);
 }
 
-export function setFileCheckStatus(name: string, checked:  boolean) {
+export function setFileCheckStatus(name: string, checked: boolean) {
   return axios.get(`/rule/setfilecheckstatus?name=${name}&checked=${checked ? 1 : 0}`);
 }
 
@@ -40,9 +37,16 @@ export function saveFile(name: string, content: any) {
 /**
  * 修改规则集文件名
  */
-export function updateFileInfo(originName: string, { name, description }: {
-  name: string; description: string;
-}) {
+export function updateFileInfo(
+  originName: string,
+  {
+    name,
+    description,
+  }: {
+    name: string;
+    description: string;
+  },
+) {
   return axios.post(`/rule/updatefileinfo/${encodeURIComponent(originName)}`, {
     name,
     description,

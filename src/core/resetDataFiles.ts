@@ -1,8 +1,57 @@
 import fs from 'fs-extra';
-import os from 'os';
 import path from 'path';
+import Container from 'typedi';
+import { AppInfoService } from './services';
 
-const proxyDataDir = path.join(os.homedir(), '.front-end-proxy');
+const proxyDataDir = Container.get(AppInfoService).proxyDataDir;
+
+function rm(p: string) {
+  if (fs.existsSync(p)) {
+    fs.removeSync(p);
+  }
+}
+
+function move(source: string, target: string) {
+  if (fs.existsSync(source)) {
+    fs.moveSync(source, target);
+  }
+}
+
+export function migrateFromOld() {
+  const unusedFileOrDir = [
+    path.join(proxyDataDir, 'clientIpUserMap.json'),
+    path.join(proxyDataDir, 'configure.json'),
+    path.join(proxyDataDir, 'filter'),
+    path.join(proxyDataDir, 'breakpoint'),
+  ];
+  unusedFileOrDir.forEach(rm);
+
+  const profile = {
+    source: path.join(proxyDataDir, 'profile/root.json'),
+    target: path.join(proxyDataDir, 'profile.json'),
+  };
+  move(profile.source, profile.target);
+  rm(path.join(profile.source, '..'));
+
+  const mockList = {
+    source: path.join(proxyDataDir, 'mock-list/root.json'),
+    target: path.join(proxyDataDir, 'mock-list.json'),
+  };
+  // mock-data & mock-list
+  move(mockList.source, mockList.target);
+  rm(path.join(mockList.source, '..'));
+
+  const mockRecordFiles = fs.readdirSync(path.join(proxyDataDir, 'mock-data'));
+  mockRecordFiles.forEach(file => {
+    if (!file.startsWith('root_')) {
+      return;
+    }
+    move(
+      path.join(proxyDataDir, 'mock-data', file),
+      path.join(proxyDataDir, 'mock-data', file.replace(/^root_/, '')),
+    );
+  });
+}
 
 /**
  * 初始化脚本
@@ -15,8 +64,6 @@ export default function resetDataFiles() {
   fs.ensureDirSync(path.join(proxyDataDir, 'host'));
   fs.ensureDirSync(path.join(proxyDataDir, 'rule'));
   fs.ensureDirSync(path.join(proxyDataDir, 'mock-data'));
-  fs.ensureDirSync(path.join(proxyDataDir, 'mock-list'));
-  fs.ensureDirSync(path.join(proxyDataDir, 'profile'));
   fs.ensureDirSync(path.join(proxyDataDir, 'traffic'));
 
   const rootTargetDir = path.join(proxyDataDir, 'certificate/root');

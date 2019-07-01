@@ -2,6 +2,7 @@ import { IRuleFile } from '@core/types/rule';
 import fs from 'fs-extra';
 import { Context } from 'koa';
 import path from 'path';
+import ip from 'ip';
 import { Controller, Ctx, Get } from 'routing-controllers';
 import { Inject, Service } from 'typedi';
 
@@ -13,6 +14,11 @@ export class UtilsController {
   @Inject() private appInfoService: AppInfoService;
   @Inject() private hostService: HostService;
   @Inject() private ruleService: RuleService;
+
+  @Get('/ip')
+  public getIp(@Ctx() ctx: Context) {
+    return ip.address();
+  }
 
   /**
    * 下载证书

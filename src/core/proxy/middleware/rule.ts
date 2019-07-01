@@ -21,10 +21,9 @@ export class RuleMiddleware implements IProxyMiddleware {
    * 处理 mock data 规则
    */
   private async processMockData(data: IRuleActionData, ctx: IProxyContext) {
-    const userID = 'root';
     const { dataId } = data;
-    const content = await this.mockDataService.getDataFileContent(userID, dataId);
-    const contentType = await this.mockDataService.getDataFileContentType(userID, dataId);
+    const content = await this.mockDataService.getDataContent(dataId);
+    const contentType = await this.mockDataService.getDataFileContentType(dataId);
     ctx.res.body = content;
     ctx.res.setHeader('Content-Type', contentType);
   }

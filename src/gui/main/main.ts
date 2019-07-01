@@ -7,7 +7,7 @@ import { showNotify } from '@gui/main/utils';
 import Application from '@gui/main/core/application';
 import * as config from '../config';
 
-import resetDataFiles from '@core/resetDataFiles';
+import resetDataFiles, { migrateFromOld } from '@core/resetDataFiles';
 
 // 阻止程序退出
 app.on('window-all-closed', e => e.preventDefault());
@@ -16,6 +16,7 @@ app.on('ready', createMenus);
 
 app.on('ready', async () => {
   try {
+    migrateFromOld();
     resetDataFiles();
     // 异步初始化工作区信息
     const zanProxyApp = Container.get(Application);
