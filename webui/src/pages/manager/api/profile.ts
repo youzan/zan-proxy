@@ -1,21 +1,26 @@
 import axios from 'axios';
 
-export function saveFile(content: any) {
-  return axios.post('/profile/savefile', content);
+/**
+ * 保存变量配置
+ */
+export function saveProjectPath(content: any) {
+  return axios.post('/profile/project-path', content);
 }
 
-export function disableRule() {
-  return axios.post(`/profile/setRuleState`);
+/**
+ * 启用或禁用转发规则
+ */
+export function toggleRule(enable: boolean) {
+  return axios.post(`/profile/rule/enable`, {
+    enable,
+  });
 }
 
-export function enableRule() {
-  return axios.post(`/profile/setRuleState?rulestate=1`);
-}
-
-export function disableHost() {
-  return axios.post(`/profile/setHostState`);
-}
-
-export function enableHost() {
-  return axios.post(`/profile/setHostState?hoststate=1`);
+/**
+ * 启用或禁用host规则
+ */
+export function toggleHost(enable: boolean) {
+  return axios.post(`/profile/host/enable`, {
+    enable
+  });
 }

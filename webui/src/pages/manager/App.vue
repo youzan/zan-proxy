@@ -20,7 +20,7 @@
             :disabled="!profile.enableHost"
           >
             {{ hostfile.name }}
-            <i class="el-icon-check" v-if="hostfile.checked"/>
+            <i class="el-icon-check" v-if="hostfile.checked" />
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -43,7 +43,7 @@
             :disabled="!profile.enableRule"
           >
             {{ rulefile.name }}
-            <i class="el-icon-check" v-if="rulefile.checked"/>
+            <i class="el-icon-check" v-if="rulefile.checked" />
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -52,11 +52,11 @@
     <!-- 正文 -->
     <div class="left-fixed-right-auto">
       <div class="left">
-        <left-menu/>
+        <left-menu />
       </div>
       <div class="right">
         <div class="main-content">
-          <router-view/>
+          <router-view />
         </div>
       </div>
     </div>
@@ -115,10 +115,10 @@ export default class App extends Vue {
   async selectHostFile(command: string) {
     let name = command;
     if (command === '__disabled__') {
-      return await profileApi.disableHost();
+      return await profileApi.toggleHost(false);
     }
     if (command === '__enabled__') {
-      return await profileApi.enableHost();
+      return await profileApi.toggleHost(true);
     }
     hostApi.debouncedUseFile(name, (response: AxiosResponse) => {
       var serverData = response.data;
@@ -136,10 +136,10 @@ export default class App extends Vue {
   selectRuleFile(command: string) {
     // panama-false
     if (command === '__disabled__') {
-      return profileApi.disableRule();
+      return profileApi.toggleRule(false);
     }
     if (command === '__enabled__') {
-      return profileApi.enableRule();
+      return profileApi.toggleRule(true);
     }
     let kv = command.split('-%-');
     ruleApi.setFileCheckStatus(kv[0], kv[1] == 'false').then(response => {

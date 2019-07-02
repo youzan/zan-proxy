@@ -19,12 +19,12 @@ const DEFAULT_PROFILE: IProfile = {
 @Service()
 export class ProfileService extends EventEmitter {
   /**
-   * 用户配置信息映射表，目前 user 只有 root 一个
+   * 用户配置信息映射表
    */
-  private profile: IProfile;
+  private profile: IProfile = DEFAULT_PROFILE;
 
   /**
-   * 配置信息存储目录
+   * 配置信息存储文件路径
    */
   private profileSaveFile: string;
 
@@ -38,7 +38,7 @@ export class ProfileService extends EventEmitter {
     try {
       this.profile = fs.readJsonSync(this.profileSaveFile);
     } catch {
-      this.profile = DEFAULT_PROFILE;
+      // no operation
     }
   }
 
@@ -46,7 +46,7 @@ export class ProfileService extends EventEmitter {
    * 获取配置信息
    */
   public getProfile() {
-    return this.profile || DEFAULT_PROFILE;
+    return this.profile;
   }
 
   /**
@@ -66,25 +66,40 @@ export class ProfileService extends EventEmitter {
   /**
    * 更新配置信息
    */
-  public setProfile(profile: IProfile) {
+  private async setProfile(profile: IProfile) {
     this.profile = profile;
 
     // 将数据写入文件
-    fs.writeJsonSync(this.profileSaveFile, profile, { encoding: 'utf-8' });
+    await fs.writeJSON(this.profileSaveFile, profile, { encoding: 'utf-8' });
     // 发送通知
-    this.emit('data-change', profile);
+    this.emit('data-change', this.profile);
   }
 
-  public setEnableRule(enable: boolean) {
-    const conf = this.getProfile();
-    conf.enableRule = enable;
-    this.setProfile(conf);
+  /**
+   * 修改环境变量
+   */
+  public async setProjectPath(projectPath: IProfile['projectPath']) {
+    const profile = this.getProfile();
+    profile.projectPath = projectPath;
+    await this.setProfile(profile);
   }
 
-  public setEnableHost(enable: boolean) {
-    const conf = this.getProfile();
-    conf.enableHost = enable;
-    this.setProfile(conf);
+  /**
+   * 启用或关闭转发规则
+   */
+  public async setEnableRule(enable: boolean) {
+    const profile = this.getProfile();
+    profile.enableRule = enable;
+    await this.setProfile(profile);
+  }
+
+  /**
+   * 启用或关闭host规则
+   */
+  public async setEnableHost(enable: boolean) {
+    const profile = this.getProfile();
+    profile.enableHost = enable;
+    await this.setProfile(profile);
   }
 
   /**

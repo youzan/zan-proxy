@@ -19,7 +19,7 @@ interface IMenuItem {
   name: string;
   icon: string;
   link: string;
-  targetBlank?: boolean;
+  newPage?: boolean;
 }
 
 const menuList: IMenuItem[] = [
@@ -52,13 +52,13 @@ const menuList: IMenuItem[] = [
     name: '请求监控',
     icon: 'icon-bargraph',
     link: '/monitor.html',
-    targetBlank: true,
+    newPage: true,
   },
   {
-    name: '帮助中心',
+    name: '帮助文档',
     icon: 'icon-security',
     link: 'https://youzan.github.io/zan-proxy/',
-    targetBlank: true,
+    newPage: true,
   },
   {
     name: '插件管理',
@@ -78,7 +78,7 @@ export default class LeftMenu extends Vue {
       return;
     }
 
-    if (item.targetBlank) {
+    if (item.newPage) {
       window.open(item.link);
     } else {
       this.$router.push(item.link);

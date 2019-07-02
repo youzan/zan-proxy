@@ -9,21 +9,21 @@ import { ProfileService } from '../../services';
 export class ProfileController {
   @Inject() private profileService: ProfileService;
 
-  @Post('/savefile')
-  public async saveFile(@Ctx() ctx: Context) {
-    this.profileService.setProfile(ctx.request.body);
+  @Post('/project-path')
+  public async saveProjectPath(@Ctx() ctx: Context) {
+    await this.profileService.setProjectPath(ctx.request.body);
     return true;
   }
 
-  @Post('/setRuleState')
+  @Post('/rule/enable')
   public async setRuleState(@Ctx() ctx: Context) {
-    await this.profileService.setEnableRule(!!ctx.query.rulestate);
+    await this.profileService.setEnableRule(ctx.request.body.enable);
     return true;
   }
 
-  @Post('/setHostState')
+  @Post('/host/enable')
   public async setHostState(@Ctx() ctx: Context) {
-    await this.profileService.setEnableHost(!!ctx.query.hoststate);
+    await this.profileService.setEnableHost(ctx.request.body.enable);
     return true;
   }
 }
