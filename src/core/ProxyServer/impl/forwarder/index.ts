@@ -19,8 +19,6 @@ export class Forwarder implements IForwarder {
       if (req.body && req.body.length) {
         options.headers['content-length'] = req.body.length;
       }
-      // decode暂不支持 brolti 算法
-      options.headers['accept-encoding'] = 'gzip, deflate';
       const proxyReq = client.request(options, proxyRes => {
         res.statusCode = proxyRes.statusCode;
         Object.keys(proxyRes.headers).forEach(k => {
