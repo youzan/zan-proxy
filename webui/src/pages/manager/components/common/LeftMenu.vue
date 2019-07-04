@@ -31,7 +31,7 @@ const menuList: IMenuItem[] = [
   {
     name: 'Host 管理',
     icon: 'icon-box',
-    link: '/hostfilelist',
+    link: '/host/list',
   },
   {
     name: 'Http 转发',

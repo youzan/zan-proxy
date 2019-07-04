@@ -10,7 +10,7 @@
         <el-button size="small" type="primary" @click="saveFile">保存文件</el-button>
       </el-col>
     </el-row>
-    <el-table border style="width: 100%" align="center" :data="hostarray">
+    <el-table border style="width: 100%" :data="hostarray">
       <el-table-column type="index" width="60"></el-table-column>
       <el-table-column prop="key" label="域名" align="center">
         <template v-slot="scope">

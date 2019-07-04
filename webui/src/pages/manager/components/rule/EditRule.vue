@@ -14,7 +14,7 @@
         <!-- <el-button size="small" type="primary" @click='saveFileRightNow'>保存规则集</el-button> -->
       </el-col>
     </el-row>
-    <el-table border style="width: 100%" row-key="key" :stripe="true" align="center" :data="filecontent.content">
+    <el-table border style="width: 100%" row-key="key" :stripe="true" :data="filecontent.content">
       <el-table-column prop="checked" label="启用" align="center" width="80">
         <template v-slot="scope">
           <el-tooltip class="item" effect="dark" content="勾选后启动这条规则" placement="left">

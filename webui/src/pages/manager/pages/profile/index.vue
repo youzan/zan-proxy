@@ -7,7 +7,7 @@
         <el-button size="small" @click="addParam">增加转发变量</el-button>
       </el-col>
     </el-row>
-    <el-table border align="center" :data="projectPathArray">
+    <el-table border :data="projectPathArray">
       <el-table-column type="index" align="center" width="60"></el-table-column>
       <el-table-column prop="key" align="center" label="变量名" width="200">
         <template v-slot="scope">
@@ -19,14 +19,9 @@
           <el-input v-model="scope.row.value" size="small" placeholder="请输入变量值"></el-input>
         </template>
       </el-table-column>
-      <el-table-column label="操作" :width="136" align="center" :context="_self">
+      <el-table-column label="操作" :width="150" align="center" :context="_self">
         <template v-slot="scope">
-          <el-button
-            type="danger"
-            icon="el-icon-delete"
-            size="mini"
-            @click="deleteParam(scope.row, scope.$index)"
-          />
+          <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteParam(scope.row, scope.$index)" />
         </template>
       </el-table-column>
     </el-table>

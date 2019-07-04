@@ -1,25 +1,23 @@
 <template>
   <div class="host-view">
     <div class="main-content__title">Host 文件列表</div>
-    <el-row :gutter="20" style="margin-bottom: 10px">
-      <el-col class="addhost-btn-wrap">
-        <input type="file" ref="fileimport" @change="importHostFile" style="display:none;" />
-        <el-button size="small" @click="importHostFileBtnClick">导入 Host 文件</el-button>
-        <el-button size="small" type="primary" @click="importRemoteHostFile">导入远程 Host 文件</el-button>
-        <el-button size="small" @click="addNewHostFile">新增 Host 文件</el-button>
-      </el-col>
-    </el-row>
-    <el-table border align="center" :data="$dc.hostFileList">
-      <el-table-column prop="checked" label="启用" width="85">
+    <div class="action-wrapper">
+      <input type="file" ref="fileimport" @change="importHostFile" style="display:none;" />
+      <el-button size="small" @click="importHostFileBtnClick">导入 Host 文件</el-button>
+      <el-button size="small" type="primary" @click="importRemoteHostFile">导入远程 Host 文件</el-button>
+      <el-button size="small" @click="addNewHostFile">新增 Host 文件</el-button>
+    </div>
+    <el-table border :data="$dc.hostFileList">
+      <el-table-column align="center" prop="checked" label="启用" width="85">
         <template v-slot="scope">
           <el-checkbox :checked="scope.row.checked" @change="toggleFile(scope.row.name)" :disabled="!$dc.hostState" />
         </template>
       </el-table-column>
-      <el-table-column prop="name" label="名字" width="150"></el-table-column>
-      <el-table-column prop="description" label="描述" />
-      <el-table-column label="操作" :width="136" :context="_self">
+      <el-table-column align="center" prop="name" label="名字" width="150"></el-table-column>
+      <el-table-column align="center" prop="description" label="描述" />
+      <el-table-column align="center" label="操作" :width="150" :context="_self">
         <template v-slot="scope">
-          <a class="link-btn" :href="'#/edithost?name=' + scope.row.name">
+          <a class="link-btn" :href="'#/host/create?name=' + scope.row.name">
             <el-button type="info" icon="el-icon-edit" size="mini"></el-button>
           </a>
           <a class="link-btn" :href="'/host/download?name=' + scope.row.name" target="_blank">
@@ -76,7 +74,7 @@ export default {
       });
     },
     addNewHostFile() {
-      this.$router.push('createhostfile');
+      this.$router.push('/host/create');
     },
     importHostFileBtnClick() {
       this.$refs.fileimport.click();
@@ -120,7 +118,12 @@ export default {
   },
 };
 </script>
-<style lang="postcss">
+<style lang="scss">
+.action-wrapper {
+  text-align: right;
+  margin-bottom: 10px;
+}
+
 .host-view {
   .addhost-btn-wrap {
     text-align: right;

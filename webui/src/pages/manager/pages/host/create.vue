@@ -60,7 +60,7 @@ export default {
                 message: '恭喜你，创建成功',
                 type: 'success',
               });
-              this.$router.push(`edithost?name=${this.createFileForm.name}`);
+              this.$router.push(`/host/edit?name=${this.createFileForm.name}`);
             } else {
               this.$message.error(`出错了，${serverData.msg}`);
             }
@@ -71,7 +71,7 @@ export default {
       });
     },
     back() {
-      this.$router.push('hostfilelist');
+      this.$router.push('/host/list');
     },
   },
 };
