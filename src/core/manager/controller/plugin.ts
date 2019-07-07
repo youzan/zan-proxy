@@ -2,14 +2,14 @@ import fs from 'fs-extra';
 import Koa, { Context } from 'koa';
 import koaMount from 'koa-mount';
 import path from 'path';
-import { Controller, Ctx, Get, InternalServerError, Post } from 'routing-controllers';
+import { JsonController, Ctx, Get, InternalServerError, Post } from 'routing-controllers';
 import { Inject, Service } from 'typedi';
 import { map } from 'lodash';
 
 import { PluginService } from '@core/services';
 
 @Service()
-@Controller('/plugins')
+@JsonController('/plugins')
 export class PluginController {
   @Inject() private pluginManager: PluginService;
 

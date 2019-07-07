@@ -3,13 +3,13 @@ import fs from 'fs-extra';
 import { Context } from 'koa';
 import path from 'path';
 import ip from 'ip';
-import { Controller, Ctx, Get } from 'routing-controllers';
+import { JsonController, Ctx, Get } from 'routing-controllers';
 import { Inject, Service } from 'typedi';
 
 import { AppInfoService, HostService, RuleService } from '../../services';
 
 @Service()
-@Controller('/utils')
+@JsonController('/utils')
 export class UtilsController {
   @Inject() private appInfoService: AppInfoService;
   @Inject() private hostService: HostService;
@@ -57,9 +57,9 @@ export class UtilsController {
         }
       }
 
-      const hostFileList = this.hostService.getHostFileList(userID);
+      const hostFileList = this.hostService.getHostFileList();
       for (const hostFile of hostFileList) {
-        const hf = this.hostService.getHostFile(userID, hostFile.name);
+        const hf = this.hostService.getHostFile(hostFile.name);
         if (!hf) {
           continue;
         }

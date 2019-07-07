@@ -1,11 +1,11 @@
 import { Context } from 'koa';
-import { Controller, Ctx, Get, Post } from 'routing-controllers';
+import { JsonController, Ctx, Get, Post } from 'routing-controllers';
 import { Inject, Service } from 'typedi';
 
 import { ErrNameExists, ProfileService, RuleService } from '../../services';
 
 @Service()
-@Controller('/rule')
+@JsonController('/rule')
 export class RuleController {
   @Inject() private ruleService: RuleService;
   @Inject() private profileService: ProfileService;

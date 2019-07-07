@@ -1,6 +1,7 @@
 import fs from 'fs-extra';
 import path from 'path';
 import Container from 'typedi';
+import { each } from 'lodash';
 import { AppInfoService } from './services';
 
 const proxyDataDir = Container.get(AppInfoService).proxyDataDir;
@@ -11,12 +12,20 @@ function rm(p: string) {
   }
 }
 
-function move(source: string, target: string) {
+function move(source: string, target: string, transformer?: (text: any) => any) {
   if (fs.existsSync(source)) {
-    fs.moveSync(source, target);
+    let text = fs.readFileSync(source, 'utf-8');
+    if (transformer) {
+      text = transformer(text);
+    }
+    fs.writeFileSync(target, text, 'utf-8');
+    fs.removeSync(source);
   }
 }
 
+/**
+ * 旧版数据方法
+ */
 export function migrateFromOld() {
   const unusedFileOrDir = [
     path.join(proxyDataDir, 'clientIpUserMap.json'),
@@ -26,6 +35,7 @@ export function migrateFromOld() {
   ];
   unusedFileOrDir.forEach(rm);
 
+  // profile
   const profile = {
     source: path.join(proxyDataDir, 'profile/root.json'),
     target: path.join(proxyDataDir, 'profile.json'),
@@ -33,12 +43,19 @@ export function migrateFromOld() {
   move(profile.source, profile.target);
   rm(path.join(profile.source, '..'));
 
+  // mock-data & mock-list
   const mockList = {
     source: path.join(proxyDataDir, 'mock-list/root.json'),
     target: path.join(proxyDataDir, 'mock-list.json'),
   };
-  // mock-data & mock-list
-  move(mockList.source, mockList.target);
+  move(mockList.source, mockList.target, text => {
+    const data = JSON.parse(text);
+    each(data, item => {
+      item.contentType = item.contenttype;
+      delete item.contenttype;
+    });
+    return JSON.stringify(data);
+  });
   rm(path.join(mockList.source, '..'));
 
   const mockRecordFiles = fs.readdirSync(path.join(proxyDataDir, 'mock-data'));
@@ -49,6 +66,18 @@ export function migrateFromOld() {
     move(
       path.join(proxyDataDir, 'mock-data', file),
       path.join(proxyDataDir, 'mock-data', file.replace(/^root_/, '')),
+    );
+  });
+
+  // host
+  const hostFiles = fs.readdirSync(path.join(proxyDataDir, 'host'));
+  hostFiles.forEach(file => {
+    if (!file.startsWith('root_')) {
+      return;
+    }
+    move(
+      path.join(proxyDataDir, 'host', file),
+      path.join(proxyDataDir, 'host', file.replace(/^root_/, '')),
     );
   });
 }

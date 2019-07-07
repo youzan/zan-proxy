@@ -1,5 +1,5 @@
 import { Context } from 'koa';
-import { Controller, Ctx, Get, Post } from 'routing-controllers';
+import { Ctx, Get, Post, JsonController } from 'routing-controllers';
 import { Inject, Service } from 'typedi';
 
 import { MockDataService } from '../../services';
@@ -8,7 +8,7 @@ import { MockDataService } from '../../services';
  * 数据文件相关api
  */
 @Service()
-@Controller('/mock')
+@JsonController('/mock')
 export class MockDataController {
   @Inject() private mockDataService: MockDataService;
 

@@ -198,8 +198,6 @@ export default {
     },
     onDeleteRow(row, index, list) {
       this.$confirm('此操作不可恢复, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
         type: 'warning',
       }).then(() => {
         this.filecontent.content.splice(index, 1);

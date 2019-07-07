@@ -1,12 +1,12 @@
 import { isJson } from '@core/utils';
 import { Context } from 'koa';
-import { Controller, Ctx, Get, Post } from 'routing-controllers';
+import { Ctx, Get, Post, JsonController } from 'routing-controllers';
 import { Inject, Service } from 'typedi';
 
 import { HttpTrafficService } from '../../services';
 
 @Service()
-@Controller('/traffic')
+@JsonController('/traffic')
 export class HttpTrafficController {
   @Inject() private httpTrafficService: HttpTrafficService;
 

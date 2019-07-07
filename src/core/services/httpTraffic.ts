@@ -3,7 +3,6 @@ import {
   ITrafficRecord,
   ITrafficRequest,
   ITrafficResponse,
-  ITrafficStatus,
 } from '@core/types/http-traffic';
 import EventEmitter from 'events';
 import fs from 'fs-extra';

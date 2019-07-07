@@ -1,64 +1,84 @@
 import { IHostFile } from '@core/types/host';
 import EventEmitter from 'events';
 import fs from 'fs-extra';
-import { find, forEach, get } from 'lodash';
-import fetch from 'node-fetch';
+import { find, forEach, get, defaults } from 'lodash';
 import path from 'path';
 import { Service } from 'typedi';
 
 import { AppInfoService } from './appInfo';
+import { request } from '@core/utils';
 
 const IP_REG = /((?:(?:25[0-5]|2[0-4]\d|[01]?\d?\d)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d?\d))/;
 
-interface IHostMap {
+interface IUsingHostMap {
   globHostMap: { [host: string]: string };
   hostMap: { [host: string]: string };
 }
 
-/**
- * Created by tsxuehu on 8/3/17.
- */
 @Service()
 export class HostService extends EventEmitter {
-  private userHostFilesMap: {
-    [user: string]: {
-      [fileName: string]: IHostFile;
-    };
-  };
-  private inUsingHostsMapCache: {
-    [user: string]: IHostMap;
+  private hostFilesMap: {
+    [fileName: string]: IHostFile;
   };
   private hostSaveDir: string;
+
   constructor(appInfoService: AppInfoService) {
     super();
-    // userId -> { filename -> content}
-    this.userHostFilesMap = {};
-    // 缓存
-    // userId, {globHostMap, hostMap}
-    this.inUsingHostsMapCache = {};
     const proxyDataDir = appInfoService.proxyDataDir;
     this.hostSaveDir = path.join(proxyDataDir, 'host');
 
-    const contentMap = fs
+    this.hostFilesMap = fs
       .readdirSync(this.hostSaveDir)
       .filter(name => name.endsWith('.json'))
-      .reduce((prev, curr) => {
+      .reduce((map, fileName) => {
         try {
-          prev[curr] = fs.readJsonSync(path.join(this.hostSaveDir, curr));
+          const content: IHostFile = fs.readJsonSync(path.join(this.hostSaveDir, fileName));
+          map[content.name] = content;
         } catch (e) {
           // ignore
         }
-        return prev;
+        return map;
       }, {});
-    forEach(contentMap, (content, fileName) => {
-      // @ts-ignore
-      const hostName = content.name;
-      const userId = fileName.substr(0, this._getUserIdLength(fileName, hostName));
-      this.userHostFilesMap[userId] = this.userHostFilesMap[userId] || {};
-      this.userHostFilesMap[userId][hostName] = content;
-    });
   }
 
+  /**
+   * 获取 host 配置文件路径
+   */
+  private getHostFilePath(name: string) {
+    const fileName = `${name}.json`;
+    const filePath = path.join(this.hostSaveDir, fileName);
+    return filePath;
+  }
+
+  /**
+   * 获取生效的host
+   */
+  private get usingHosts(): IUsingHostMap {
+    // 读文件加载host
+    const hostMap = {};
+    const globHostMap = {};
+    forEach(this.hostFilesMap, (_, name) => {
+      const file = this.hostFilesMap[name];
+      if (!file.checked) {
+        return;
+      }
+      forEach(file.content, (ip, host) => {
+        if (host.startsWith('*')) {
+          globHostMap[host.substr(1, host.length)] = ip;
+        } else {
+          hostMap[host] = ip;
+        }
+      });
+    });
+    return {
+      globHostMap,
+      hostMap,
+    };
+  }
+
+  /**
+   * 根据 host 配置解析域名到 ip
+   */
   public resolveHost(hostname: string): string {
     if (!hostname) {
       return hostname;
@@ -70,13 +90,13 @@ export class HostService extends EventEmitter {
     }
 
     let ip: string | undefined;
-    const inUsingHosts = this.getInUsingHosts('root');
-    ip = inUsingHosts.hostMap[hostname];
+    const usingHosts = this.usingHosts;
+    ip = usingHosts.hostMap[hostname];
     if (ip) {
       return ip;
     }
-    // 配置 *开头的host  计算属性globHostMap已经将*去除
-    ip = find(inUsingHosts.globHostMap, (_, host) => {
+    // 匹配 * 开头的host，计算属性 globHostMap 已经将 * 去除
+    ip = find(usingHosts.globHostMap, (_, host) => {
       return hostname.endsWith(host);
     });
     if (ip) {
@@ -88,20 +108,16 @@ export class HostService extends EventEmitter {
   /**
    * 获取用户的host文件列表
    */
-  public getHostFileList(userId: string) {
-    return Object.values(this.userHostFilesMap[userId]);
+  public getHostFileList() {
+    return Object.values(this.hostFilesMap);
   }
 
   /**
    * 创建host文件
-   * @param userId
-   * @param name
-   * @param description
-   * @returns {boolean}
    */
-  public async createHostFile(userId, name, description) {
-    if (this.userHostFilesMap[userId] && this.userHostFilesMap[userId][name]) {
-      // 文件已经存在不让创建
+  public async createHostFile(name: string, description: string) {
+    if (this.hostFilesMap[name]) {
+      // 文件已经存在，不创建
       return false;
     }
 
@@ -114,133 +130,84 @@ export class HostService extends EventEmitter {
       },
       name,
     };
-    this.userHostFilesMap[userId] = this.userHostFilesMap[userId] || {};
-    this.userHostFilesMap[userId][name] = content;
+    this.hostFilesMap[name] = content;
 
-    const hostfileName = this._getHostFilePath(userId, name);
+    const hostfileName = this.getHostFilePath(name);
     await fs.writeJson(hostfileName, content, { encoding: 'utf-8' });
-    this.emit('data-change', userId, this.getHostFileList(userId));
-    this.emit('host-saved', userId, name, content);
+    this.emit('data-change', this.getHostFileList());
     return true;
   }
 
-  public async deleteHostFile(userId, name) {
-    delete this.userHostFilesMap[userId][name];
-    delete this.inUsingHostsMapCache[userId];
+  /**
+   * 删除 host 文件
+   */
+  public async deleteHostFile(name: string) {
+    delete this.hostFilesMap[name];
+
     /**
      * 删除文件
      */
-    const filePath = this._getHostFilePath(userId, name);
+    const filePath = this.getHostFilePath(name);
     const exists = await fs.pathExists(filePath);
     if (exists) {
       await fs.remove(filePath);
     }
-    this.emit('data-change', userId, this.getHostFileList(userId));
-    this.emit('host-deleted', userId, name);
-  }
-
-  public async toggleUseHost(userId, filename) {
-    const toSaveFileName: string[] = [];
-    forEach(this.userHostFilesMap[userId], (content, name) => {
-      if (content.name === filename) {
-        content.checked = !content.checked;
-        toSaveFileName.push(name);
-      }
-    });
-    // 保存文件
-    for (const name of toSaveFileName) {
-      const hostfileName = this._getHostFilePath(userId, name);
-      const content = this.userHostFilesMap[userId][name];
-      await fs.writeJson(hostfileName, content, { encoding: 'utf-8' });
-    }
-    delete this.inUsingHostsMapCache[userId];
-    this.emit('data-change', userId, this.getHostFileList(userId));
-  }
-
-  public getHostFile(userId: string, name: string): IHostFile | undefined {
-    return get(this.userHostFilesMap, [userId, name]);
-  }
-
-  public async saveHostFile(userId, name, content) {
-    if (!this.userHostFilesMap[userId]) {
-      this.userHostFilesMap[userId] = {};
-    }
-    this.userHostFilesMap[userId][name] = content;
-
-    // 如果正在使用，则删除
-    if (content.checked) {
-      delete this.inUsingHostsMapCache[userId];
-    }
-
-    const hostfileName = this._getHostFilePath(userId, name);
-    await fs.writeJson(hostfileName, content, { encoding: 'utf-8' });
-    this.emit('host-saved', userId, name, content);
-    this.emit('data-change', userId, this.getHostFileList(userId));
-  }
-
-  public async importRemoteHostFile(userId: string, url: string) {
-    const resp = await fetch(url);
-    const f = await resp.json();
-    f.meta = {
-      local: false,
-      url,
-    };
-    if (!f.content) {
-      f.content = {};
-    }
-    if (!f.name) {
-      f.name = url.split('/').slice(-1)[0] || url;
-    }
-    const hostFile = this.getHostFile(userId, f.name);
-    if (hostFile && hostFile.checked) {
-      f.checked = true;
-    } else {
-      f.checked = false;
-    }
-    return this.saveHostFile(userId, f.name, f);
-  }
-
-  private _getHostFilePath(userId, hostName) {
-    const fileName = `${userId}_${hostName}.json`;
-    const filePath = path.join(this.hostSaveDir, fileName);
-    return filePath;
-  }
-
-  private _getUserIdLength(ruleFileName, hostName) {
-    return ruleFileName.length - hostName.length - 6;
+    this.emit('data-change', this.getHostFileList());
   }
 
   /**
-   * 获取用户生效的host
-   * @param userId
-   * @returns {*}
+   * 启用或禁用某个host配置
    */
-  private getInUsingHosts(userId) {
-    let hosts = this.inUsingHostsMapCache[userId];
-    if (!hosts) {
-      // 读文件加载host
-      const hostMap = {};
-      const globHostMap = {};
-      const userHostFile = this.userHostFilesMap[userId] || {};
-      Object.keys(userHostFile).forEach(name => {
-        const file = this.userHostFilesMap[userId][name];
-        if (!file.checked) {
-          return;
-        }
-        forEach(file.content, (ip, host) => {
-          if (host.startsWith('*')) {
-            globHostMap[host.substr(1, host.length)] = ip;
-          } else {
-            hostMap[host] = ip;
-          }
-        });
-      });
-      hosts = {
-        globHostMap,
-        hostMap,
-      };
-      this.inUsingHostsMapCache[userId] = hosts;
+  public async toggleHost(name: string) {
+    const hostFile = this.hostFilesMap[name];
+    if (!hostFile) {
+      return;
     }
-    return hosts;
+
+    hostFile.checked = !hostFile.checked;
+    const hostfileName = this.getHostFilePath(name);
+    await fs.writeJson(hostfileName, hostFile, { encoding: 'utf-8' });
+    this.emit('data-change', this.getHostFileList());
+  }
+
+  /**
+   * 获取某个 host 配置
+   */
+  public getHostFile(name: string) {
+    return get(this.hostFilesMap, name);
+  }
+
+  /**
+   * 保存某个 host 配置
+   */
+  public async saveHostFile(name: string, content: IHostFile) {
+    this.hostFilesMap[name] = content;
+
+    const hostfileName = this.getHostFilePath(name);
+    await fs.writeJson(hostfileName, content, { encoding: 'utf-8' });
+    this.emit('data-change', this.getHostFileList());
+  }
+
+  /**
+   * 导入远程 host 配置
+   */
+  public async importRemoteHostFile(url: string) {
+    const resp = await request.get(url);
+    const file: IHostFile = await resp.json();
+    defaults(file, {
+      content: {},
+      name: url.split('/').slice(-1)[0] || url,
+    });
+    file.meta = {
+      local: false,
+      url,
+    };
+    const hostFile = this.getHostFile(file.name);
+    if (hostFile && hostFile.checked) {
+      file.checked = true;
+    } else {
+      file.checked = false;
+    }
+    return this.saveHostFile(file.name, file);
   }
 }

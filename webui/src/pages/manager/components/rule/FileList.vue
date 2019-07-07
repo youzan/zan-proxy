@@ -84,8 +84,6 @@ export default {
   methods: {
     onDeleteFile(row, index) {
       this.$confirm(`此操作将永久删除该文件: ${row.name}, 是否继续?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
         type: 'warning',
       }).then(() => {
         ruleApi.deleteFile(row.name).then(response => {
@@ -106,7 +104,6 @@ export default {
         window.location = '/rule/download?name=' + row.name;
       } else {
         this.$alert(row.meta.url, '规则URL', {
-          confirmButtonText: 'OK',
           callback: action => {},
         });
       }
@@ -121,8 +118,6 @@ export default {
     },
     onUpdateFile(row, index) {
       this.$confirm(`确定更新: ${row.name} 么?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
         type: 'warning',
       }).then(() => {
         ruleApi.getRemoteRuleFile(row.meta.url).then(response => {

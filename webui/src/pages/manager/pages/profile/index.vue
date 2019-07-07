@@ -1,12 +1,10 @@
 <template>
   <div>
     <div class="main-content__title">转发变量管理</div>
-    <el-row :gutter="20" style="margin-bottom: 10px">
-      <el-col :span="6" :offset="18" style="text-align:right">
-        <el-button size="small" @click="save" type="primary">保存转发变量</el-button>
-        <el-button size="small" @click="addParam">增加转发变量</el-button>
-      </el-col>
-    </el-row>
+    <div class="action-wrapper">
+      <el-button size="small" @click="save" type="primary">保存转发变量</el-button>
+      <el-button size="small" @click="addParam">增加转发变量</el-button>
+    </div>
     <el-table border :data="projectPathArray">
       <el-table-column type="index" align="center" width="60"></el-table-column>
       <el-table-column prop="key" align="center" label="变量名" width="200">
@@ -47,15 +45,8 @@ export default class Profile extends Vue {
   @profileModule.State('projectPathArray')
   projectPathArray: IProjectPath[];
 
-  deleteParam(row: IProjectPath, index: number) {
-    this.$confirm('是否删除该变量?', '确认', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning',
-    }).then(() => {
-      this.projectPathArray.splice(index, 1);
-      this.save();
-    });
+  async deleteParam(row: IProjectPath, index: number) {
+    this.projectPathArray.splice(index, 1);
   }
 
   async save() {
@@ -92,3 +83,10 @@ export default class Profile extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.action-wrapper {
+  text-align: right;
+  margin-bottom: 10px;
+}
+</style>
