@@ -80,6 +80,18 @@ export function migrateFromOld() {
       path.join(proxyDataDir, 'host', file.replace(/^root_/, '')),
     );
   });
+
+  // rule
+  const ruleFiles = fs.readdirSync(path.join(proxyDataDir, 'rule'));
+  ruleFiles.forEach(file => {
+    if (!file.startsWith('root_')) {
+      return;
+    }
+    move(
+      path.join(proxyDataDir, 'rule', file),
+      path.join(proxyDataDir, 'rule', file.replace(/^root_/, '')),
+    );
+  });
 }
 
 /**

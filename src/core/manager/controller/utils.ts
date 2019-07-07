@@ -40,41 +40,36 @@ export class UtilsController {
 
     const matchScripts: string[] = [];
 
-    const userIDs = Object.keys(this.ruleService.rules);
-    for (const userID of userIDs) {
-      const userRuleFilesMap = this.ruleService.rules[userID];
-      const userRuleFiles: IRuleFile[] = Object.keys(userRuleFilesMap).map(
-        k => userRuleFilesMap[k],
-      );
-      for (const ruleFile of userRuleFiles) {
-        for (const rule of ruleFile.content) {
-          matchScripts.push(`if (url.indexOf("${rule.match}") > -1) { return zProxy; }`);
+    const userRuleFiles: IRuleFile[] = this.ruleService.getRuleFileList();
+    for (const ruleFile of userRuleFiles) {
+      for (const rule of ruleFile.content) {
+        matchScripts.push(`if (url.indexOf("${rule.match}") > -1) { return zProxy; }`);
+        matchScripts.push(
+          `try {
+            if ((new RegExp("${rule.match}")).test(url)) { return zProxy; }
+          } catch(e){}`,
+        );
+      }
+    }
+
+    const hostFileList = this.hostService.getHostFileList();
+    for (const hostFile of hostFileList) {
+      const hf = this.hostService.getHostFile(hostFile.name);
+      if (!hf) {
+        continue;
+      }
+      const hostFileContent = hf.content;
+      const hosts = Object.keys(hostFileContent);
+      for (const host of hosts) {
+        matchScripts.push(`if ( host == "${host}" ) { return zProxy; }`);
+        if (host.startsWith('*')) {
           matchScripts.push(
-            `try {
-              if ((new RegExp("${rule.match}")).test(url)) { return zProxy; }
-            } catch(e){}`,
+            `if ( host.indexOf("${host.substr(1, host.length)}") > -1 ) { return zProxy; } `,
           );
         }
       }
-
-      const hostFileList = this.hostService.getHostFileList();
-      for (const hostFile of hostFileList) {
-        const hf = this.hostService.getHostFile(hostFile.name);
-        if (!hf) {
-          continue;
-        }
-        const hostFileContent = hf.content;
-        const hosts = Object.keys(hostFileContent);
-        for (const host of hosts) {
-          matchScripts.push(`if ( host == "${host}" ) { return zProxy; }`);
-          if (host.startsWith('*')) {
-            matchScripts.push(
-              `if ( host.indexOf("${host.substr(1, host.length)}") > -1 ) { return zProxy; } `,
-            );
-          }
-        }
-      }
     }
+
     const pac = `\n\
                       var direct = 'DIRECT;';\n\
                       var zProxy = 'PROXY ${ip}:${port}';\n\

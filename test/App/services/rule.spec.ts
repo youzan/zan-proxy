@@ -58,31 +58,31 @@ describe('RuleService', () => {
   after(() => rimraf.sync(os.homedir()));
 
   it('should get the correct rule file list', done => {
-    ruleService.getRuleFileList('root').should.not.empty;
+    ruleService.getRuleFileList().should.not.empty;
     done();
   });
 
   it('should get the correct rule to process', done => {
-    const rule = ruleService.getProcessRule('root', 'GET', URL.parse('http://www.youzan.com'));
+    const rule = ruleService.getProcessRule('GET', URL.parse('http://www.youzan.com'));
     rule.should.exist;
     done();
   });
 
   it('should create a create rule file correctly', async () => {
-    await ruleService.createRuleFile('root', 'test2', 'description');
-    ruleService.getRuleFileList('root').length.should.gt(1);
-    await ruleService.deleteRuleFile('root', 'test2');
+    await ruleService.create('test2', 'description');
+    ruleService.getRuleFileList().length.should.gt(1);
+    await ruleService.deleteRuleFile('test2');
   });
 
   it('should delete the rule file correctly', async () => {
-    await ruleService.createRuleFile('root', 'test2', 'description');
-    await ruleService.deleteRuleFile('root', 'test2');
-    ruleService.getRuleFileList('root').length.should.lt(2);
+    await ruleService.create('test2', 'description');
+    await ruleService.deleteRuleFile('test2');
+    ruleService.getRuleFileList().length.should.lt(2);
   });
 
   it('should disable a rule file', async () => {
-    await ruleService.setRuleFileCheckStatus('root', 'test', false);
-    const rule = ruleService.getProcessRule('root', 'GET', URL.parse('http://www.youzan.com'));
+    await ruleService.setRuleFileCheckStatus('test', false);
+    const rule = ruleService.getProcessRule('GET', URL.parse('http://www.youzan.com'));
     should.not.exist(rule);
   });
 });

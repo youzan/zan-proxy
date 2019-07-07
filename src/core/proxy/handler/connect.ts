@@ -1,6 +1,5 @@
 import { AppInfoService } from '@core/services';
 import http from 'http';
-import LRUCache from 'lru-cache';
 import net from 'net';
 import { Inject, Service } from 'typedi';
 

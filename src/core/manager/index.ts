@@ -58,12 +58,6 @@ export class Manager {
       }),
     );
 
-    app.use(async (ctx, next) => {
-      // 取用户Id
-      ctx.userId = 'root';
-      await next();
-    });
-
     // 路由
     useKoaServer(app, {
       controllers: apiControllers,

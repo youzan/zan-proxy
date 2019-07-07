@@ -12,6 +12,7 @@ import {
 import { IProfile } from '../../types/profile';
 import { IMockRecord } from '@core/types/mock';
 import { IHostFile } from '@core/types/host';
+import { IRuleFile } from '@core/types/rule';
 
 @Service()
 export class SocketController {
@@ -71,7 +72,7 @@ export class SocketController {
       const hostFileList = await this.hostService.getHostFileList();
       client.emit('hostfilelist', hostFileList);
       // 规则列表
-      const ruleFileList = await this.ruleService.getRuleFileList(userId);
+      const ruleFileList = await this.ruleService.getRuleFileList();
       client.emit('rulefilelist', ruleFileList);
       // 数据文件列表
       const mockDataList = await this.mockDataService.getMockList();
@@ -87,7 +88,7 @@ export class SocketController {
       socket.emit('hostfilelist', hostFilelist);
     });
     // 规则文件列表
-    this.ruleService.on('data-change', (userId, ruleFilelist) => {
+    this.ruleService.on('data-change', (ruleFilelist: IRuleFile[]) => {
       socket.emit('rulefilelist', ruleFilelist);
     });
     // mock文件列表

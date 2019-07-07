@@ -115,25 +115,25 @@ export class HostService extends EventEmitter {
   /**
    * 创建host文件
    */
-  public async createHostFile(name: string, description: string) {
+  public async create({ name, description, content = {} }: IHostFile) {
     if (this.hostFilesMap[name]) {
       // 文件已经存在，不创建
       return false;
     }
 
-    const content: IHostFile = {
+    const entity: IHostFile = {
       checked: false,
-      content: {},
+      content,
       description,
       meta: {
         local: true,
       },
       name,
     };
-    this.hostFilesMap[name] = content;
+    this.hostFilesMap[name] = entity;
 
     const hostfileName = this.getHostFilePath(name);
-    await fs.writeJson(hostfileName, content, { encoding: 'utf-8' });
+    await fs.writeJson(hostfileName, entity, { encoding: 'utf-8' });
     this.emit('data-change', this.getHostFileList());
     return true;
   }

@@ -1,5 +1,5 @@
 import { Context } from 'koa';
-import { JsonController, Ctx, Get, Post } from 'routing-controllers';
+import { JsonController, Ctx, Get, Post, InternalServerError } from 'routing-controllers';
 import { Inject, Service } from 'typedi';
 
 import { ErrNameExists, ProfileService, RuleService } from '../../services';
@@ -12,112 +12,80 @@ export class RuleController {
 
   @Post('/create')
   public async create(@Ctx() ctx: Context) {
-    const userId = ctx.userId;
     try {
-      const result = await this.ruleService.createRuleFile(
-        userId,
+      const result = await this.ruleService.create(
         ctx.request.body.name,
         ctx.request.body.description,
       );
-      return {
-        code: 0,
-        msg: result,
-      };
+      return result;
     } catch (error) {
       const msg = error === ErrNameExists ? '文件已存在' : `未知错误: ${error.toString()}`;
-      return {
-        code: 1,
-        msg,
-      };
+      throw new InternalServerError(msg);
     }
   }
 
   // 获取规则文件列表
   @Get('/filelist')
   public async fileList(@Ctx() ctx: Context) {
-    const userId = ctx.userId;
-    const ruleFileList = await this.ruleService.getRuleFileList(userId);
-    return {
-      code: 0,
-      list: ruleFileList,
-    };
+    const ruleFileList = await this.ruleService.getRuleFileList();
+    return ruleFileList;
   }
 
   // 删除规则文件
   @Get('/deletefile')
   public async deleteFile(@Ctx() ctx: Context) {
-    const userId = ctx.userId;
-    await this.ruleService.deleteRuleFile(userId, ctx.query.name);
-    return {
-      code: 0,
-    };
+    await this.ruleService.deleteRuleFile(ctx.query.name);
+    return true;
   }
 
   // 设置文件勾选状态
   @Get('/setfilecheckstatus')
   public async setFileCheckStatus(@Ctx() ctx: Context) {
-    const userId = ctx.userId;
     this.ruleService.setRuleFileCheckStatus(
-      userId,
       ctx.query.name,
       parseInt(ctx.query.checked, 10) === 1 ? true : false,
     );
-    return {
-      code: 0,
-    };
+    return true;
   }
 
   // 获取规则文件
   @Get('/getfile')
   public async getFile(@Ctx() ctx: Context) {
-    const userId = ctx.userId;
-    const content = await this.ruleService.getRuleFile(userId, ctx.query.name);
-    return {
-      code: 0,
-      data: content,
-    };
+    const content = await this.ruleService.getRuleFile(ctx.query.name);
+    return content;
   }
 
   // 保存规则文件
   @Post('/savefile')
   public async saveFile(@Ctx() ctx: Context) {
-    const userId = ctx.userId;
-    await this.ruleService.saveRuleFile(userId, ctx.request.body);
-    return {
-      code: 0,
-    };
+    await this.ruleService.saveRuleFile(ctx.request.body);
+    return true;
   }
 
   // 重命名规则文件
   @Post('/updatefileinfo/:origin')
   public async updateFileInfo(@Ctx() ctx: Context) {
-    const { userId, params, request } = ctx;
+    const { params, request } = ctx;
     const { origin } = params;
     const { name, description } = request.body;
     try {
-      await this.ruleService.updateFileInfo(userId, origin, {
+      await this.ruleService.updateFileInfo(origin, {
         description,
         name,
       });
-      return {
-        code: 0,
-      };
+      return true;
     } catch (e) {
       const msg = e === ErrNameExists ? '有重复名字' : `未知错误: ${e.toString()}`;
-      return {
-        code: 1,
-        msg,
-      };
+      throw new InternalServerError(msg);
     }
   }
 
   // 导出规则文件
   @Get('/download')
   public async download(@Ctx() ctx: Context) {
-    const userId = ctx.userId;
     const name = ctx.query.name;
-    const content = await this.ruleService.getRuleFile(userId, name);
-    ctx.set('Content-disposition', `attachment;filename=${encodeURI(name)}.json`);
+    const content = await this.ruleService.getRuleFile(name);
+    ctx.attachment(`${name}.json`);
     return content;
   }
 
@@ -144,40 +112,23 @@ export class RuleController {
 
     // 测试规则
     return {
-      code: 0,
-      data: {
-        matchRlt,
-        targetRlt,
-      },
+      matchRlt,
+      targetRlt,
     };
   }
 
   @Get('/import')
   public async import(@Ctx() ctx: Context) {
-    const { userId, query } = ctx;
+    const { query } = ctx;
     const ruleFileUrl = query.url;
-    try {
-      const ruleFile = await this.ruleService.importRemoteRuleFile(userId, ruleFileUrl);
-      return {
-        code: 0,
-        data: ruleFile,
-      };
-    } catch (e) {
-      return {
-        code: 1,
-        msg: e,
-      };
-    }
+    const ruleFile = await this.ruleService.importRemoteRuleFile(ruleFileUrl);
+    return ruleFile;
   }
 
   @Get('/copy')
   public async copy(@Ctx() ctx: Context) {
-    const userId = ctx.userId;
     const name = ctx.query.name;
-    const copied = await this.ruleService.copyRuleFile(userId, name);
-    return {
-      code: 0,
-      data: copied,
-    };
+    const copied = await this.ruleService.copyRuleFile(name);
+    return copied;
   }
 }

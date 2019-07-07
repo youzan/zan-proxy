@@ -1,57 +1,64 @@
 import EventEmitter from 'events';
 import fs from 'fs-extra';
-import { cloneDeep, forEach, lowerCase } from 'lodash';
-import fetch from 'node-fetch';
+import { cloneDeep, lowerCase, flatMap, filter } from 'lodash';
 import path from 'path';
 import { Service } from 'typedi';
 import uuid from 'uuid/v4';
+import URL from 'url';
 
-import { ORule, IRuleAction, IRuleActionData, IRuleFile } from '@core/types/rule';
+import { IRule, IRuleAction, IRuleActionData, IRuleFile } from '@core/types/rule';
 
 import { AppInfoService } from './appInfo';
+import { request } from '@core/utils';
 
 export const ErrNameExists = new Error('name exists');
 
 @Service()
 export class RuleService extends EventEmitter {
-  public rules: { [user: string]: { [name: string]: IRuleFile } };
-  private usingRuleCache: object;
   private ruleSaveDir: string;
+
+  public rules: { [name: string]: IRuleFile };
+
   constructor(appInfoService: AppInfoService) {
     super();
-    // userId - > (filename -> rule)
-    this.rules = {};
-    // 缓存数据: 正在使用的规则 userId -> inUsingRuleList
-    this.usingRuleCache = {};
     const proxyDataDir = appInfoService.proxyDataDir;
     this.ruleSaveDir = path.join(proxyDataDir, 'rule');
 
-    const contentMap = fs
+    this.rules = fs
       .readdirSync(this.ruleSaveDir)
       .filter(name => name.endsWith('.json'))
-      .reduce((prev, curr) => {
+      .reduce((map, curr) => {
         try {
-          prev[curr] = fs.readJsonSync(path.join(this.ruleSaveDir, curr));
+          const content: IRuleFile = fs.readJsonSync(path.join(this.ruleSaveDir, curr));
+          map[content.name] = content;
         } catch (e) {
           // ignore
         }
-        return prev;
+        return map;
       }, {});
-    forEach(contentMap, (content, fileName) => {
-      // @ts-ignore
-      const ruleName = content.name;
-      const userId = fileName.substr(0, this._getUserIdLength(fileName, ruleName));
-      this.rules[userId] = this.rules[userId] || {};
-      this.rules[userId][ruleName] = content;
+  }
+
+  /**
+   * 正在使用中的转发规则
+   */
+  private get usingRules() {
+    return flatMap(this.rules, (file, filename) => {
+      // 转发规则未被选中
+      if (!file.checked) {
+        return [];
+      }
+      return filter(file.content, rule => rule.checked);
     });
   }
 
-  // 创建规则文件
-  public async createRuleFile(userId, name, description) {
-    if (this.rules[userId] && this.rules[userId][name]) {
+  /**
+   * 创建转发规则文件
+   */
+  public async create(name: string, description: string) {
+    if (this.rules[name]) {
       return ErrNameExists;
     }
-    const ruleFile = {
+    const ruleFile: IRuleFile = {
       checked: false,
       content: [],
       description,
@@ -63,77 +70,76 @@ export class RuleService extends EventEmitter {
       },
       name,
     };
-    this.rules[userId] = this.rules[userId] || {};
-    this.rules[userId][name] = ruleFile;
+    this.rules[name] = ruleFile;
     // 写文件
-    const filePath = this._getRuleFilePath(userId, name);
+    const filePath = this.getRuleFilePath(name);
     await fs.writeJson(filePath, ruleFile, { encoding: 'utf-8' });
     // 发送消息通知
-    this.emit('data-change', userId, this.getRuleFileList(userId));
+    this.emit('data-change', this.getRuleFileList());
     return true;
   }
 
-  // 返回用户的规则文件列表
-  public getRuleFileList(userId: string) {
-    return Object.values(this.rules[userId] || {});
+  /**
+   * 返回规则列表
+   */
+  public getRuleFileList() {
+    return Object.values(this.rules);
   }
 
-  // 删除规则文件
-  public async deleteRuleFile(userId, name) {
-    const rule = this.rules[userId][name];
+  /**
+   * 删除规则文件
+   */
+  public async deleteRuleFile(name: string) {
+    delete this.rules[name];
 
-    delete this.rules[userId][name];
-
-    const ruleFilePath = this._getRuleFilePath(userId, name);
+    const ruleFilePath = this.getRuleFilePath(name);
     await fs.remove(ruleFilePath);
     // 发送消息通知
-    this.emit('data-change', userId, this.getRuleFileList(userId));
-    if (rule.checked) {
-      // 清空缓存
-      delete this.usingRuleCache[userId];
-    }
+    this.emit('data-change', this.getRuleFileList());
   }
 
-  // 设置规则文件的使用状态
-  public async setRuleFileCheckStatus(userId, name, checked) {
-    this.rules[userId][name].checked = checked;
-    const ruleFilePath = this._getRuleFilePath(userId, name);
-    await fs.writeJson(ruleFilePath, this.rules[userId][name], {
+  /**
+   * 设置规则文件的使用状态
+   */
+  public async setRuleFileCheckStatus(name: string, checked: boolean) {
+    this.rules[name].checked = checked;
+    const ruleFilePath = this.getRuleFilePath(name);
+    await fs.writeJson(ruleFilePath, this.rules[name], {
       encoding: 'utf-8',
     });
     // 发送消息通知
-    this.emit('data-change', userId, this.getRuleFileList(userId));
-    delete this.usingRuleCache[userId];
+    this.emit('data-change', this.getRuleFileList());
   }
 
-  // 获取规则文件的内容
-  public getRuleFile(userId, name) {
-    return this.rules[userId][name];
+  /**
+   * 获取规则文件的内容
+   */
+  public getRuleFile(name: string) {
+    return this.rules[name];
   }
 
-  // 保存规则文件(可能是远程、或者本地)
-  public async saveRuleFile(userId, ruleFile: IRuleFile) {
-    const userRuleMap = this.rules[userId] || {};
-    const originRuleFile = userRuleMap[ruleFile.name];
+  /**
+   * 保存规则文件(可能是远程、或者本地)
+   */
+  public async saveRuleFile(ruleFile: IRuleFile) {
+    const originRuleFile = this.rules[ruleFile.name];
     if (originRuleFile) {
       ruleFile.checked = originRuleFile.checked;
       ruleFile.meta = originRuleFile.meta;
     }
-    userRuleMap[ruleFile.name] = ruleFile;
-    this.rules[userId] = userRuleMap;
     // 写文件
-    const filePath = this._getRuleFilePath(userId, ruleFile.name);
-    await fs.writeJson(filePath, userRuleMap[ruleFile.name], {
+    const filePath = this.getRuleFilePath(ruleFile.name);
+    await fs.writeJson(filePath, ruleFile, {
       encoding: 'utf-8',
     });
-    // 清空缓存
-    delete this.usingRuleCache[userId];
-    this.emit('data-change', userId, this.getRuleFileList(userId));
+    this.rules[ruleFile.name] = ruleFile;
+    this.emit('data-change', this.getRuleFileList());
   }
 
-  // 修改规则文件名称
+  /**
+   * 修改规则文件名称
+   */
   public async updateFileInfo(
-    userId,
     originName: string,
     {
       name,
@@ -143,53 +149,53 @@ export class RuleService extends EventEmitter {
       description: string;
     },
   ) {
-    const userRuleMap = this.rules[userId] || {};
+    const userRuleMap = this.rules;
     if (userRuleMap[name] && name !== originName) {
       throw ErrNameExists;
     }
+
     const ruleFile = userRuleMap[originName];
     // 删除旧的rule
-    delete this.rules[userId][originName];
-    const ruleFilePath = this._getRuleFilePath(userId, originName);
+    delete this.rules[originName];
+    const ruleFilePath = this.getRuleFilePath(originName);
     await fs.remove(ruleFilePath);
 
     // 修改rule名称
     ruleFile.name = name;
     ruleFile.description = description;
-    await this.saveRuleFile(userId, ruleFile);
+    await this.saveRuleFile(ruleFile);
   }
 
   /**
    * 根据请求,获取处理请求的规则
-   * @param method
-   * @param urlObj
    */
-  public getProcessRule(userId, method, urlObj): ORule | null {
-    let candidateRule = null;
-    const inusingRules = this.getUsingRules(userId);
-    for (const rule of inusingRules) {
+  public getProcessRule(method: string, urlObj: URL.UrlWithStringQuery) {
+    const usingRules = this.usingRules;
+    for (const rule of usingRules) {
       // 捕获规则
-      if (this._isUrlMatch(urlObj.href, rule.match) && this._isMethodMatch(method, rule.method)) {
-        candidateRule = rule;
-        break;
+      if (
+        this.isMatchUrl(urlObj.href as string, rule.match) &&
+        this.isMatchMethod(method, rule.method)
+      ) {
+        return rule;
       }
     }
-    return candidateRule;
   }
 
-  public async importRemoteRuleFile(userId, url): Promise<IRuleFile> {
+  /**
+   * 导入远程转发规则
+   */
+  public async importRemoteRuleFile(url: string): Promise<IRuleFile> {
     const ruleFile = await this.fetchRemoteRuleFile(url);
-    ruleFile.content.forEach(rule => {
-      if (rule.action && !rule.actionList) {
-        rule.actionList = [rule.action];
-      }
-    });
-    await this.saveRuleFile(userId, ruleFile);
+    await this.saveRuleFile(ruleFile);
     return ruleFile;
   }
 
-  public async fetchRemoteRuleFile(url): Promise<any> {
-    const response = await fetch(url);
+  /**
+   * 获取远程转发规则文件内容
+   */
+  public async fetchRemoteRuleFile(url: string) {
+    const response = await request.get(url);
     const responseData = await response.json();
     const ETag = response.headers.get('etag') || '';
     const content = responseData.content.map(remoteRule => {
@@ -209,7 +215,7 @@ export class RuleService extends EventEmitter {
         };
         return action;
       });
-      const rule: ORule = {
+      const rule: IRule = {
         actionList,
         checked: remoteRule.checked,
         key: remoteRule.key || uuid(),
@@ -219,7 +225,7 @@ export class RuleService extends EventEmitter {
       };
       return rule;
     });
-    const ruleFile = {
+    const ruleFile: IRuleFile = {
       checked: false,
       content,
       description: responseData.description,
@@ -234,8 +240,11 @@ export class RuleService extends EventEmitter {
     return ruleFile;
   }
 
-  public async copyRuleFile(userId, name) {
-    const ruleFile = this.getRuleFile(userId, name);
+  /**
+   * 拷贝转发规则
+   */
+  public async copyRuleFile(name: string) {
+    const ruleFile = this.getRuleFile(name);
     if (!ruleFile) {
       return;
     }
@@ -246,59 +255,32 @@ export class RuleService extends EventEmitter {
       isCopy: true,
       remote: false,
     });
-    await this.saveRuleFile(userId, copied);
+    await this.saveRuleFile(copied);
     return copied;
   }
 
-  private getUsingRules(userId) {
-    if (this.usingRuleCache[userId]) {
-      return this.usingRuleCache[userId];
-    }
-    const ruleMap = this.rules[userId] || {};
-    // 计算使用中的规则
-    const rulesLocal: ORule[] = [];
-    const rulesRemote: ORule[] = [];
-    forEach(ruleMap, (file, filename) => {
-      // 转发规则未被选中
-      if (!file.checked) {
-        return;
-      }
-      forEach(file.content, rule => {
-        if (!rule.checked) {
-          return;
-        }
-        const copy = cloneDeep(rule);
-        if (file.meta && file.meta.remote) {
-          rulesRemote.push(copy);
-        } else {
-          rulesLocal.push(copy);
-        }
-      });
-    });
-    const merged = rulesLocal.concat(rulesRemote);
-    this.usingRuleCache[userId] = merged;
-    return merged;
-  }
-
-  private _getRuleFilePath(userId, ruleName) {
-    const fileName = `${userId}_${ruleName}.json`;
+  /**
+   * 获取转发规则文件路径
+   */
+  private getRuleFilePath(name: string) {
+    const fileName = `${name}.json`;
     const filePath = path.join(this.ruleSaveDir, fileName);
     return filePath;
   }
 
-  private _getUserIdLength(ruleFileName, ruleName) {
-    return ruleFileName.length - ruleName.length - 6;
-  }
-
-  // 请求的方法是否匹配规则
-  private _isMethodMatch(reqMethod, ruleMethod) {
+  /**
+   * 请求的方法是否匹配规则
+   */
+  private isMatchMethod(reqMethod: string, ruleMethod: string) {
     const loweredReqMethod = lowerCase(reqMethod);
     const loweredRuleMethod = lowerCase(ruleMethod);
     return loweredReqMethod === loweredRuleMethod || !ruleMethod || loweredReqMethod === 'option';
   }
 
-  // 请求的url是否匹配规则
-  private _isUrlMatch(reqUrl, ruleMatchStr) {
+  /**
+   * 请求的url是否匹配规则
+   */
+  private isMatchUrl(reqUrl: string, ruleMatchStr: string) {
     return (
       ruleMatchStr && (reqUrl.indexOf(ruleMatchStr) >= 0 || new RegExp(ruleMatchStr).test(reqUrl))
     );

@@ -1,4 +1,4 @@
-export interface ORule {
+export interface IRule {
   name: string;
   key: string;
   method: string;
@@ -24,7 +24,7 @@ export interface IRuleFile {
   checked: boolean;
   name: string;
   description: string;
-  content: ORule[];
+  content: IRule[];
 }
 
 export interface IRuleFileMeta {

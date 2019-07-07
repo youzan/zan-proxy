@@ -1,7 +1,7 @@
 <template>
   <div class="left-menu">
     <h2 class="title">Zan Proxy</h2>
-    <el-menu theme="dark" :default-active="$route.path" @select="handleSelect">
+    <el-menu theme="dark" :default-active="activeKey" @select="handleSelect">
       <el-menu-item v-for="item in menuList" :key="item.name" :index="item.link">
         <i class="iconfont" :class="item.icon" />
         <span class="menu-name">{{ item.name }}</span>
@@ -20,33 +20,39 @@ interface IMenuItem {
   icon: string;
   link: string;
   newPage?: boolean;
+  pathPrefix?: string;
 }
 
 const menuList: IMenuItem[] = [
   {
     name: '使用说明',
     icon: 'icon-search',
-    link: '/',
+    link: '/intro',
+    pathPrefix: '/intro',
   },
   {
     name: 'Host 管理',
     icon: 'icon-box',
-    link: '/host/list',
+    link: '/host',
+    pathPrefix: '/host',
   },
   {
-    name: 'Http 转发',
+    name: '转发规则',
     icon: 'icon-skip',
-    link: '/rulefilelist',
+    link: '/rule',
+    pathPrefix: '/rule',
   },
   {
     name: '转发变量配置',
     icon: 'icon-layers',
-    link: '/projectpath',
+    link: '/profile',
+    pathPrefix: '/profile',
   },
   {
     name: '自定义 mock 数据',
     icon: 'icon-suoding',
     link: '/mock',
+    pathPrefix: '/mock',
   },
   {
     name: '请求监控',
@@ -64,12 +70,19 @@ const menuList: IMenuItem[] = [
     name: '插件管理',
     icon: 'icon-layers',
     link: '/plugins',
+    pathPrefix: '/plugins',
   },
 ];
 
 @Component
 export default class LeftMenu extends Vue {
   menuList = menuList;
+
+  get activeKey() {
+    const path = this.$route.path;
+    const item = this.menuList.find(item => path.startsWith(item.link));
+    return item && item.pathPrefix;
+  }
 
   handleSelect(key: string) {
     const item = this.menuList.find(item => item.link === key);

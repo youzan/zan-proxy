@@ -1,28 +1,30 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 
-import CreateRuleFile from './components/rule/CreateFile.vue';
-import EditRule from './components/rule/EditRule.vue';
-import RuleFileList from './components/rule/FileList.vue';
-
+import Intro from './pages/intro/index.vue';
 import HostEdit from './pages/host/edit.vue';
 import HostList from './pages/host/list.vue';
-import Mock from './pages/mock/index.vue';
-import Intro from './pages/intro/index.vue';
+import RuleCreate from './pages/rule/create.vue';
+import RuleEdit from './pages/rule/edit.vue';
+import RuleList from './pages/rule/list.vue';
 import Profile from './pages/profile/index.vue';
+import Mock from './pages/mock/index.vue';
 import Plugins from './pages/plugins/index.vue';
 
 Vue.use(Router);
 
 export default new Router({
   routes: [
-    { path: '/', component: Intro },
-    { path: '/projectpath', component: Profile },
+    { path: '/', redirect: '/intro' },
+    { path: '/host', redirect: '/host/list' },
+    { path: '/rule', redirect: '/rule/list' },
+    { path: '/intro', component: Intro },
+    { path: '/profile', component: Profile },
     { path: '/host/list', component: HostList },
     { path: '/host/edit', component: HostEdit },
-    { path: '/rulefilelist', component: RuleFileList },
-    { path: '/editrule', component: EditRule },
-    { path: '/createrulefile', component: CreateRuleFile },
+    { path: '/rule/list', component: RuleList },
+    { path: '/rule/edit', component: RuleEdit },
+    { path: '/rule/create', component: RuleCreate },
     { path: '/mock', component: Mock },
     { path: '/plugins', component: Plugins },
   ],

@@ -12,13 +12,13 @@ const userId = 'root';
 const syncRemoteRules = async () => {
   console.log('开始同步远程规则集');
   const ruleService = Container.get(RuleService);
-  const userRuleFilesMap = ruleService.getRuleFileList(userId);
+  const userRuleFilesMap = ruleService.getRuleFileList();
   const userRuleFiles: IRuleFile[] = Object.values(userRuleFilesMap);
   for (const ruleFile of userRuleFiles) {
-    if (ruleFile.meta && ruleFile.meta.remote) {
+    if (ruleFile.meta && ruleFile.meta.remote === true) {
       const spinner = ora(`同步规则集${ruleFile.name}中`).start();
       try {
-        await ruleService.importRemoteRuleFile(userId, ruleFile.meta.url);
+        await ruleService.importRemoteRuleFile(ruleFile.meta.url as string);
         spinner.succeed(`同步规则集${ruleFile.name}成功`);
       } catch (e) {
         spinner.fail(`同步规则集${ruleFile.name}失败`);

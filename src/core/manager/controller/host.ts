@@ -11,10 +11,7 @@ export class HostController {
 
   @Post('/create')
   public async create(@Ctx() ctx: Context) {
-    const success = await this.hostService.createHostFile(
-      ctx.request.body.name,
-      ctx.request.body.description,
-    );
+    const success = await this.hostService.create(ctx.request.body);
 
     if (success) {
       return true;

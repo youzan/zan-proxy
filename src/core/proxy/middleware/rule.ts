@@ -1,4 +1,4 @@
-import { ORule, IRuleActionData } from '@core/types/rule';
+import { IRule, IRuleActionData } from '@core/types/rule';
 import fs from 'fs-extra';
 import http from 'http';
 import mime from 'mime-types';
@@ -57,7 +57,7 @@ export class RuleMiddleware implements IProxyMiddleware {
    */
   private async processRedirect(
     urlObj: URL.UrlWithStringQuery,
-    rule: ORule,
+    rule: IRule,
     data: IRuleActionData,
     ctx: IProxyContext,
   ) {
@@ -89,11 +89,10 @@ export class RuleMiddleware implements IProxyMiddleware {
       return next();
     }
 
-    const userID = 'root';
     const { req } = ctx;
     const { method, url } = req;
     const urlObj = URL.parse(url as string);
-    const processRule = this.ruleService.getProcessRule(userID, method, urlObj);
+    const processRule = this.ruleService.getProcessRule(method as string, urlObj);
     // 没有转发规则
     if (!processRule) {
       return next();

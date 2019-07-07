@@ -1,4 +1,3 @@
-import chai from 'chai';
 import fs from 'fs';
 import 'mocha';
 import path from 'path';
@@ -33,7 +32,7 @@ describe('HostService', () => {
   });
   after(() => rimraf.sync(os.homedir()));
   it('should get the host file', async () => {
-    hostService.getHostFile('root', 'test').should.not.be.undefined;
+    hostService.getHostFile('test').should.not.be.undefined;
   });
 
   it('should resolve the host correctly', async () => {
@@ -47,30 +46,30 @@ describe('HostService', () => {
   });
 
   it('should get the host file list', done => {
-    hostService.getHostFileList('root').should.not.empty;
+    hostService.getHostFileList().should.not.empty;
     done();
   });
 
   it('should create a host file successfully', async () => {
-    await hostService.createHostFile('root', 'test2', 'mytest');
+    await hostService.create({ name: 'test2', description: 'mytest' });
     const filePath = path.join(os.homedir(), '.front-end-proxy/host/root_test2.json');
-    const f = hostService.getHostFile('root', 'test2');
+    const f = hostService.getHostFile('test2');
     f.should.not.be.undefined;
     fs.existsSync(filePath).should.be.true;
     rimraf.sync(filePath);
   });
 
   it('should delete a host file successfully', async () => {
-    await hostService.createHostFile('root', 'test2', 'mytest');
-    await hostService.deleteHostFile('root', 'test2');
+    await hostService.create({ name: 'test2', description: 'mytest' });
+    await hostService.create({ name: 'test2', description: '' });
     const filePath = path.join(os.homedir(), '.front-end-proxy/host/root_test2.json');
     fs.existsSync(filePath).should.be.false;
     rimraf.sync(filePath);
   });
 
   it('should save a host file successfully', async () => {
-    await hostService.createHostFile('root', 'test2', 'mytest');
-    await hostService.saveHostFile('root', 'test2', {
+    await hostService.create({ name: 'test2', description: 'mytest' });
+    await hostService.saveHostFile('test2', {
       checked: false,
       content: {
         'test.zanproxy.com': '127.0.0.1',
@@ -81,14 +80,14 @@ describe('HostService', () => {
       },
       name: 'test2',
     });
-    const hostfile = hostService.getHostFile('root', 'test2');
+    const hostfile = hostService.getHostFile('test2');
     Object.keys(hostfile.content).should.includes('test.zanproxy.com');
-    await hostService.deleteHostFile('root', 'test2');
+    await hostService.deleteHostFile('test2');
   });
 
   it('should select the the correct host file to resolve', async () => {
-    await hostService.createHostFile('root', 'test2', 'mytest');
-    await hostService.saveHostFile('root', 'test2', {
+    await hostService.create({ name: 'test2', description: 'mytest' });
+    await hostService.saveHostFile('test2', {
       checked: false,
       content: {
         '*.youzan.com': '192.168.1.1',
@@ -99,9 +98,9 @@ describe('HostService', () => {
       },
       name: 'test2',
     });
-    await hostService.toggleUseHost('root', 'test2');
+    await hostService.toggleHost('test2');
     const address = await hostService.resolveHost('test.youzan.com');
     address.should.equal('192.168.1.1');
-    await hostService.deleteHostFile('root', 'test2');
+    await hostService.deleteHostFile('test2');
   });
 });
