@@ -79,7 +79,7 @@ export class CertificateService implements ICertificateService {
     const res = await pemCreateCertificate({
       altNames: [host],
       commonName: host,
-      days: 365 * 10,
+      days: 825,
       serviceCertificate: root.cert,
       serviceKey: root.key,
     });
