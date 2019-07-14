@@ -15,13 +15,13 @@ export class ProfileController {
     return true;
   }
 
-  @Post('/rule/enable')
+  @Post('/rule/toggle')
   public async setRuleState(@Ctx() ctx: Context) {
     await this.profileService.setEnableRule(ctx.request.body.enable);
     return true;
   }
 
-  @Post('/host/enable')
+  @Post('/host/toggle')
   public async setHostState(@Ctx() ctx: Context) {
     await this.profileService.setEnableHost(ctx.request.body.enable);
     return true;

@@ -9054,11 +9054,6 @@ vue-clipboard2@^0.3.0:
   dependencies:
     clipboard "^2.0.0"
 
-vue-data-center@^1.0.6:
-  version "1.0.6"
-  resolved "http://registry.npm.taobao.org/vue-data-center/download/vue-data-center-1.0.6.tgz#1e71cd80b8f8a766bc81e3b70ad30aabb0a47d70"
-  integrity sha1-HnHNgLj4p2a8geO3CtMKq7CkfXA=
-
 vue-eslint-parser@^2.0.3:
   version "2.0.3"
   resolved "http://registry.npm.taobao.org/vue-eslint-parser/download/vue-eslint-parser-2.0.3.tgz#c268c96c6d94cfe3d938a5f7593959b0ca3360d1"

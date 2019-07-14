@@ -1,7 +1,10 @@
 <template>
   <div class="kv-pair">
-    <label>{{ k }}: </label>
-    <span>{{ v }}<slot></slot></span>
+    <label>{{ k }}:</label>
+    <span>
+      {{ v }}
+      <slot></slot>
+    </span>
   </div>
 </template>
 
@@ -19,7 +22,7 @@ export default class KeyValue extends Vue {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .kv-pair {
   overflow-x: auto;
   word-break: break-all;

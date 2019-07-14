@@ -7,15 +7,19 @@
       <el-button size="small" type="primary" @click="importRemoteHostFile">导入远程 Host 文件</el-button>
       <el-button size="small" @click="createNewHostFile">新增 Host 文件</el-button>
     </div>
-    <el-table border :data="$dc.hostFileList">
-      <el-table-column align="center" prop="checked" label="启用" width="85">
+    <el-table border :data="hostFileList">
+      <el-table-column align="center" prop="checked" label="启用" width="60">
         <template v-slot="scope">
-          <el-checkbox :checked="scope.row.checked" @change="toggleFile(scope.row.name)" :disabled="!$dc.hostState" />
+          <el-checkbox
+            :checked="scope.row.checked"
+            @change="toggleFile(scope.row.name)"
+            :disabled="!profile.enableHost"
+          />
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="name" label="名字" width="150"></el-table-column>
-      <el-table-column align="center" prop="description" label="描述" />
-      <el-table-column align="center" label="操作" :width="150" :context="_self">
+      <el-table-column prop="name" label="名字" width="250"></el-table-column>
+      <el-table-column prop="description" label="描述" />
+      <el-table-column label="操作" width="250" :context="_self">
         <template v-slot="scope">
           <a class="link-btn" :href="'#/host/edit?name=' + scope.row.name">
             <el-button type="info" icon="el-icon-edit" size="mini"></el-button>
@@ -45,9 +49,17 @@ import { IHostFile } from '@core/types/host';
 import forEach from 'lodash/forEach';
 import * as hostApi from '../../api/host';
 import { MessageBoxInputData } from 'element-ui/types/message-box';
+import { hostModule, profileModule } from '../../store';
+import { IProfileState } from '../../store/profile';
 
 @Component
 export default class HostList extends Vue {
+  @profileModule.State
+  profile: IProfileState[];
+
+  @hostModule.State('list')
+  hostFileList: IHostFile[];
+
   /**
    * 删除 host 配置
    */

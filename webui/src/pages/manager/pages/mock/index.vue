@@ -37,7 +37,12 @@
             <el-option v-for="item in mockLanguageTypes" :key="item" :label="item" :value="item"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item :show-message="false" label-width="0" class="content-editor-container" prop="content">
+        <el-form-item
+          :show-message="false"
+          label-width="0"
+          class="content-editor-container"
+          prop="content"
+        >
           <div id="content-editor" class="content-editor"></div>
         </el-form-item>
       </el-form>
@@ -83,7 +88,7 @@ type IAvaliableLanguage = keyof typeof languageContentTypeMap;
 
 @Component
 export default class Mock extends Vue {
-  @mockModule.State('dataList')
+  @mockModule.State('list')
   dataList: IMockRecord[];
 
   dialogVisible = false;

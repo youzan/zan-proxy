@@ -1,5 +1,5 @@
 import { Context } from 'koa';
-import { JsonController, Ctx, Get, Post, InternalServerError } from 'routing-controllers';
+import { JsonController, Ctx, Get, Post, InternalServerError, Delete } from 'routing-controllers';
 import { Inject, Service } from 'typedi';
 
 import { ErrNameExists, ProfileService, RuleService } from '../../services';
@@ -25,22 +25,22 @@ export class RuleController {
   }
 
   // 获取规则文件列表
-  @Get('/filelist')
+  @Get('/list')
   public async fileList(@Ctx() ctx: Context) {
     const ruleFileList = await this.ruleService.getRuleFileList();
     return ruleFileList;
   }
 
   // 删除规则文件
-  @Get('/deletefile')
+  @Delete('/delete')
   public async deleteFile(@Ctx() ctx: Context) {
     await this.ruleService.deleteRuleFile(ctx.query.name);
     return true;
   }
 
   // 设置文件勾选状态
-  @Get('/setfilecheckstatus')
-  public async setFileCheckStatus(@Ctx() ctx: Context) {
+  @Post('/toggle')
+  public async toggle(@Ctx() ctx: Context) {
     this.ruleService.setRuleFileCheckStatus(
       ctx.query.name,
       parseInt(ctx.query.checked, 10) === 1 ? true : false,
@@ -49,21 +49,21 @@ export class RuleController {
   }
 
   // 获取规则文件
-  @Get('/getfile')
+  @Get('/get')
   public async getFile(@Ctx() ctx: Context) {
     const content = await this.ruleService.getRuleFile(ctx.query.name);
     return content;
   }
 
   // 保存规则文件
-  @Post('/savefile')
+  @Post('/save')
   public async saveFile(@Ctx() ctx: Context) {
     await this.ruleService.saveRuleFile(ctx.request.body);
     return true;
   }
 
   // 重命名规则文件
-  @Post('/updatefileinfo/:origin')
+  @Post('/update/info/:origin')
   public async updateFileInfo(@Ctx() ctx: Context) {
     const { params, request } = ctx;
     const { origin } = params;

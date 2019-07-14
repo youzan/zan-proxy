@@ -2,7 +2,6 @@
 import ElementUI from 'element-ui';
 import 'reflect-metadata';
 import Vue from 'vue';
-import DataCenter from 'vue-data-center';
 import axios from 'axios';
 
 import App from './App.vue';
@@ -21,7 +20,6 @@ axios.interceptors.response.use(
 );
 
 Vue.use(ElementUI);
-Vue.use(DataCenter);
 
 new Vue({
   el: '#app',

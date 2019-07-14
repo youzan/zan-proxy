@@ -1,5 +1,6 @@
 import axios from 'axios';
 import _ from 'lodash';
+import { IRuleFile } from '@core/types/rule';
 
 /**
  * 创建规则文件
@@ -14,24 +15,24 @@ export function createFile(name: string, description: string) {
 /**
  * 获取规则文件列表
  */
-export function getFileList() {
-  return axios.get('/rule/filelist');
+export function getRuleList() {
+  return axios.get('/rule/list');
 }
 
-export function deleteFile(name: string) {
-  return axios.get(`/rule/deletefile?name=${encodeURIComponent(name)}`);
+export function deleteRule(name: string) {
+  return axios.delete(`/rule/delete?name=${encodeURIComponent(name)}`);
 }
 
-export function setFileCheckStatus(name: string, checked: boolean) {
-  return axios.get(`/rule/setfilecheckstatus?name=${name}&checked=${checked ? 1 : 0}`);
+export function toggleRule(name: string, checked: boolean) {
+  return axios.post(`/rule/toggle?name=${name}&checked=${checked ? 1 : 0}`);
 }
 
-export function getFileContent(name: string) {
-  return axios.get(`/rule/getfile?name=${name}`);
+export function getRuleContent(name: string) {
+  return axios.get<IRuleFile>(`/rule/get?name=${name}`);
 }
 
-export function saveFile(name: string, content: any) {
-  return axios.post(`/rule/savefile?name=${name}`, content);
+export function saveRule(name: string, content: any) {
+  return axios.post(`/rule/save?name=${name}`, content);
 }
 
 /**
@@ -47,7 +48,7 @@ export function updateFileInfo(
     description: string;
   },
 ) {
-  return axios.post(`/rule/updatefileinfo/${encodeURIComponent(originName)}`, {
+  return axios.post(`/rule/update/info/${originName}`, {
     name,
     description,
   });
@@ -55,10 +56,6 @@ export function updateFileInfo(
 
 export function testRule(content: any) {
   return axios.post('/rule/test', content);
-}
-
-export function getRemoteRuleFile(url: string) {
-  return axios.get(`/utils/getGitlabFile?url=${encodeURIComponent(url)}`);
 }
 
 export function getReferenceVar(content: any) {
@@ -79,9 +76,3 @@ export function importRemote(url: string) {
 export function copyFile(name: string) {
   return axios.get(`/rule/copy?name=${encodeURI(name)}`);
 }
-// 构造debounce函数
-export const debouncedSaveFile = _.debounce(function(name, content, callback) {
-  saveFile(name, content).then(response => {
-    callback(response);
-  });
-}, 3000);

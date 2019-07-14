@@ -29,14 +29,14 @@ export function deleteFile(name: string) {
 }
 
 export function toggleFile(name: string) {
-  return axios.post(`/host/togglefile?name=${name}`);
+  return axios.post(`/host/toggle?name=${name}`);
 }
 
 export function getFileContent(name: string) {
   return axios.get<IHostFile>(`/host/get?name=${name}`);
 }
 
-export function saveFile(name: string, content: any) {
+export function saveFile(name: string, content: IHostFile) {
   return axios.post(`/host/save?name=${name}`, content);
 }
 
@@ -44,8 +44,3 @@ export function importRemote(url: string) {
   return axios.post(`/host/import?url=${encodeURIComponent(url)}`);
 }
 
-export const debouncedUseFile = _.debounce(function(name, callback) {
-  toggleFile(name).then(response => {
-    callback(response);
-  });
-}, 500);

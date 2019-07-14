@@ -4,10 +4,6 @@ declare module '*.vue' {
 }
 
 // third lib types
-declare module 'vue-data-center' {
-  const plugin: any;
-  export default plugin;
-}
 
 declare module 'vue-json-tree' {
   const component: any;

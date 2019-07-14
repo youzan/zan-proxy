@@ -9,7 +9,7 @@
         :delete="deletePlugin"
         :setDisabled="setPluginDisabled"
       />
-      <add-btn :add="addPlugin"/>
+      <add-btn :add="addPlugin" />
     </div>
   </div>
 </template>
@@ -22,8 +22,8 @@ import { Message } from 'element-ui';
 import * as api from '../../api/plugins';
 import { IClientPluginInfo } from './types';
 
-import PluginItem from './PluginItem.vue';
-import AddBtn from './AddBtn.vue';
+import PluginItem from './plugin-item.vue';
+import AddBtn from './add-btn.vue';
 
 @Component({
   components: {

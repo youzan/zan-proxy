@@ -5,13 +5,15 @@
       <span class="dropdown-label">Host 设置：</span>
       <el-dropdown trigger="click" :hide-on-click="false" @command="selectHostFile">
         <el-button type="text">
-          {{ hostState ? selectedHost.join('，') : '禁用' }}
-          <i class="el-icon-caret-bottom el-icon--right" />
+          {{ profile.enableHost ? selectedHost.join(',') : '禁用' }}
+          <i
+            class="el-icon-caret-bottom el-icon--right"
+          />
         </el-button>
         <el-dropdown-menu slot="dropdown">
           <!-- host文件 -->
           <el-dropdown-item v-if="profile.enableHost" command="__disabled__">禁用</el-dropdown-item>
-          <el-dropdown-item v-if="!profile.enableHost" command="__enabled__">启用</el-dropdown-item>
+          <el-dropdown-item v-else command="__enabled__">启用</el-dropdown-item>
           <!-- eslint-disable -->
           <el-dropdown-item
             v-for="(hostfile, index) in hostFileList"
@@ -27,7 +29,7 @@
       <span class="dropdown-label">请求转发：</span>
       <el-dropdown trigger="click" :hide-on-click="false" @command="selectRuleFile">
         <el-button type="text">
-          {{ ruleState ? selectedRuleFiles.join('，') : '禁用' }}
+          {{ profile.enableRule ? selectedRuleFiles.join(',') : '禁用' }}
           <i
             class="el-icon-caret-bottom el-icon--right"
           />
@@ -35,7 +37,7 @@
         <el-dropdown-menu slot="dropdown">
           <!-- rule文件 -->
           <el-dropdown-item v-if="profile.enableRule" command="__disabled__">禁用</el-dropdown-item>
-          <el-dropdown-item v-if="!profile.enableRule" command="__enabled__">启用</el-dropdown-item>
+          <el-dropdown-item v-else command="__enabled__">启用</el-dropdown-item>
           <el-dropdown-item
             v-for="(rulefile, index) in ruleFileList"
             :key="index"
@@ -79,7 +81,7 @@ import { IMockRecord } from '@core/types/mock';
 import { IProfile } from '@core/types/profile';
 import { State } from 'vuex-class';
 import { AxiosResponse } from 'axios';
-import { profileModule, mockModule } from './store';
+import { profileModule, mockModule, hostModule, ruleModule } from './store';
 
 @Component({
   components: {
@@ -87,24 +89,17 @@ import { profileModule, mockModule } from './store';
   },
 })
 export default class App extends Vue {
-  isDataCenter = true;
-
-  // 生效的规则
-  rule: string[] = [];
   // host文件列表
-  hostFileList: IHostFile[] = [];
+  @hostModule.State('list')
+  hostFileList: IHostFile[];
+
   // rule文件列表
-  ruleFileList: IRuleFile[] = [];
+  @ruleModule.State('list')
+  ruleFileList: IRuleFile[];
 
   @profileModule.State
   profile: IProfile;
 
-  get ruleState() {
-    return this.profile.enableRule || false;
-  }
-  get hostState() {
-    return this.profile.enableHost || false;
-  }
   get selectedHost() {
     return this.hostFileList.filter(h => h.checked).map(h => h.name);
   }
@@ -120,20 +115,15 @@ export default class App extends Vue {
     if (command === '__enabled__') {
       return await profileApi.toggleHost(true);
     }
-    hostApi.debouncedUseFile(name, (response: AxiosResponse) => {
-      var serverData = response.data;
-      if (serverData.code == 0) {
-        this.$message({
-          type: 'success',
-          message: '设置成功!',
-        });
-      } else {
-        this.$message.error(`出错了,请刷新页面，${serverData.msg}`);
-      }
-    });
+    try {
+      await hostApi.toggleFile(name);
+      this.$message.success('设置成功!');
+    } catch (err) {
+      this.$message.error(`出错了,请刷新页面，${err}`);
+    }
   }
 
-  selectRuleFile(command: string) {
+  async selectRuleFile(command: string) {
     // panama-false
     if (command === '__disabled__') {
       return profileApi.toggleRule(false);
@@ -142,19 +132,24 @@ export default class App extends Vue {
       return profileApi.toggleRule(true);
     }
     let kv = command.split('-%-');
-    ruleApi.setFileCheckStatus(kv[0], kv[1] == 'false').then(response => {
-      var serverData = response.data;
-      if (serverData.code != 0) {
-        this.$message.error(`出错了，${serverData.msg}`);
-      }
-    });
+    try {
+      await ruleApi.toggleRule(kv[0], kv[1] == 'false');
+    } catch (err) {
+      this.$message.error(`出错了，${err}`);
+    }
   }
 
   @profileModule.Mutation('update')
   updateProfile: (profile: IProfile) => void;
 
   @mockModule.Mutation('update')
-  updateMockData: (dataList: IMockRecord[]) => void;
+  updateMockList: (dataList: IMockRecord[]) => void;
+
+  @hostModule.Mutation('update')
+  updateHostList: (hostList: IHostFile[]) => void;
+
+  @ruleModule.Mutation('update')
+  updateRuleList: (ruleList: IRuleFile[]) => void;
 
   created() {
     var socket = io('/manager');
@@ -163,28 +158,31 @@ export default class App extends Vue {
       this.updateProfile(profile);
     });
 
-    socket.on('hostfilelist', (data: IHostFile[]) => {
-      this.hostFileList = data;
+    socket.on('hostFileList', (data: IHostFile[]) => {
+      this.updateHostList(data);
     });
 
-    socket.on('rulefilelist', (data: IRuleFile[]) => {
-      this.ruleFileList = data;
+    socket.on('ruleFileList', (data: IRuleFile[]) => {
+      this.updateRuleList(data);
     });
 
     socket.on('mockDataList', (data: IMockRecord[]) => {
-      this.updateMockData(data);
+      this.updateMockList(data);
     });
   }
 }
 </script>
 
+<style lang="scss" scoped>
+.dropdown-label {
+  color: #333333;
+  font-size: 14px;
+}
+</style>
+
 <style lang="scss">
 .el-dropdown-menu {
   max-height: 400px;
   overflow-y: auto;
-}
-.dropdown-label {
-  color: #333333;
-  font-size: 14px;
 }
 </style>

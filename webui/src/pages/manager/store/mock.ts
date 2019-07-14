@@ -2,18 +2,18 @@ import { Module } from 'vuex';
 import { IMockRecord } from '@core/types/mock';
 
 export interface IMockState {
-  dataList: IMockRecord[];
+  list: IMockRecord[];
 }
 
 const mock: Module<IMockState, any> = {
   namespaced: true,
   state: {
-    dataList: [],
+    list: [],
   },
 
   mutations: {
     update(state, dataList: IMockRecord[]) {
-      state.dataList = dataList;
+      state.list = dataList;
     },
   },
 };

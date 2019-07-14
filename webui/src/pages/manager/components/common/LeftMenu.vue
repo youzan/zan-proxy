@@ -43,13 +43,13 @@ const menuList: IMenuItem[] = [
     pathPrefix: '/rule',
   },
   {
-    name: '转发变量配置',
+    name: '转发变量',
     icon: 'icon-layers',
     link: '/profile',
     pathPrefix: '/profile',
   },
   {
-    name: '自定义 mock 数据',
+    name: 'Mock 数据',
     icon: 'icon-suoding',
     link: '/mock',
     pathPrefix: '/mock',

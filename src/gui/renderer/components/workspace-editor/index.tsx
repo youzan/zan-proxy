@@ -92,7 +92,7 @@ class WorkspaceEditor extends React.Component<IProps> {
    * @memberof WorkspaceEditor
    */
   private toEditRules = () => {
-    return api.showManager('/#/rulefilelist');
+    return api.showManager('/#/rule/list');
   };
 
   /**
@@ -102,7 +102,7 @@ class WorkspaceEditor extends React.Component<IProps> {
    * @memberof WorkspaceEditor
    */
   private toEditHosts = () => {
-    return api.showManager('/#/hostfilelist');
+    return api.showManager('/#/host/list');
   };
 
   /**

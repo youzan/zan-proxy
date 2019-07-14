@@ -70,10 +70,10 @@ export class SocketController {
       client.emit('profile', profile);
       // host文件列表
       const hostFileList = await this.hostService.getHostFileList();
-      client.emit('hostfilelist', hostFileList);
+      client.emit('hostFileList', hostFileList);
       // 规则列表
       const ruleFileList = await this.ruleService.getRuleFileList();
-      client.emit('rulefilelist', ruleFileList);
+      client.emit('ruleFileList', ruleFileList);
       // 数据文件列表
       const mockDataList = await this.mockDataService.getMockList();
       client.emit('mockDataList', mockDataList);
@@ -84,12 +84,12 @@ export class SocketController {
       socket.emit('profile', profile);
     });
     // host文件变化
-    this.hostService.on('data-change', (hostFilelist: IHostFile[]) => {
-      socket.emit('hostfilelist', hostFilelist);
+    this.hostService.on('data-change', (hostFileList: IHostFile[]) => {
+      socket.emit('hostFileList', hostFileList);
     });
     // 规则文件列表
-    this.ruleService.on('data-change', (ruleFilelist: IRuleFile[]) => {
-      socket.emit('rulefilelist', ruleFilelist);
+    this.ruleService.on('data-change', (ruleFileList: IRuleFile[]) => {
+      socket.emit('ruleFileList', ruleFileList);
     });
     // mock文件列表
     this.mockDataService.on('data-change', (mockFilelist: IMockRecord[]) => {

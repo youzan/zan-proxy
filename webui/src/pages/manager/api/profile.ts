@@ -11,7 +11,7 @@ export function saveProjectPath(content: any) {
  * 启用或禁用转发规则
  */
 export function toggleRule(enable: boolean) {
-  return axios.post(`/profile/rule/enable`, {
+  return axios.post(`/profile/rule/toggle`, {
     enable,
   });
 }
@@ -20,7 +20,7 @@ export function toggleRule(enable: boolean) {
  * 启用或禁用host规则
  */
 export function toggleHost(enable: boolean) {
-  return axios.post(`/profile/host/enable`, {
-    enable
+  return axios.post(`/profile/host/toggle`, {
+    enable,
   });
 }

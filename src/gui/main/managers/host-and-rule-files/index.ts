@@ -42,14 +42,14 @@ export default class HostAndRuleFilesManager extends BaseManager {
   private initSocket() {
     this.socketClient = SocketClient(`http://${this.appDataManager.zanProxyManagerRoot}/manager`);
 
-    this.socketClient.on('hostfilelist', async data => {
+    this.socketClient.on('hostFileList', async data => {
       await this.application.emitAllManager('host-and-rule-files:update-host', data);
       // 获取 host 规则列表
       this.hostFiles = data;
       this.workspaceWindow.send(HOST_FILE_EVENTS.list, data);
     });
 
-    this.socketClient.on('rulefilelist', async data => {
+    this.socketClient.on('ruleFileList', async data => {
       await this.application.emitAllManager('host-and-rule-files:update-rule', data);
       // 获取转发规则列表
       this.ruleFiles = data;
