@@ -12,9 +12,17 @@ export class ForwarderMiddleware implements IProxyMiddleware {
     const url = URL.parse(req.url as string);
     const isHttps = url.protocol && url.protocol.startsWith('https');
     const port = url.port || (isHttps ? 443 : 80);
+    let headers = req.headers;
+    const encoding = headers['accept-encoding'] as string;
+    // decode暂不支持 brolti 算法
+    if (encoding && /br/.test(encoding)) {
+      headers = Object.assign({}, headers, {
+        'accept-encoding': 'gzip, deflate',
+      });
+    }
     return {
       auth: url.auth,
-      headers: req.headers,
+      headers,
       host: url.host,
       hostname: url.hostname,
       method: req.method,
@@ -39,11 +47,6 @@ export class ForwarderMiddleware implements IProxyMiddleware {
       // 插件修改 req.body 后，以插件提供的 body 为请求体内容，重新设置 content-length header
       if (req.body && req.body.length) {
         options.headers && (options.headers['content-length'] = req.body.length);
-      }
-
-      // node 版本（v11.14.0以下）不支持 brolti 算法，需要将 br 从 accept-encoding 中删除
-      if (!supportBrotli) {
-        options.headers && (options.headers['accept-encoding'] = 'gzip, deflate');
       }
 
       // create real request

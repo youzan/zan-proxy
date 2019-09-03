@@ -51,7 +51,7 @@ export class CertificateService {
     const res = await pemCreateCertificate({
       altNames: [host],
       commonName: host,
-      days: 365 * 10,
+      days: 825,
       serviceCertificate: root && root.cert,
       serviceKey: root && root.key,
     });
