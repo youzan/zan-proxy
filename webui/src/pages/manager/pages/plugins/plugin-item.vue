@@ -9,7 +9,7 @@
     </div>
     <div class="footer">
       <el-dropdown @command="toggleDisable">
-        <el-button type="primary" icon="el-icon-setting" @click.stop>{{ disabledText }}</el-button>
+        <el-button size="small" type="primary" icon="el-icon-setting" @click.stop>{{ disabledText }}</el-button>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item :command="false">
             启用
@@ -21,13 +21,21 @@
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
-      <el-popover placement="bottom" v-model="popVisible">
-        <p>确定删除该插件吗？</p>
-        <div class="delete-confirm-lien">
-          <el-button size="mini" @click="popVisible = false">取消</el-button>
-          <el-button type="danger" size="mini" @click="onDelete">确定</el-button>
+      <el-popover placement="bottom" v-model="updatePopVisible">
+        <p>确定升级该插件吗？</p>
+        <div class="confirm-line">
+          <el-button size="mini" @click="updatePopVisible = false">取消</el-button>
+          <el-button size="mini" type="success" @click="onUpdate">确定</el-button>
         </div>
-        <el-button slot="reference" type="danger" icon="el-icon-delete" @click.stop>卸载</el-button>
+        <el-button size="small" slot="reference" type="success" icon="el-icon-upload" @click.stop>升级</el-button>
+      </el-popover>
+      <el-popover placement="bottom" v-model="deletePopVisible">
+        <p>确定删除该插件吗？</p>
+        <div class="confirm-line">
+          <el-button size="mini" @click="deletePopVisible = false">取消</el-button>
+          <el-button size="mini" type="danger" @click="onDelete">确定</el-button>
+        </div>
+        <el-button size="small" slot="reference" type="danger" icon="el-icon-delete" @click.stop>卸载</el-button>
       </el-popover>
     </div>
   </div>
@@ -47,9 +55,13 @@ export default class PluginItem extends Vue {
   delete: (name: string) => Promise<void>;
 
   @Prop(Function)
+  update: (name: string) => Promise<void>;
+
+  @Prop(Function)
   setDisabled: (name: string, disabled: boolean) => Promise<void>;
 
-  popVisible: boolean = false;
+  updatePopVisible: boolean = false;
+  deletePopVisible: boolean = false;
 
   get disabledText() {
     if (this.plugin.disabled) {
@@ -63,8 +75,13 @@ export default class PluginItem extends Vue {
   }
 
   onDelete() {
-    this.popVisible = false;
+    this.deletePopVisible = false;
     this.delete(this.plugin.name);
+  }
+
+  onUpdate() {
+    this.updatePopVisible = false;
+    this.update(this.plugin.name);
   }
 
   toggleDisable(disabled: boolean) {
@@ -83,7 +100,7 @@ export default class PluginItem extends Vue {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 15px;
+    margin-bottom: 16px;
   }
 
   .body {
@@ -91,7 +108,7 @@ export default class PluginItem extends Vue {
   }
 
   .name {
-    font-size: 18px;
+    font-size: 16px;
     color: #333333;
   }
 
@@ -111,19 +128,20 @@ export default class PluginItem extends Vue {
     justify-content: flex-end;
     flex-direction: row;
   }
+
   .footer .el-button {
-    margin-left: 10px;
+    margin-left: 8px;
   }
 }
 
-.delete-confirm-lien {
+.confirm-line {
   margin-top: 8px;
   text-align: right;
 }
 </style>
 <style lang="scss">
 .icon-checked {
-  margin-left: 10px;
+  margin-left: 8px;
   color: #67c23a;
 }
 </style>

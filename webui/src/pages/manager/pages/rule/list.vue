@@ -21,18 +21,7 @@
       </el-table-column>
       <el-table-column prop="name" label="名字" width="250">
         <template v-slot="scope">
-          <el-tooltip
-            class="item"
-            effect="dark"
-            content="远程规则"
-            placement="right"
-            v-if="scope.row.meta && scope.row.meta.remote"
-          >
-            <span class="file-tag remote">R</span>
-          </el-tooltip>
-          <el-tooltip class="item" effect="dark" content="本地规则" placement="right" v-else>
-            <span class="file-tag">L</span>
-          </el-tooltip>
+          <meta-tag :isRemote="scope.row.meta.remote" remoteTooltip="远程规则" localTooltip="本地规则" />
           {{ scope.row.name }}
         </template>
       </el-table-column>
@@ -70,8 +59,13 @@ import { IRuleFile } from '@core/types/rule';
 import { MessageBoxInputData, MessageBoxCloseAction } from 'element-ui/types/message-box';
 import { ruleModule, profileModule } from '../../store';
 import { IProfileState } from '../../store/profile';
+import MetaTag from '../../components/common/MetaTag.vue';
 
-@Component
+@Component({
+  components: {
+    'meta-tag': MetaTag,
+  },
+})
 export default class RuleList extends Vue {
   @profileModule.State
   profile: IProfileState[];
@@ -214,24 +208,6 @@ export default class RuleList extends Vue {
 
   &::-webkit-file-upload-button {
     cursor: pointer;
-  }
-}
-
-.file-tag {
-  background-color: rgb(191, 203, 217);
-  color: #fff;
-  font-size: 10px;
-  display: inline-block;
-  border-radius: 50%;
-  width: 16px;
-  height: 16px;
-  line-height: 16px;
-  margin-left: 2px;
-  text-align: center;
-  opacity: 0.5;
-
-  &.remote {
-    background-color: #58b7ff;
   }
 }
 </style>

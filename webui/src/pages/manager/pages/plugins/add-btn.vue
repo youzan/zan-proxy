@@ -1,7 +1,13 @@
 <template>
   <div class="add-btn item" @click="showDialog">
     <i class="el-icon-plus"></i>
-    <el-dialog title="添加插件" :visible.sync="dialogVisible" size="tiny" :modal-append-to-body="true">
+    <el-dialog
+      title="添加插件"
+      :visible.sync="dialogVisible"
+      :modal-append-to-body="true"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
       <el-form :model="plugin">
         <el-form-item label="包名" :label-width="formLabelWidth">
           <el-input v-model="plugin.name" auto-complete="off" placeholder="插件包名" />

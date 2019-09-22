@@ -1,5 +1,11 @@
 <template>
-  <el-dialog title="编辑" :visible.sync="dialogVisible" @close="cancel">
+  <el-dialog
+    title="编辑"
+    :visible.sync="dialogVisible"
+    :modal-append-to-body="true"
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
+  >
     <el-form>
       <el-form-item label="规则集名称" label-width="120px">
         <el-input v-model="name" auto-complete="off"></el-input>

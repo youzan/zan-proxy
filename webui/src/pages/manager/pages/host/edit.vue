@@ -2,7 +2,7 @@
   <div>
     <div class="main-content__title">
       {{ isCreate ? '创建' : '编辑' }}Host文件
-      <el-button-group v-if="!isRemote" class="action-wrapper">
+      <el-button-group v-if="!isRemote" class="main-content__action">
         <el-button size="small" @click="addRow">新增Host Entry</el-button>
         <el-button size="small" type="primary" @click="save">保存</el-button>
       </el-button-group>
@@ -17,7 +17,7 @@
       </el-form-item>
       <el-form-item label="解析内容">
         <el-table border :data="contentRows">
-          <el-table-column type="index" :width="60"></el-table-column>
+          <el-table-column type="index" align="center" :width="60"></el-table-column>
           <el-table-column prop="key" label="域名" align="center">
             <template v-slot="scope">
               <el-input :disabled="isRemote" v-model.trim="scope.row.key" size="small" placeholder="请输入内容" />
@@ -189,10 +189,6 @@ export default class HostEdit extends Vue {
 .tip {
   font-size: 14px;
   color: #999999;
-}
-
-.action-wrapper {
-  float: right;
 }
 
 .host-form {

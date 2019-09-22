@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="main-content__title">转发变量管理</div>
-    <div class="action-wrapper">
+    <div class="main-content__action">
       <el-button size="small" @click="save" type="primary">保存转发变量</el-button>
       <el-button size="small" @click="addParam">增加转发变量</el-button>
     </div>
@@ -83,10 +83,3 @@ export default class Profile extends Vue {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-.action-wrapper {
-  text-align: right;
-  margin-bottom: 10px;
-}
-</style>

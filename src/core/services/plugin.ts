@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 import fs from 'fs-extra';
 import compose from 'koa-compose';
-import { map, remove, uniqWith } from 'lodash';
+import { map, pickBy, remove, uniqWith } from 'lodash';
 import { LocalStorage } from 'node-localstorage';
 import npm from 'npm';
 import path from 'path';
@@ -44,11 +44,7 @@ export class PluginService extends EventEmitter {
   }
 
   public get usingPlugins() {
-    return new Proxy(this.plugins, {
-      set(target, p, value, receiver) {
-        throw new Error("can't modify plugins");
-      },
-    });
+    return pickBy(this.plugins, p => !p.disabled);
   }
 
   /**
@@ -71,9 +67,7 @@ export class PluginService extends EventEmitter {
             manage: pluginClassInstance.manage.bind(pluginClassInstance),
           };
         } catch (error) {
-          console.error(
-            `plugin "${plugin.name}" has a runtime error. please check it.\n${error.stack}`,
-          );
+          console.error(`plugin "${plugin.name}" has a runtime error. please check it.\n${error.stack}`);
           process.exit(-1);
         }
         return group;
@@ -84,10 +78,10 @@ export class PluginService extends EventEmitter {
   /**
    * 添加插件库
    */
-  public add(pluginName: string, npmConfig = {}) {
+  public add(pluginName: string, npmConfig: any = {}) {
     return new Promise((resolve, reject) => {
       const install = () => {
-        npm.commands.install([pluginName, this.pluginInstallDir], (err: any) => {
+        npm.commands.install([pluginName, this.pluginInstallDir], async (err: any) => {
           if (err) {
             if (err.code === 'E404') {
               return reject(Error(`插件不存在 ${err.uri}`));
@@ -98,11 +92,11 @@ export class PluginService extends EventEmitter {
             this.getPlugins().concat([
               {
                 name: pluginName,
-                version: '',
+                version: await this.getPluginVersion(pluginName),
+                registry: npmConfig.registry || npm.config.get('registry'),
               },
             ]),
             (p1, p2) => {
-              // @ts-ignore
               return p1.name === p2.name;
             },
           );
@@ -125,6 +119,37 @@ export class PluginService extends EventEmitter {
     });
   }
 
+  public update(pluginName: string) {
+    return new Promise((resolve, reject) => {
+      const update = () => {
+        npm.commands.update([pluginName, this.pluginInstallDir], async err => {
+          if (err) {
+            return reject(err);
+          }
+          const plugins = this.getPlugins();
+          const plugin = plugins.find(p => p.name === pluginName);
+          if (plugin) {
+            plugin.version = await this.getPluginVersion(pluginName);
+          }
+          this.setPlugins(plugins);
+          return resolve(plugins);
+        });
+      };
+
+      const pluginConfig = this.plugins[pluginName];
+
+      const npmConfig = { loglevel: 'silent', prefix: this.pluginInstallDir, registry: pluginConfig.registry };
+      if (npm.config.loaded) {
+        Object.keys(npmConfig).forEach(k => {
+          npm.config.set(k, npmConfig[k]);
+        });
+        update();
+      } else {
+        npm.load(npmConfig, () => update());
+      }
+    });
+  }
+
   /**
    * 删除插件库
    */
@@ -136,7 +161,6 @@ export class PluginService extends EventEmitter {
             return reject(err);
           }
           const plugins = this.getPlugins();
-          // @ts-ignore
           remove(plugins, p => p.name === pluginName);
           this.setPlugins(plugins);
           return resolve(plugins);
@@ -180,6 +204,14 @@ export class PluginService extends EventEmitter {
    */
   public getComposedPluginMiddlewares() {
     return compose(map(this.plugins, plugin => plugin.proxy()));
+  }
+
+  private async getPluginVersion(pluginName: string) {
+    return (await this.getPluginPackageJson(pluginName)).version;
+  }
+
+  public async getPluginPackageJson(pluginName: string) {
+    return fs.readJSON(path.join(this.getPluginDir(pluginName), 'package.json'));
   }
 
   /**

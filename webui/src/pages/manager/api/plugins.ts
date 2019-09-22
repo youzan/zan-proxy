@@ -12,6 +12,10 @@ export function addPlugin(data: IAddPluginReq) {
   return axios.post<void>('/plugins/add', data);
 }
 
+export function updatePlugin(data: IPluginApiCommonReq) {
+  return axios.post<void>('/plugins/update', data);
+}
+
 export function removePlugin(data: IPluginApiCommonReq) {
   return axios.post<void>('/plugins/remove', data);
 }

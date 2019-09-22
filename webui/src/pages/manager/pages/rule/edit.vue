@@ -2,13 +2,13 @@
   <div>
     <div class="main-content__title">
       编辑规则集{{ !loading && `: ${filecontent.name}` }}
-      <el-button-group class="action-wrapper">
+      <el-button-group class="main-content__action">
         <el-button size="small" @click="openEditRuleInfoDialog">编辑名字/描述</el-button>
         <el-button size="small" @click="addRule">新增规则</el-button>
       </el-button-group>
     </div>
     <p class="tip" v-if="isRemote">该规则集为远程规则集，如需修改，请复制对应规则集。</p>
-    <el-table border row-key="key" :stripe="true" :data="filecontent.content">
+    <el-table border row-key="key" align="center" :stripe="true" :data="filecontent.content">
       <el-table-column prop="checked" label="启用" align="center" width="60">
         <template v-slot="scope">
           <el-tooltip class="item" effect="dark" content="勾选后启动这条规则" placement="left">
@@ -25,13 +25,7 @@
       <el-table-column prop="match" label="URL特征" width="200" />
       <el-table-column prop="name" label="描述" />
       <el-table-column label="转发地址">
-        <template v-slot="scope">
-          {{
-          scope.row.actionList.filter(a => a.type === 'redirect')[0]
-          ? scope.row.actionList.filter(a => a.type === 'redirect')[0].data.target
-          : '--'
-          }}
-        </template>
+        <template v-slot="scope">{{ getRedirectTarget(scope.row.actionList) }}</template>
       </el-table-column>
       <el-table-column label="操作" width="220" align="center" :context="_self">
         <template v-slot="scope">
@@ -71,7 +65,13 @@
       </el-table-column>
     </el-table>
     <!-- 测试正则匹配对话框 -->
-    <el-dialog title="匹配规则测试(只测试正则匹配，不包含请求方法)" v-model="testMatchRuleFormVisible" size="large">
+    <el-dialog
+      title="匹配规则测试(只测试正则匹配，不包含请求方法)"
+      v-model="testMatchRuleFormVisible"
+      :modal-append-to-body="true"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
       <el-form :model="testMatchRuleForm" label-width="120px">
         <el-form-item label="请求url">
           <el-input v-model="testMatchRuleForm.url"></el-input>
@@ -121,7 +121,7 @@ import 'vue-router';
 import { ElForm } from 'element-ui/types/form';
 import { Message } from 'element-ui';
 import { Component, Watch } from 'vue-property-decorator';
-import { IRuleFile, IRule } from '@core/types/rule';
+import { IRuleFile, IRule, IRuleAction } from '@core/types/rule';
 import { MessageBoxInputData, MessageBoxCloseAction } from 'element-ui/types/message-box';
 import { ruleModule, mockModule } from '../../store';
 import _ from 'lodash';
@@ -175,6 +175,12 @@ export default class RuleEdit extends Vue {
   get editingRule() {
     const rules = this.filecontent.content || [];
     return rules.filter(rule => rule.key === this.editRuleKey)[0] || null;
+  }
+
+  getRedirectTarget(actionList: IRuleAction[]) {
+    return actionList.filter(a => a.type === 'redirect')[0]
+      ? actionList.filter(a => a.type === 'redirect')[0].data.target
+      : '--';
   }
 
   async getFile() {
@@ -332,9 +338,5 @@ export default class RuleEdit extends Vue {
 .tip {
   font-size: 14px;
   color: #999999;
-}
-
-.action-wrapper {
-  float: right;
 }
 </style>

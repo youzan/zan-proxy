@@ -1,5 +1,5 @@
 import { Context } from 'koa';
-import { Ctx, Get, Post, JsonController } from 'routing-controllers';
+import { Ctx, Get, JsonController, Post } from 'routing-controllers';
 import { Inject, Service } from 'typedi';
 
 import { MockDataService } from '../../services';
@@ -15,14 +15,14 @@ export class MockDataController {
   // 获取mock数据列表
   @Get('/list')
   public async getDataList(@Ctx() ctx: Context) {
-    const dataList = await this.mockDataService.getMockList();
+    const dataList = this.mockDataService.getMockList();
     return dataList;
   }
 
   // 保存数据列表
   @Post('/list')
   public async saveDataList(@Ctx() ctx: Context) {
-    this.mockDataService.saveMockList(ctx.request.body);
+    await this.mockDataService.saveMockList(ctx.request.body);
     return true;
   }
 

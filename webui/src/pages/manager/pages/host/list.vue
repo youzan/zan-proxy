@@ -1,7 +1,7 @@
 <template>
   <div class="host-view">
     <div class="main-content__title">Host 文件列表</div>
-    <div class="action-wrapper">
+    <div class="main-content__action">
       <input type="file" ref="fileimport" @change="importHostFile" style="display:none;" />
       <el-button size="small" @click="importHostFileBtnClick">导入 Host 文件</el-button>
       <el-button size="small" type="primary" @click="importRemoteHostFile">导入远程 Host 文件</el-button>
@@ -17,7 +17,12 @@
           />
         </template>
       </el-table-column>
-      <el-table-column prop="name" label="名字" width="250"></el-table-column>
+      <el-table-column prop="name" label="名字" width="250">
+        <template v-slot="scope">
+          <meta-tag :isRemote="!scope.row.meta.local" remoteTooltip="远程Host" localTooltip="本地Host" />
+          {{ scope.row.name }}
+        </template>
+      </el-table-column>
       <el-table-column prop="description" label="描述" />
       <el-table-column label="操作" width="250" :context="_self">
         <template v-slot="scope">
@@ -51,8 +56,13 @@ import * as hostApi from '../../api/host';
 import { MessageBoxInputData } from 'element-ui/types/message-box';
 import { hostModule, profileModule } from '../../store';
 import { IProfileState } from '../../store/profile';
+import MetaTag from '../../components/common/MetaTag.vue';
 
-@Component
+@Component({
+  components: {
+    'meta-tag': MetaTag,
+  },
+})
 export default class HostList extends Vue {
   @profileModule.State
   profile: IProfileState[];
@@ -149,11 +159,6 @@ export default class HostList extends Vue {
 }
 </script>
 <style lang="scss" scoped>
-.action-wrapper {
-  text-align: right;
-  margin-bottom: 10px;
-}
-
 .host-view {
   .addhost-btn-wrap {
     text-align: right;

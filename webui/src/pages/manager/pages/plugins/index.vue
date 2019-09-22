@@ -7,6 +7,7 @@
         :key="p.name"
         :plugin="p"
         :delete="deletePlugin"
+        :update="updatePlugin"
         :setDisabled="setPluginDisabled"
       />
       <add-btn :add="addPlugin" />
@@ -59,6 +60,27 @@ export default class PluginPage extends Vue {
       await this.fetchPluginList();
     } catch {
       Message.error('删除失败，请重试');
+    } finally {
+      loading.close();
+    }
+  }
+
+  /**
+   * 删除插件
+   */
+  async updatePlugin(name: string) {
+    const loading = this.$loading({
+      lock: true,
+      text: '升级中...',
+      spinner: 'el-icon-loading',
+      background: 'rgba(0, 0, 0, 0.7)',
+    });
+    try {
+      await api.updatePlugin({ name });
+      Message.success('升级成功，重启后生效');
+      await this.fetchPluginList();
+    } catch {
+      Message.error('升级失败，请重试');
     } finally {
       loading.close();
     }
@@ -127,12 +149,12 @@ export default class PluginPage extends Vue {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     background-color: #ffffff;
-    width: 280px;
+    width: 300px;
     height: 200px;
     box-sizing: border-box;
 
     &:hover {
-      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 8px 8px rgba(0, 0, 0, 0.22);
     }
   }
 }

@@ -1,34 +1,23 @@
+import { PluginService } from '@core/services';
 import fs from 'fs-extra';
 import Koa, { Context } from 'koa';
 import koaMount from 'koa-mount';
-import path from 'path';
-import { JsonController, Ctx, Get, InternalServerError, Post } from 'routing-controllers';
-import { Inject, Service } from 'typedi';
 import { map } from 'lodash';
-
-import { PluginService } from '@core/services';
+import path from 'path';
+import { Ctx, Get, InternalServerError, JsonController, Post } from 'routing-controllers';
+import { Inject, Service } from 'typedi';
 
 @Service()
 @JsonController('/plugins')
 export class PluginController {
   @Inject() private pluginManager: PluginService;
 
-  @Post('/remove')
-  public async remove(@Ctx() ctx: Context) {
-    const { name } = ctx.request.body;
-    await this.pluginManager.remove(name);
-    this.pluginManager.refreshPlugins();
-    return true;
-  }
-
   @Get('/list')
   public async list(@Ctx() ctx: Context) {
     const allPluginInfo = await Promise.all(
       this.pluginManager.allInstalledPlugins.map(async plugin => ({
         ...plugin,
-        ...(await fs.readJSON(
-          path.join(this.pluginManager.getPluginDir(plugin.name), 'package.json'),
-        )),
+        ...(await fs.readJSON(path.join(this.pluginManager.getPluginDir(plugin.name), 'package.json'))),
       })),
     );
     return allPluginInfo;
@@ -60,9 +49,26 @@ export class PluginController {
     return true;
   }
 
+  @Post('/update')
+  public async update(@Ctx() ctx: Context) {
+    const { name } = ctx.request.body;
+    await this.pluginManager.update(name);
+    this.pluginManager.refreshPlugins();
+    return true;
+  }
+
+  @Post('/remove')
+  public async remove(@Ctx() ctx: Context) {
+    const { name } = ctx.request.body;
+    await this.pluginManager.remove(name);
+    this.pluginManager.refreshPlugins();
+    return true;
+  }
+
   public mountCustomPlugins(app: Koa) {
-    Object.keys(this.pluginManager.usingPlugins).forEach(name => {
-      const plugin = this.pluginManager.usingPlugins[name];
+    const usingPlugins = this.pluginManager.usingPlugins;
+    Object.keys(usingPlugins).forEach(name => {
+      const plugin = usingPlugins[name];
       if (plugin.manage) {
         const pluginManager = plugin.manage();
         if (

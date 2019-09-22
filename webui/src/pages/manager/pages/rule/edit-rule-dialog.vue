@@ -1,5 +1,12 @@
 <template>
-  <el-dialog title="编写规则" :visible.sync="dialogVisible" @close="cancel">
+  <el-dialog
+    title="编写规则"
+    @close="cancel"
+    :visible.sync="dialogVisible"
+    :modal-append-to-body="true"
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
+  >
     <el-form :model="rule" label-width="80px">
       <el-form-item label="请求方法">
         <el-select v-model="rule.method" placeholder="请选择">

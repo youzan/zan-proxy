@@ -1,11 +1,11 @@
-import Koa from 'koa';
-
 import { IProxyMiddlewareFn } from '@core/types/proxy';
+import Koa from 'koa';
 
 export interface IPluginInfo {
   name: string;
   disabled?: boolean;
   version: string;
+  registry?: string;
 }
 
 export interface IPluginClass {

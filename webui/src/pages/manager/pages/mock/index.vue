@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="main-content__title">Mock 数据文件列表</div>
-    <div class="action-wrapper">
+    <div class="main-content__action">
       <el-button size="small" @click="createMockData">新增数据文件</el-button>
     </div>
     <el-table border :data="dataList">
@@ -17,11 +17,12 @@
 
     <!-- 新增自定义mock数据文件对话框 -->
     <el-dialog
-      title="编辑Mock数据"
+      title="编辑 Mock 数据"
       :visible.sync="dialogVisible"
-      ref="mockDataDialg"
+      :modal-append-to-body="true"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
+      top="40px"
     >
       <el-form ref="mockDataForm" :model="mockDataForm" :rules="validateRules" label-width="80px">
         <el-form-item label="名称" prop="name">
@@ -267,11 +268,6 @@ export default class Mock extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.action-wrapper {
-  text-align: right;
-  margin-bottom: 10px;
-}
-
 .content-editor {
   height: 360px;
 
