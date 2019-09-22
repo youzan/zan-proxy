@@ -70,9 +70,9 @@ export function getReferenceVar(content: any) {
 }
 
 export function importRemote(url: string) {
-  return axios.get(`/rule/import?url=${encodeURIComponent(url)}`);
+  return axios.post('/rule/import', { url });
 }
 
 export function copyFile(name: string) {
-  return axios.get(`/rule/copy?name=${encodeURI(name)}`);
+  return axios.post(`/rule/copy`, { name });
 }

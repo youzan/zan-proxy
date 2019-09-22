@@ -10,12 +10,7 @@
       <el-table-column label="操作" align="center" :context="_self">
         <template v-slot="scope">
           <el-button type="info" icon="el-icon-edit" size="mini" @click="editMockData(scope.row)"></el-button>
-          <el-button
-            type="danger"
-            icon="el-icon-delete"
-            size="mini"
-            @click="deleteMockData(scope.row, scope.$index)"
-          ></el-button>
+          <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteMockData(scope.row, scope.$index)" />
         </template>
       </el-table-column>
     </el-table>
@@ -37,12 +32,7 @@
             <el-option v-for="item in mockLanguageTypes" :key="item" :label="item" :value="item"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item
-          :show-message="false"
-          label-width="0"
-          class="content-editor-container"
-          prop="content"
-        >
+        <el-form-item :show-message="false" label-width="0" class="content-editor-container" prop="content">
           <div id="content-editor" class="content-editor"></div>
         </el-form-item>
       </el-form>
@@ -158,8 +148,8 @@ export default class Mock extends Vue {
       try {
         await dataApi.saveDataList(this.dataList);
         this.$message.success('删除成功!');
-      } catch (error) {
-        this.$message.error(`出错了，${error}`);
+      } catch (err) {
+        this.$message.error(err);
       }
     } catch {
       // no operation
@@ -269,8 +259,8 @@ export default class Mock extends Vue {
       mockDataFormRef.resetFields();
       this.dialogVisible = false;
       this.$message.success('保存成功!');
-    } catch (error) {
-      this.$message.error(`出错了，${error}`);
+    } catch (err) {
+      this.$message.error(err);
     }
   }
 }

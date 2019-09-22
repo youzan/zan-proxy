@@ -117,7 +117,7 @@ export default class LeftMenu extends Vue {
     background-color: #4b4eac;
     color: #fff;
     font-size: 20px;
-    line-height: 72px;
+    line-height: 60px;
     padding-left: 22px;
     font-weight: normal;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
@@ -142,7 +142,7 @@ export default class LeftMenu extends Vue {
     background-color: transparent;
     border-right: none;
     position: relative;
-    top: 72px;
+    top: 60px;
   }
 
   .el-menu-item {

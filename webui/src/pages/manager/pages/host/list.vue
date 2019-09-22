@@ -72,7 +72,7 @@ export default class HostList extends Vue {
         const response = await hostApi.deleteFile(row.name);
         this.$message.success('删除成功!');
       } catch (err) {
-        this.$message.error(`出错了，${err}`);
+        this.$message.error(err);
       }
     } catch {
       // no operation
@@ -87,7 +87,7 @@ export default class HostList extends Vue {
       const response = await hostApi.toggleFile(name);
       this.$message.success('设置成功!');
     } catch (err) {
-      this.$message.error(`出错了,请刷新页面，${err}`);
+      this.$message.error(err);
     }
   }
 
@@ -114,16 +114,20 @@ export default class HostList extends Vue {
       const fileStr = (e.target as FileReader).result as string;
       const hostFile = JSON.parse(fileStr);
       hostFile.checked = false;
-      hostApi.saveFile(hostFile.name, hostFile);
+      hostApi
+        .createFile(hostFile)
+        .then(() => {
+          this.$message.success('导入成功');
+        })
+        .catch(err => {
+          this.$message.error(err);
+        });
     };
     const files = (evt.target as HTMLInputElement).files;
-    if (!files) {
+    if (!files || !files[0]) {
       return;
     }
     const file = files[0];
-    if (!file) {
-      return;
-    }
     reader.readAsText(file);
   }
 
@@ -138,7 +142,7 @@ export default class HostList extends Vue {
       await hostApi.importRemote(url);
       this.$message.success('导入成功');
     } catch (err) {
-      this.$message.error(`出错了, ${err}`);
+      this.$message.error(err);
     }
     return;
   }

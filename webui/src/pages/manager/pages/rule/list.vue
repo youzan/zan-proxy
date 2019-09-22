@@ -91,7 +91,7 @@ export default class RuleList extends Vue {
         await ruleApi.deleteRule(row.name);
         this.$message.success('删除成功!');
       } catch (err) {
-        this.$message.error(`出错了，${err}`);
+        this.$message.error(err);
       }
     } catch {
       // no operation
@@ -127,7 +127,7 @@ export default class RuleList extends Vue {
       const response = await ruleApi.importRemote(url);
       this.$message.success('导入成功');
     } catch (err) {
-      this.$message.error(`出错了, ${err}`);
+      this.$message.error(err);
     }
   }
 
@@ -139,7 +139,7 @@ export default class RuleList extends Vue {
       await ruleApi.toggleRule(name, checked);
       this.$message.success('设置成功!');
     } catch (err) {
-      this.$message.error(`出错了，${err}`);
+      this.$message.error(err);
     }
   }
 
@@ -191,7 +191,7 @@ export default class RuleList extends Vue {
           await ruleApi.saveRule(content.name, content);
           this.$message.success('导入成功');
         } catch (err) {
-          this.$message.error(`出错了，${err}`);
+          this.$message.error(err);
         }
       }
     };

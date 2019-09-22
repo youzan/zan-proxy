@@ -41,6 +41,5 @@ export function saveFile(name: string, content: IHostFile) {
 }
 
 export function importRemote(url: string) {
-  return axios.post(`/host/import?url=${encodeURIComponent(url)}`);
+  return axios.post('/host/import', { url });
 }
-

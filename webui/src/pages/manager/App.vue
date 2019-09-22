@@ -2,50 +2,45 @@
   <div class="main-wrapper">
     <!-- 顶部导航 -->
     <header class="head-nav">
-      <span class="dropdown-label">Host 设置：</span>
+      <span class="dropdown-label">Host规则：</span>
       <el-dropdown trigger="click" :hide-on-click="false" @command="selectHostFile">
         <el-button type="text">
           {{ profile.enableHost ? selectedHost.join(',') : '禁用' }}
-          <i
-            class="el-icon-caret-bottom el-icon--right"
-          />
+          <i class="el-icon-caret-bottom el-icon--right" />
         </el-button>
         <el-dropdown-menu slot="dropdown">
           <!-- host文件 -->
           <el-dropdown-item v-if="profile.enableHost" command="__disabled__">禁用</el-dropdown-item>
           <el-dropdown-item v-else command="__enabled__">启用</el-dropdown-item>
-          <!-- eslint-disable -->
           <el-dropdown-item
-            v-for="(hostfile, index) in hostFileList"
+            v-for="(hostFile, index) in hostFileList"
             :key="index"
-            :command="hostfile.name"
+            :command="hostFile.name"
             :disabled="!profile.enableHost"
           >
-            {{ hostfile.name }}
-            <i class="el-icon-check" v-if="hostfile.checked" />
+            {{ hostFile.name }}
+            <i class="el-icon-check" v-if="hostFile.checked" />
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
-      <span class="dropdown-label">请求转发：</span>
+      <span class="dropdown-label">转发规则：</span>
       <el-dropdown trigger="click" :hide-on-click="false" @command="selectRuleFile">
         <el-button type="text">
           {{ profile.enableRule ? selectedRuleFiles.join(',') : '禁用' }}
-          <i
-            class="el-icon-caret-bottom el-icon--right"
-          />
+          <i class="el-icon-caret-bottom el-icon--right" />
         </el-button>
         <el-dropdown-menu slot="dropdown">
           <!-- rule文件 -->
           <el-dropdown-item v-if="profile.enableRule" command="__disabled__">禁用</el-dropdown-item>
           <el-dropdown-item v-else command="__enabled__">启用</el-dropdown-item>
           <el-dropdown-item
-            v-for="(rulefile, index) in ruleFileList"
+            v-for="(ruleFile, index) in ruleFileList"
             :key="index"
-            :command="rulefile.name + '-%-' + rulefile.checked"
+            :command="ruleFile.name + '-%-' + ruleFile.checked"
             :disabled="!profile.enableRule"
           >
-            {{ rulefile.name }}
-            <i class="el-icon-check" v-if="rulefile.checked" />
+            {{ ruleFile.name }}
+            <i class="el-icon-check" v-if="ruleFile.checked" />
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -119,7 +114,7 @@ export default class App extends Vue {
       await hostApi.toggleFile(name);
       this.$message.success('设置成功!');
     } catch (err) {
-      this.$message.error(`出错了,请刷新页面，${err}`);
+      this.$message.error(err);
     }
   }
 
@@ -135,7 +130,7 @@ export default class App extends Vue {
     try {
       await ruleApi.toggleRule(kv[0], kv[1] == 'false');
     } catch (err) {
-      this.$message.error(`出错了，${err}`);
+      this.$message.error(err);
     }
   }
 

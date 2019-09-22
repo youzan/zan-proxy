@@ -2,40 +2,41 @@
   <div>
     <div class="main-content__title">
       {{ isCreate ? '创建' : '编辑' }}Host文件
-      <el-button-group class="action-wrapper">
+      <el-button-group v-if="!isRemote" class="action-wrapper">
         <el-button size="small" @click="addRow">新增Host Entry</el-button>
         <el-button size="small" type="primary" @click="save">保存</el-button>
       </el-button-group>
     </div>
-    <div class="tip" v-if="isRemote">该Host文件为远程Host文件，如需修改，请复制对应Host。</div>
+    <p class="tip" v-if="isRemote">该Host文件为远程Host文件，如需修改，请复制对应Host。</p>
     <el-form :model="hostForm" :rules="rules" ref="ruleForm" label-width="100px" class="host-form">
       <el-form-item label="文件名称" prop="name">
-        <el-input :disabled="!isCreate" v-model="hostForm.name"></el-input>
+        <el-input :disabled="!isCreate || isRemote" v-model="hostForm.name"></el-input>
       </el-form-item>
       <el-form-item label="文件描述" prop="description">
-        <el-input type="textarea" v-model="hostForm.description"></el-input>
+        <el-input :disabled="isRemote" type="textarea" v-model="hostForm.description"></el-input>
       </el-form-item>
       <el-form-item label="解析内容">
         <el-table border :data="contentRows">
           <el-table-column type="index" :width="60"></el-table-column>
           <el-table-column prop="key" label="域名" align="center">
             <template v-slot="scope">
-              <el-input v-model.trim="scope.row.key" size="small" placeholder="请输入内容"></el-input>
+              <el-input :disabled="isRemote" v-model.trim="scope.row.key" size="small" placeholder="请输入内容" />
             </template>
           </el-table-column>
           <el-table-column prop="value" label="ip地址" align="center" :width="400">
             <template v-slot="scope">
-              <el-input v-model.trim="scope.row.value" size="small" placeholder="请输入内容"></el-input>
+              <el-input :disabled="isRemote" v-model.trim="scope.row.value" size="small" placeholder="请输入内容" />
             </template>
           </el-table-column>
           <el-table-column label="操作" :width="80" align="center" :context="_self">
             <template v-slot="scope">
               <el-button
+                :disabled="isRemote"
                 type="danger"
                 icon="el-icon-delete"
                 size="mini"
                 @click="deleteRow(scope.row, scope.$index)"
-              ></el-button>
+              />
             </template>
           </el-table-column>
         </el-table>
@@ -121,7 +122,7 @@ export default class HostEdit extends Vue {
       // 解析host数组
       this.refreshContentRows();
     } catch (err) {
-      this.$message.error(`出错了，${err}`);
+      this.$message.error(err);
     } finally {
       this.loading = false;
     }
@@ -169,7 +170,7 @@ export default class HostEdit extends Vue {
         this.$message.success('保存成功!');
         this.$router.push('/host/list');
       } catch (err) {
-        this.$message.error(`出错了，${err}`);
+        this.$message.error(err);
       }
     } catch {
       return false;

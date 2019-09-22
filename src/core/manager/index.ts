@@ -3,6 +3,7 @@ import Koa from 'koa';
 import koaBodyParser from 'koa-bodyparser';
 import koaFavicon from 'koa-favicon';
 import koaQs from 'koa-qs';
+import koaLogger from 'koa-logger';
 import koaStatic from 'koa-static';
 import path from 'path';
 import { useContainer, useKoaServer } from 'routing-controllers';
@@ -42,6 +43,10 @@ export class Manager {
   private initKoa() {
     // 初始化koa
     const app = new Koa();
+
+    if (process.env.NODE_ENV === 'development') {
+      app.use(koaLogger());
+    }
 
     // 静态资源服务
     app.use(koaStatic(global.__site, { index: 'manager.html' }));

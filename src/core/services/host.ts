@@ -1,12 +1,13 @@
 import { IHostFile } from '@core/types/host';
+import { request } from '@core/utils';
 import EventEmitter from 'events';
 import fs from 'fs-extra';
-import { find, forEach, get, defaults } from 'lodash';
+import { defaults, find, forEach, get } from 'lodash';
 import path from 'path';
+import { HttpError } from 'routing-controllers';
 import { Service } from 'typedi';
 
 import { AppInfoService } from './appInfo';
-import { request } from '@core/utils';
 
 const IP_REG = /((?:(?:25[0-5]|2[0-4]\d|[01]?\d?\d)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d?\d))/;
 
@@ -76,6 +77,10 @@ export class HostService extends EventEmitter {
     };
   }
 
+  private exist(name: string): boolean {
+    return !!this.hostFilesMap[name];
+  }
+
   /**
    * 根据 host 配置解析域名到 ip
    */
@@ -118,7 +123,7 @@ export class HostService extends EventEmitter {
   public async create({ name, description, content = {} }: IHostFile) {
     if (this.hostFilesMap[name]) {
       // 文件已经存在，不创建
-      return false;
+      throw new HttpError(409, 'Host规则已存在');
     }
 
     const entity: IHostFile = {
@@ -183,8 +188,8 @@ export class HostService extends EventEmitter {
   public async saveHostFile(name: string, content: IHostFile) {
     this.hostFilesMap[name] = content;
 
-    const hostfileName = this.getHostFilePath(name);
-    await fs.writeJson(hostfileName, content, { encoding: 'utf-8' });
+    const hostFilePath = this.getHostFilePath(name);
+    await fs.writeJson(hostFilePath, content, { encoding: 'utf-8' });
     this.emit('data-change', this.getHostFileList());
   }
 
@@ -194,20 +199,21 @@ export class HostService extends EventEmitter {
   public async importRemoteHostFile(url: string) {
     const resp = await request.get(url);
     const file: IHostFile = await resp.json();
+
+    if (this.exist(file.name)) {
+      throw new HttpError(409, 'Host规则已存在');
+    }
+
+    Object.assign(file, {
+      meta: {
+        local: false,
+        url,
+      },
+      checked: false,
+    });
     defaults(file, {
       content: {},
-      name: url.split('/').slice(-1)[0] || url,
     });
-    file.meta = {
-      local: false,
-      url,
-    };
-    const hostFile = this.getHostFile(file.name);
-    if (hostFile && hostFile.checked) {
-      file.checked = true;
-    } else {
-      file.checked = false;
-    }
     return this.saveHostFile(file.name, file);
   }
 }

@@ -1,5 +1,5 @@
 import { Context } from 'koa';
-import { JsonController, Ctx, Get, Post, InternalServerError, Delete } from 'routing-controllers';
+import { Ctx, Delete, Get, InternalServerError, JsonController, Post } from 'routing-controllers';
 import { Inject, Service } from 'typedi';
 
 import { ErrNameExists, ProfileService, RuleService } from '../../services';
@@ -12,11 +12,11 @@ export class RuleController {
 
   @Post('/create')
   public async create(@Ctx() ctx: Context) {
+    const {
+      request: { body },
+    } = ctx;
     try {
-      const result = await this.ruleService.create(
-        ctx.request.body.name,
-        ctx.request.body.description,
-      );
+      const result = await this.ruleService.create(body.name, body.description);
       return result;
     } catch (error) {
       const msg = error === ErrNameExists ? '文件已存在' : `未知错误: ${error.toString()}`;
@@ -38,13 +38,11 @@ export class RuleController {
     return true;
   }
 
-  // 设置文件勾选状态
+  // 设置文件启用状态
   @Post('/toggle')
   public async toggle(@Ctx() ctx: Context) {
-    this.ruleService.setRuleFileCheckStatus(
-      ctx.query.name,
-      parseInt(ctx.query.checked, 10) === 1 ? true : false,
-    );
+    const { query } = ctx;
+    this.ruleService.setRuleFileCheckStatus(query.name, parseInt(query.checked, 10) === 1 ? true : false);
     return true;
   }
 
@@ -108,7 +106,7 @@ export class RuleController {
     }
 
     const targetTpl = ctx.request.body.targetTpl;
-    const targetRlt = await this.profileService.calcPath(url, match, targetTpl);
+    const targetRlt = this.profileService.calcPath(url, match, targetTpl);
 
     // 测试规则
     return {
@@ -117,10 +115,12 @@ export class RuleController {
     };
   }
 
-  @Get('/import')
+  @Post('/import')
   public async import(@Ctx() ctx: Context) {
-    const { query } = ctx;
-    const ruleFileUrl = query.url;
+    const {
+      request: { body },
+    } = ctx;
+    const ruleFileUrl = body.url;
     const ruleFile = await this.ruleService.importRemoteRuleFile(ruleFileUrl);
     return ruleFile;
   }

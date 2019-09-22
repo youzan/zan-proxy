@@ -68,7 +68,7 @@ export default class Profile extends Vue {
       this.profile.projectPath = projectPathMap;
       this.$message.success('保存成功!');
     } catch (err) {
-      this.$message.error(`出错了，${err}}`);
+      this.$message.error(err);
     }
   }
 

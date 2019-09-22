@@ -57,7 +57,7 @@ export default class RuleCreate extends Vue {
         this.$message.success('创建成功');
         this.$router.push(`/rule/edit?name=${this.createFileForm.name}`);
       } catch (err) {
-        this.$message.error(`出错了，${err}`);
+        this.$message.error(err);
       }
     } catch {
       // no operation

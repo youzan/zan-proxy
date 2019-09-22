@@ -1,5 +1,5 @@
 import { Context } from 'koa';
-import { Ctx, Get, Post, Delete, HttpError, JsonController } from 'routing-controllers';
+import { Ctx, Delete, Get, JsonController, Post } from 'routing-controllers';
 import { Inject, Service } from 'typedi';
 
 import { HostService } from '../../services';
@@ -11,18 +11,13 @@ export class HostController {
 
   @Post('/create')
   public async create(@Ctx() ctx: Context) {
-    const success = await this.hostService.create(ctx.request.body);
-
-    if (success) {
-      return true;
-    } else {
-      throw new HttpError(409, '文件已存在');
-    }
+    await this.hostService.create(ctx.request.body);
+    return true;
   }
 
   @Get('/list')
   public async list(@Ctx() ctx: Context) {
-    const hostList = await this.hostService.getHostFileList();
+    const hostList = this.hostService.getHostFileList();
     return hostList;
   }
 
@@ -41,7 +36,7 @@ export class HostController {
 
   @Get('/get')
   public async get(@Ctx() ctx: Context) {
-    const hostFile = await this.hostService.getHostFile(ctx.query.name);
+    const hostFile = this.hostService.getHostFile(ctx.query.name);
     return hostFile;
   }
 
@@ -54,16 +49,18 @@ export class HostController {
   @Get('/download')
   public async download(@Ctx() ctx: Context) {
     const name = ctx.query.name;
-    const content = await this.hostService.getHostFile(name);
+    const content = this.hostService.getHostFile(name);
     ctx.attachment(`${name}.json`);
     return content;
   }
 
   @Post('/import')
   public async import(@Ctx() ctx: Context) {
-    const { query } = ctx;
-    const hostFileUrl = query.url;
-    const hostFile = await this.hostService.importRemoteHostFile(hostFileUrl);
-    return hostFile;
+    const {
+      request: { body },
+    } = ctx;
+    const hostFileUrl = body.url;
+    await this.hostService.importRemoteHostFile(hostFileUrl);
+    return true;
   }
 }

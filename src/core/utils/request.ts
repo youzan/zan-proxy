@@ -4,6 +4,8 @@ import * as qs from 'querystring';
 
 // 默认3s超时
 const DEFAULT_TIMEOUT = 3000;
+
+const DEFAULT_GET_HEADER = {};
 const DEFAULT_HEADER = {
   'Content-Type': 'application/json',
 };
@@ -19,22 +21,13 @@ function computeUrl(url: string, params?: object) {
 }
 
 /**
- * 合并默认 header
- * @param {object} headers
- * @returns
- */
-function computeHeaders(headers?: object) {
-  return Object.assign({}, DEFAULT_HEADER, headers);
-}
-
-/**
  * 基础网络请求封装
  */
 export default {
   get(url: string, params?: object, options: RequestInit = {}) {
     return fetch(computeUrl(url, params), {
       method: 'GET',
-      headers: computeHeaders(options.headers),
+      headers: Object.assign({}, DEFAULT_GET_HEADER, options.headers),
       timeout: DEFAULT_TIMEOUT,
       ...options,
     });
@@ -43,7 +36,7 @@ export default {
     return fetch(computeUrl(url, params), {
       method: 'POST',
       body: isPlainObject(body) ? JSON.stringify(body) : body,
-      headers: computeHeaders(options.headers),
+      headers: Object.assign({}, DEFAULT_HEADER, options.headers),
       timeout: DEFAULT_TIMEOUT,
       ...options,
     });
@@ -52,7 +45,7 @@ export default {
     return fetch(computeUrl(url, params), {
       method: 'PUT',
       body: isPlainObject(body) ? JSON.stringify(body) : body,
-      headers: computeHeaders(options.headers),
+      headers: Object.assign({}, DEFAULT_HEADER, options.headers),
       timeout: DEFAULT_TIMEOUT,
       ...options,
     });
@@ -60,7 +53,7 @@ export default {
   del(url: string, params?: object, options: RequestInit = {}) {
     return fetch(computeUrl(url, params), {
       method: 'DELETE',
-      headers: computeHeaders(options.headers),
+      headers: Object.assign({}, DEFAULT_HEADER, options.headers),
       timeout: DEFAULT_TIMEOUT,
       ...options,
     });

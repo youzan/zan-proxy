@@ -7,7 +7,7 @@
         <el-button size="small" @click="addRule">新增规则</el-button>
       </el-button-group>
     </div>
-    <div class="tip" v-if="isRemote">该规则集为远程规则集，重启同步后相关配置会被覆盖。如需永久保存修改，则可以复制该规则集成本地规则集。</div>
+    <p class="tip" v-if="isRemote">该规则集为远程规则集，如需修改，请复制对应规则集。</p>
     <el-table border row-key="key" :stripe="true" :data="filecontent.content">
       <el-table-column prop="checked" label="启用" align="center" width="60">
         <template v-slot="scope">
@@ -37,12 +37,7 @@
         <template v-slot="scope">
           <div class="actions-container">
             <el-tooltip class="item" effect="dark" content="编辑" placement="left">
-              <el-button
-                icon="el-icon-edit"
-                size="mini"
-                type="primary"
-                @click="dialogEdit(scope.row.key)"
-              />
+              <el-button icon="el-icon-edit" size="mini" type="primary" @click="dialogEdit(scope.row.key)" />
             </el-tooltip>
             <el-tooltip class="item" effect="dark" content="删除" placement="top">
               <el-button
@@ -60,12 +55,7 @@
               />
             </el-tooltip>
             <el-tooltip class="item" effect="dark" content="测试规则" placement="left">
-              <el-button
-                type="blue"
-                icon="el-icon-search"
-                size="mini"
-                @click="testMatchRuleRequest(scope.row)"
-              />
+              <el-button type="blue" icon="el-icon-search" size="mini" @click="testMatchRuleRequest(scope.row)" />
             </el-tooltip>
             <el-tooltip class="item" effect="dark" content="提高优先级" placement="left">
               <el-button
@@ -198,7 +188,7 @@ export default class RuleEdit extends Vue {
 
       this.filecontent = response.data;
     } catch (err) {
-      this.$message.error(`出错了，${err}`);
+      this.$message.error(err);
     } finally {
       this.loading = false;
     }
@@ -232,7 +222,7 @@ export default class RuleEdit extends Vue {
       this.$message.success('保存成功!');
       await this.getFile();
     } catch (err) {
-      this.$message.error(`出错了，${err}`);
+      this.$message.error(err);
     }
   }
 
