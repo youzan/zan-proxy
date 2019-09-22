@@ -1,5 +1,4 @@
 import { IProxyContext, IProxyMiddleware } from '@core/types/proxy';
-import { supportBrotli } from '@core/utils';
 import http from 'http';
 import https, { RequestOptions } from 'https';
 import { isNull, isUndefined } from 'lodash';

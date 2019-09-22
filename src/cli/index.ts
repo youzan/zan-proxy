@@ -3,7 +3,6 @@ import promiseFinally from 'promise.prototype.finally';
 import program from 'commander';
 import path from 'path';
 import open from 'open';
-import selfUpdate from './selfUpdate';
 import start from '@core/start';
 import syncHost from '@core/syncHost';
 import syncRule from '@core/syncRule';
@@ -41,16 +40,12 @@ program
   .option('-p, --proxy_port [value]', 'set the proxy port')
   .option('-m, --manager_port [value]', 'set the manager server port')
   .option('--manager_host [value]', 'set the manager server host')
-  .option('--no-update', 'do not check if update available')
   .option('--no-sync', 'do not sync remote rules')
   .parse(process.argv);
 
 async function run() {
   migrateFromOld();
   resetDataFiles();
-  if (program.update) {
-    await selfUpdate();
-  }
   if (program.sync) {
     await syncRule();
     await syncHost();
