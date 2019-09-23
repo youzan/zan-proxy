@@ -1,14 +1,14 @@
 <template>
   <div>
     <div class="main-content__title">
-      编辑规则集{{ !loading && `: ${filecontent.name}` }}
-      <el-button-group class="main-content__action">
+      编辑规则集{{ !loading && `: ${ruleFile.name}` }}
+      <el-button-group v-if="!isRemote" class="main-content__action">
         <el-button size="small" @click="openEditRuleInfoDialog">编辑名字/描述</el-button>
         <el-button size="small" @click="addRule">新增规则</el-button>
       </el-button-group>
     </div>
     <p class="tip" v-if="isRemote">该规则集为远程规则集，如需修改，请复制对应规则集。</p>
-    <el-table border row-key="key" align="center" :stripe="true" :data="filecontent.content">
+    <el-table class="rule-edit-table" border row-key="key" align="center" :stripe="true" :data="ruleFile.content">
       <el-table-column prop="checked" label="启用" align="center" width="60">
         <template v-slot="scope">
           <el-tooltip class="item" effect="dark" content="勾选后启动这条规则" placement="left">
@@ -30,28 +30,28 @@
       <el-table-column label="操作" width="220" align="center" :context="_self">
         <template v-slot="scope">
           <div class="actions-container">
-            <el-tooltip class="item" effect="dark" content="编辑" placement="left">
+            <el-tooltip v-if="!isRemote" class="item" effect="dark" content="编辑" placement="left">
               <el-button icon="el-icon-edit" size="mini" type="primary" @click="dialogEdit(scope.row.key)" />
             </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="删除" placement="top">
+            <el-tooltip v-if="!isRemote" class="item" effect="dark" content="删除" placement="top">
               <el-button
                 type="danger"
                 icon="el-icon-delete"
                 size="mini"
-                @click="onDeleteRow(scope.row, scope.$index, filecontent.content)"
+                @click="onDeleteRow(scope.row, scope.$index, ruleFile.content)"
               />
             </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="复制" placement="left">
+            <el-tooltip v-if="!isRemote" class="item" effect="dark" content="复制" placement="left">
               <el-button
                 icon="el-icon-document"
                 size="mini"
-                @click="onDuplicateRow(scope.row, scope.$index, filecontent.content)"
+                @click="onDuplicateRow(scope.row, scope.$index, ruleFile.content)"
               />
             </el-tooltip>
             <el-tooltip class="item" effect="dark" content="测试规则" placement="left">
               <el-button type="blue" icon="el-icon-search" size="mini" @click="testMatchRuleRequest(scope.row)" />
             </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="提高优先级" placement="left">
+            <el-tooltip v-if="!isRemote" class="item" effect="dark" content="提高优先级" placement="left">
               <el-button
                 type="blue"
                 icon="el-icon-caret-top"
@@ -67,7 +67,7 @@
     <!-- 测试正则匹配对话框 -->
     <el-dialog
       title="匹配规则测试(只测试正则匹配，不包含请求方法)"
-      v-model="testMatchRuleFormVisible"
+      :visible.sync="testMatchRuleFormVisible"
       :modal-append-to-body="true"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
@@ -88,13 +88,10 @@
         <el-form-item label="最终目标路径">
           <el-input v-model="testMatchRuleForm.targetRlt" :disabled="true"></el-input>
         </el-form-item>
-        <el-form-item label="其他信息">
-          <el-input v-model="testMatchRuleForm.msg" type="textarea" :disabled="true"></el-input>
-        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="testMatchRuleFormVisible = false">关 闭</el-button>
-        <el-button type="primary" @click="testMatchRule">测 试</el-button>
+        <el-button @click="testMatchRuleFormVisible = false">关闭</el-button>
+        <el-button type="primary" @click="testMatchRule">测试</el-button>
       </div>
     </el-dialog>
     <edit-rule-dialog
@@ -108,8 +105,8 @@
       :visible="editRuleConfigDialogVisible"
       :ok="updateFileInfo"
       :cancel="closeEditRuleNameDialog"
-      :defaultName="filecontent.name"
-      :defaultDescription="filecontent.description"
+      :defaultName="ruleFile.name"
+      :defaultDescription="ruleFile.description"
     />
   </div>
 </template>
@@ -139,7 +136,7 @@ import { IMockRecord } from '@core/types/mock';
 })
 export default class RuleEdit extends Vue {
   loading = false;
-  filecontent: IRuleFile = {} as IRuleFile;
+  ruleFile: IRuleFile = {} as IRuleFile;
   testMatchRuleFormVisible = false;
   testMatchRuleForm = {
     url: '', // 请求url
@@ -147,7 +144,6 @@ export default class RuleEdit extends Vue {
     targetTpl: '', // 路径模板， 会用urlReg的匹配结果来替换targetTpl $1 $2
     matchRlt: '', // url匹配结果
     targetRlt: '', // 路径匹配结果
-    msg: '',
   };
   dialogVisible = false;
   editRuleConfigDialogVisible = false; // 编辑规则集名称弹窗
@@ -160,20 +156,16 @@ export default class RuleEdit extends Vue {
     return this.$route.query.name as string;
   }
 
-  get isCreate() {
-    return !this.name;
-  }
-
   /**
    * 是否是远程规则
    */
   get isRemote() {
-    const { loading, filecontent } = this;
-    return !loading && filecontent.meta && filecontent.meta.remote;
+    const { loading, ruleFile } = this;
+    return !loading && ruleFile.meta && ruleFile.meta.remote;
   }
 
   get editingRule() {
-    const rules = this.filecontent.content || [];
+    const rules = this.ruleFile.content || [];
     return rules.filter(rule => rule.key === this.editRuleKey)[0] || null;
   }
 
@@ -192,7 +184,7 @@ export default class RuleEdit extends Vue {
         rule.key = rule.key || uuidV4();
       });
 
-      this.filecontent = response.data;
+      this.ruleFile = response.data;
     } catch (err) {
       this.$message.error(err);
     } finally {
@@ -205,7 +197,7 @@ export default class RuleEdit extends Vue {
       await this.$confirm('此操作不可恢复, 是否继续?', '提示', {
         type: 'warning',
       });
-      this.filecontent.content.splice(index, 1);
+      this.ruleFile.content.splice(index, 1);
       this.saveFile();
     } catch {
       // no operation
@@ -213,9 +205,9 @@ export default class RuleEdit extends Vue {
   }
 
   onDuplicateRow(row: IRule, index: number) {
-    const copy = _.cloneDeep(this.filecontent.content[index]);
+    const copy = _.cloneDeep(this.ruleFile.content[index]);
     copy.key = uuidV4();
-    this.filecontent.content.splice(index, 0, copy);
+    this.ruleFile.content.splice(index, 0, copy);
     this.saveFile();
   }
 
@@ -224,7 +216,7 @@ export default class RuleEdit extends Vue {
    */
   async saveFile() {
     try {
-      await ruleApi.saveRule(this.name, this.filecontent);
+      await ruleApi.updateRule(this.name, this.ruleFile);
       this.$message.success('保存成功!');
       await this.getFile();
     } catch (err) {
@@ -252,15 +244,17 @@ export default class RuleEdit extends Vue {
     this.testMatchRuleForm.url = '';
     this.testMatchRuleForm.matchRlt = '';
     this.testMatchRuleForm.targetRlt = '';
-    this.testMatchRuleForm.msg = '';
     this.testMatchRuleFormVisible = true;
   }
 
   async testMatchRule() {
-    const { data } = await ruleApi.testRule(this.testMatchRuleForm);
-    this.testMatchRuleForm.matchRlt = data.matchRlt;
-    this.testMatchRuleForm.targetRlt = data.targetRlt;
-    this.testMatchRuleForm.msg = data.msg;
+    try {
+      const { data } = await ruleApi.testRule(this.testMatchRuleForm);
+      this.testMatchRuleForm.matchRlt = data.matchRlt;
+      this.testMatchRuleForm.targetRlt = data.targetRlt;
+    } catch (err) {
+      this.$message.error(err);
+    }
   }
 
   dialogEdit(key: string) {
@@ -273,14 +267,14 @@ export default class RuleEdit extends Vue {
   }
 
   dialogSave(rule: IRule) {
-    const rules = this.filecontent.content || [];
+    const rules = this.ruleFile.content || [];
     const index = _.findIndex(rules, r => r.key === rule.key);
     if (index >= 0) {
       rules[index] = rule;
     } else {
       rules.unshift(rule);
     }
-    this.filecontent.content = rules;
+    this.ruleFile.content = rules;
     this.hideEditDialog();
     this.saveFile();
   }
@@ -300,14 +294,14 @@ export default class RuleEdit extends Vue {
     }
 
     try {
-      await ruleApi.updateFileInfo(this.filecontent.name, {
+      await ruleApi.updateFileInfo(this.ruleFile.name, {
         name: newName,
         description: newDescription,
       });
-      this.filecontent.name = newName;
+      this.ruleFile.name = newName;
       this.editRuleConfigDialogVisible = false;
       this.$router.replace(`/rule/edit?name=${newName}`);
-      this.$message.success('修改规则集名称成功!');
+      this.$message.success('修改成功!');
     } catch (err) {
       this.$message.error(err);
     }
@@ -317,14 +311,14 @@ export default class RuleEdit extends Vue {
     if (index === 0) {
       return;
     }
-    const rules = this.filecontent.content || [];
+    const rules = this.ruleFile.content || [];
     if (rules.length < 2 || index >= rules.length) {
       return;
     }
     const temp = rules[index];
     rules[index] = rules[index - 1];
     rules[index - 1] = temp;
-    this.filecontent.content = rules;
+    this.ruleFile.content = rules;
     this.saveFile();
   }
 
@@ -338,5 +332,9 @@ export default class RuleEdit extends Vue {
 .tip {
   font-size: 14px;
   color: #999999;
+}
+
+.rule-edit-table {
+  margin-top: 20px;
 }
 </style>

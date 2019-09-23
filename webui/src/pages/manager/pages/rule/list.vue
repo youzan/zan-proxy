@@ -107,8 +107,12 @@ export default class RuleList extends Vue {
    * 复制规则
    */
   async copyFile(row: IRuleFile) {
-    await ruleApi.copyFile(row.name);
-    this.$message.success('复制成功!');
+    try {
+      await ruleApi.copyFile(row.name);
+      this.$message.success('复制成功!');
+    } catch (err) {
+      this.$message.error(err);
+    }
   }
 
   /**
@@ -182,7 +186,7 @@ export default class RuleList extends Vue {
       if (action == 'confirm') {
         // 创建文件
         try {
-          await ruleApi.saveRule(content.name, content);
+          await ruleApi.updateRule(content.name, content);
           this.$message.success('导入成功');
         } catch (err) {
           this.$message.error(err);

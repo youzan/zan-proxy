@@ -1,6 +1,6 @@
+import { IRuleFile, IRuleTest } from '@core/types/rule';
 import axios from 'axios';
 import _ from 'lodash';
-import { IRuleFile } from '@core/types/rule';
 
 /**
  * 创建规则文件
@@ -20,19 +20,28 @@ export function getRuleList() {
 }
 
 export function deleteRule(name: string) {
-  return axios.delete(`/rule/delete?name=${encodeURIComponent(name)}`);
+  return axios.delete(`/rule/delete`, {
+    params: { name },
+  });
 }
 
 export function toggleRule(name: string, checked: boolean) {
-  return axios.post(`/rule/toggle?name=${name}&checked=${checked ? 1 : 0}`);
+  return axios.post('/rule/toggle', {
+    name,
+    checked,
+  });
 }
 
 export function getRuleContent(name: string) {
-  return axios.get<IRuleFile>(`/rule/get?name=${name}`);
+  return axios.get<IRuleFile>(`/rule/get`, {
+    params: { name },
+  });
 }
 
-export function saveRule(name: string, content: any) {
-  return axios.post(`/rule/save?name=${name}`, content);
+export function updateRule(name: string, content: any) {
+  return axios.post(`/rule/update`, content, {
+    params: { name },
+  });
 }
 
 /**
@@ -54,7 +63,7 @@ export function updateFileInfo(
   });
 }
 
-export function testRule(content: any) {
+export function testRule(content: IRuleTest) {
   return axios.post('/rule/test', content);
 }
 
@@ -74,5 +83,5 @@ export function importRemote(url: string) {
 }
 
 export function copyFile(name: string) {
-  return axios.post(`/rule/copy`, { name });
+  return axios.post('/rule/copy', { name });
 }

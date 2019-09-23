@@ -1,22 +1,23 @@
+import { HostService, RuleService } from '@core/services';
+import syncHosts from '@core/syncHost';
+import syncRules from '@core/syncRule';
+import { IHostFile } from '@core/types/host';
+import { IRuleFile } from '@core/types/rule';
+import { HOST_FILE_EVENTS, RULE_FILE_EVENTS } from '@gui/common/events';
+import BaseManager from '@gui/main/core/base-manager';
+import { showNotify } from '@gui/main/utils';
 import { ipcMain } from 'electron';
 import logger from 'electron-log';
 import SocketClient from 'socket.io-client';
 import Container, { Inject, Service } from 'typedi';
-
-import { HostService, RuleService } from '@core/services';
-import syncHosts from '@core/syncHost';
-import syncRules from '@core/syncRule';
-import { HOST_FILE_EVENTS, RULE_FILE_EVENTS } from '@gui/common/events';
-import BaseManager from '@gui/main/core/base-manager';
-import { showNotify } from '@gui/main/utils';
 
 import AppDataManager from '../app-data';
 
 @Service()
 export default class HostAndRuleFilesManager extends BaseManager {
   private socketClient: SocketIOClient.Socket;
-  public hostFiles: ZanProxyMac.IHostFile[] = [];
-  public ruleFiles: ZanProxyMac.IRuleFile[] = [];
+  public hostFiles: IHostFile[] = [];
+  public ruleFiles: IRuleFile[] = [];
 
   @Inject(() => AppDataManager)
   private appDataManager: AppDataManager;

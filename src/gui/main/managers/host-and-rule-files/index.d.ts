@@ -1,35 +1,6 @@
 declare namespace ZanProxyMac {
-  interface IHostFile {
-    name: string;
-    description: string;
-    meta:
-      | {
-          local: true; // 是否为本地配置
-        }
-      | {
-          local: false;
-          url: string;
-        };
-    checked: boolean;
-  }
-
-  interface IRuleFile {
-    name: string;
-    description: string;
-    meta: {
-      ETag: string;
-      remoteETag: string;
-      isCopy?: boolean;
-    } & (
-      | {
-          remote: true; // 是否为远程配置文件
-          url: string;
-        }
-      | {
-          remote: false;
-        });
-    checked: boolean;
-  }
+  import { IHostFile } from '@core/types/host';
+  import { IRuleFile } from '@core/types/rule';
 
   interface IExportOrImportData {
     hostFiles?: IHostFile[];

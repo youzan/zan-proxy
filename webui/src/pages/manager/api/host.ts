@@ -1,9 +1,9 @@
+import { IHostFile } from '@core/types/host';
 /**
  * Created by tsxuehu on 17/1/9.
  */
 import axios from 'axios';
 import _ from 'lodash';
-import { IHostFile } from '@core/types/host';
 
 export interface ICreateHostData {
   name: string;
@@ -25,19 +25,27 @@ export function getFileList() {
 }
 
 export function deleteFile(name: string) {
-  return axios.delete(`/host/delete?name=${name}`);
+  return axios.delete(`/host/delete`, {
+    params: { name }
+  });
 }
 
 export function toggleFile(name: string) {
-  return axios.post(`/host/toggle?name=${name}`);
+  return axios.post(`/host/toggle`, {}, {
+    params: { name }
+  });
 }
 
 export function getFileContent(name: string) {
-  return axios.get<IHostFile>(`/host/get?name=${name}`);
+  return axios.get<IHostFile>(`/host/get`, {
+    params: { name }
+  });
 }
 
 export function saveFile(name: string, content: IHostFile) {
-  return axios.post(`/host/save?name=${name}`, content);
+  return axios.post(`/host/save`, content, {
+    params: { name }
+  });
 }
 
 export function importRemote(url: string) {

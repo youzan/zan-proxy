@@ -44,7 +44,7 @@
           </el-select>
         </span>
         <span style="margin-left: 10px;">
-          <el-button type="text" @click="toMockPage">编辑Mock数据</el-button>
+          <el-button type="text" @click="toMockPage">去编辑Mock数据</el-button>
         </span>
       </div>
     </div>

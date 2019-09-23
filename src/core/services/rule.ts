@@ -1,17 +1,15 @@
+import { IRule, IRuleAction, IRuleActionData, IRuleFile } from '@core/types/rule';
+import { request } from '@core/utils';
 import EventEmitter from 'events';
 import fs from 'fs-extra';
-import { cloneDeep, lowerCase, flatMap, filter } from 'lodash';
+import { cloneDeep, defaults, filter, flatMap, lowerCase } from 'lodash';
 import path from 'path';
+import { HttpError, NotFoundError } from 'routing-controllers';
 import { Service } from 'typedi';
-import uuid from 'uuid/v4';
 import URL from 'url';
-
-import { IRule, IRuleAction, IRuleActionData, IRuleFile } from '@core/types/rule';
+import uuid from 'uuid/v4';
 
 import { AppInfoService } from './appInfo';
-import { request } from '@core/utils';
-
-export const ErrNameExists = new Error('name exists');
 
 @Service()
 export class RuleService extends EventEmitter {
@@ -38,6 +36,10 @@ export class RuleService extends EventEmitter {
       }, {});
   }
 
+  private has(ruleName: string) {
+    return !!this.rules[ruleName];
+  }
+
   /**
    * 正在使用中的转发规则
    */
@@ -55,27 +57,20 @@ export class RuleService extends EventEmitter {
    * 创建转发规则文件
    */
   public async create(name: string, description: string) {
-    if (this.rules[name]) {
-      return ErrNameExists;
+    if (this.has(name)) {
+      throw new HttpError(409, '规则集名称已存在');
     }
     const ruleFile: IRuleFile = {
       checked: false,
       content: [],
       description,
       meta: {
-        ETag: '',
         remote: false,
-        remoteETag: '',
         url: '',
       },
       name,
     };
-    this.rules[name] = ruleFile;
-    // 写文件
-    const filePath = this.getRuleFilePath(name);
-    await fs.writeJson(filePath, ruleFile, { encoding: 'utf-8' });
-    // 发送消息通知
-    this.emit('data-change', this.getRuleFileList());
+    await this.saveRuleFile(ruleFile);
     return true;
   }
 
@@ -101,7 +96,7 @@ export class RuleService extends EventEmitter {
   /**
    * 设置规则文件的使用状态
    */
-  public async setRuleFileCheckStatus(name: string, checked: boolean) {
+  public async setRuleFileChecked(name: string, checked: boolean) {
     this.rules[name].checked = checked;
     const ruleFilePath = this.getRuleFilePath(name);
     await fs.writeJson(ruleFilePath, this.rules[name], {
@@ -123,16 +118,31 @@ export class RuleService extends EventEmitter {
    */
   public async saveRuleFile(ruleFile: IRuleFile) {
     const originRuleFile = this.rules[ruleFile.name];
-    if (originRuleFile) {
-      ruleFile.checked = originRuleFile.checked;
-      ruleFile.meta = originRuleFile.meta;
-    }
+    defaults(ruleFile, originRuleFile);
     // 写文件
     const filePath = this.getRuleFilePath(ruleFile.name);
     await fs.writeJson(filePath, ruleFile, {
       encoding: 'utf-8',
     });
     this.rules[ruleFile.name] = ruleFile;
+    this.emit('data-change', this.getRuleFileList());
+  }
+
+  /**
+   * 保存规则文件(可能是远程、或者本地)
+   */
+  public async updateRuleFile(ruleFile: IRuleFile) {
+    const name = ruleFile.name;
+    if (!this.has(name)) {
+      throw new NotFoundError('找不到对应的规则集');
+    }
+    const newRuleFile = Object.assign(this.rules[name], ruleFile);
+    // 写文件
+    const filePath = this.getRuleFilePath(name);
+    await fs.writeJson(filePath, newRuleFile, {
+      encoding: 'utf-8',
+    });
+    this.rules[name] = newRuleFile;
     this.emit('data-change', this.getRuleFileList());
   }
 
@@ -149,12 +159,11 @@ export class RuleService extends EventEmitter {
       description: string;
     },
   ) {
-    const userRuleMap = this.rules;
-    if (userRuleMap[name] && name !== originName) {
-      throw ErrNameExists;
+    if (name !== originName && this.rules[name]) {
+      throw new HttpError(409, '规则集名称已存在');
     }
 
-    const ruleFile = userRuleMap[originName];
+    const ruleFile = this.rules[originName];
     // 删除旧的rule
     delete this.rules[originName];
     const ruleFilePath = this.getRuleFilePath(originName);
@@ -173,10 +182,7 @@ export class RuleService extends EventEmitter {
     const usingRules = this.usingRules;
     for (const rule of usingRules) {
       // 捕获规则
-      if (
-        this.isMatchUrl(urlObj.href as string, rule.match) &&
-        this.isMatchMethod(method, rule.method)
-      ) {
+      if (this.isMatchUrl(urlObj.href as string, rule.match) && this.isMatchMethod(method, rule.method)) {
         return rule;
       }
     }
@@ -187,6 +193,9 @@ export class RuleService extends EventEmitter {
    */
   public async importRemoteRuleFile(url: string): Promise<IRuleFile> {
     const ruleFile = await this.fetchRemoteRuleFile(url);
+    if (this.has(ruleFile.name)) {
+      throw new HttpError(409, '规则集名称已存在');
+    }
     await this.saveRuleFile(ruleFile);
     return ruleFile;
   }
@@ -196,12 +205,8 @@ export class RuleService extends EventEmitter {
    */
   public async fetchRemoteRuleFile(url: string) {
     const response = await request.get(url);
-    const responseData = await response.json();
-    const ETag = response.headers.get('etag') || '';
+    const responseData: IRuleFile = await response.json();
     const content = responseData.content.map(remoteRule => {
-      if (remoteRule.action && !remoteRule.actionList) {
-        remoteRule.actionList = [remoteRule.action];
-      }
       const actionList = remoteRule.actionList.map(remoteAction => {
         const actionData: IRuleActionData = {
           dataId: '',
@@ -230,9 +235,7 @@ export class RuleService extends EventEmitter {
       content,
       description: responseData.description,
       meta: {
-        ETag,
         remote: true,
-        remoteETag: ETag,
         url,
       },
       name: responseData.name,
@@ -251,10 +254,9 @@ export class RuleService extends EventEmitter {
     const copied = cloneDeep(ruleFile);
     copied.checked = false;
     copied.name = `${copied.name}-复制`;
-    copied.meta = Object.assign({}, copied.meta, {
-      isCopy: true,
+    copied.meta = {
       remote: false,
-    });
+    };
     await this.saveRuleFile(copied);
     return copied;
   }
@@ -281,8 +283,6 @@ export class RuleService extends EventEmitter {
    * 请求的url是否匹配规则
    */
   private isMatchUrl(reqUrl: string, ruleMatchStr: string) {
-    return (
-      ruleMatchStr && (reqUrl.indexOf(ruleMatchStr) >= 0 || new RegExp(ruleMatchStr).test(reqUrl))
-    );
+    return ruleMatchStr && (reqUrl.indexOf(ruleMatchStr) >= 0 || new RegExp(ruleMatchStr).test(reqUrl));
   }
 }

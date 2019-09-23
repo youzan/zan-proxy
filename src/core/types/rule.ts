@@ -30,6 +30,10 @@ export interface IRuleFile {
 export interface IRuleFileMeta {
   remote: boolean;
   url?: string;
-  ETag?: string;
-  remoteETag?: string;
+}
+
+export interface IRuleTest {
+  match: string;
+  url: string;
+  targetTpl: string;
 }

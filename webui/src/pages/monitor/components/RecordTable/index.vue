@@ -4,6 +4,7 @@
     :data="records"
     stripe
     border
+    height="calc(100vh - 60px)"
     :row-class-name="getTableRowClassName"
     @row-click="onRowClicked"
   >
@@ -137,13 +138,6 @@ export default class RecordTable extends Vue {
 </style>
 
 <style lang="scss">
-.record-list {
-  .el-table__header-wrapper th {
-    background-color: #92b4ff;
-    color: #fff;
-  }
-}
-
 .record-row {
   cursor: pointer;
 

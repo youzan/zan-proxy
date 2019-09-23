@@ -133,12 +133,16 @@ export default class App extends Vue {
 .monitor {
   display: flex;
   flex: 1;
+  position: fixed;
+  top: 60px;
+  width: 100%;
 }
 
 .action-bar {
   padding: 10px 20px;
   display: flex;
   width: 100%;
+  position: fixed;
 
   .buttons {
     display: flex;
