@@ -5,6 +5,7 @@ import { map, pickBy, remove, uniqWith } from 'lodash';
 import { LocalStorage } from 'node-localstorage';
 import npm from 'npm';
 import path from 'path';
+import { HttpError, NotFoundError } from 'routing-controllers';
 import { Service } from 'typedi';
 
 import { AppInfoService } from './appInfo';
@@ -27,8 +28,23 @@ export class PluginService extends EventEmitter {
     this.refreshPlugins();
   }
 
+  /**
+   * 判断是否有某个插件
+   */
+  private has(name: string) {
+    return !!this.plugins[name];
+  }
+
+  /**
+   * 获取插件版本信息
+   */
+  private async getPluginVersion(pluginName: string) {
+    return (await this.getPluginPackageJson(pluginName)).version;
+  }
+
   public setPlugins(value: IPluginInfo[]) {
     this.store.setItem(key, JSON.stringify(value));
+    this.refreshPlugins();
   }
 
   public getPlugins(): IPluginInfo[] {
@@ -48,7 +64,7 @@ export class PluginService extends EventEmitter {
   }
 
   /**
-   * 获取插件集合
+   * 刷新插件信息
    */
   public refreshPlugins() {
     this.plugins = this.getPlugins()
@@ -75,10 +91,24 @@ export class PluginService extends EventEmitter {
     this.emit('data-change');
   }
 
+  private loadNpmConfig(npmConfig: any, callback: () => void) {
+    if (npm.config.loaded) {
+      Object.keys(npmConfig).forEach(k => {
+        npm.config.set(k, npmConfig[k]);
+      });
+      callback();
+    } else {
+      npm.load(npmConfig, () => callback());
+    }
+  }
+
   /**
    * 添加插件库
    */
   public add(pluginName: string, npmConfig: any = {}) {
+    if (this.has(pluginName)) {
+      return new HttpError(409, '该插件已存在');
+    }
     return new Promise((resolve, reject) => {
       const install = () => {
         npm.commands.install([pluginName, this.pluginInstallDir], async (err: any) => {
@@ -88,18 +118,14 @@ export class PluginService extends EventEmitter {
             }
             return reject(err);
           }
-          const plugins = uniqWith(
-            this.getPlugins().concat([
-              {
-                name: pluginName,
-                version: await this.getPluginVersion(pluginName),
-                registry: npmConfig.registry || npm.config.get('registry'),
-              },
-            ]),
-            (p1, p2) => {
-              return p1.name === p2.name;
+          const plugins = [
+            ...this.getPlugins(),
+            {
+              name: pluginName,
+              version: await this.getPluginVersion(pluginName),
+              registry: npmConfig.registry || npm.config.get('registry'),
             },
-          );
+          ];
           this.setPlugins(plugins);
           return resolve(plugins);
         });
@@ -108,18 +134,14 @@ export class PluginService extends EventEmitter {
         loglevel: 'silent',
         prefix: this.pluginInstallDir,
       });
-      if (npm.config.loaded) {
-        Object.keys(npmConfig).forEach(k => {
-          npm.config.set(k, npmConfig[k]);
-        });
-        install();
-      } else {
-        npm.load(npmConfig, () => install());
-      }
+      this.loadNpmConfig(npmConfig, install);
     });
   }
 
   public update(pluginName: string) {
+    if (!this.has(pluginName)) {
+      return new NotFoundError('该插件不存在');
+    }
     return new Promise((resolve, reject) => {
       const update = () => {
         npm.commands.update([pluginName, this.pluginInstallDir], async err => {
@@ -137,44 +159,31 @@ export class PluginService extends EventEmitter {
       };
 
       const pluginConfig = this.plugins[pluginName];
-
       const npmConfig = { loglevel: 'silent', prefix: this.pluginInstallDir, registry: pluginConfig.registry };
-      if (npm.config.loaded) {
-        Object.keys(npmConfig).forEach(k => {
-          npm.config.set(k, npmConfig[k]);
-        });
-        update();
-      } else {
-        npm.load(npmConfig, () => update());
-      }
+      this.loadNpmConfig(npmConfig, update);
     });
   }
 
   /**
    * 删除插件库
    */
-  public remove(pluginName: string) {
+  public uninstall(pluginName: string) {
+    if (!this.has(pluginName)) {
+      return new NotFoundError('该插件不存在');
+    }
     return new Promise((resolve, reject) => {
       const uninstall = () => {
         npm.commands.uninstall([pluginName, this.pluginInstallDir], err => {
           if (err) {
             return reject(err);
           }
-          const plugins = this.getPlugins();
-          remove(plugins, p => p.name === pluginName);
-          this.setPlugins(plugins);
-          return resolve(plugins);
+          const restPlugins = this.getPlugins().filter(p => p.name === pluginName);
+          this.setPlugins(restPlugins);
+          return resolve(restPlugins);
         });
       };
       const npmConfig = { loglevel: 'silent', prefix: this.pluginInstallDir };
-      if (npm.config.loaded) {
-        Object.keys(npmConfig).forEach(k => {
-          npm.config.set(k, npmConfig[k]);
-        });
-        uninstall();
-      } else {
-        npm.load(npmConfig, () => uninstall());
-      }
+      this.loadNpmConfig(npmConfig, uninstall);
     });
   }
 
@@ -182,6 +191,9 @@ export class PluginService extends EventEmitter {
    * 设置某个插件的属性
    */
   public setAttrs(pluginName: string, attrs: Partial<IPluginInfo>) {
+    if (!this.has(pluginName)) {
+      return new NotFoundError('该插件不存在');
+    }
     let plugins = this.getPlugins();
     plugins = plugins.map(p => {
       if (p.name === pluginName) {
@@ -193,25 +205,10 @@ export class PluginService extends EventEmitter {
   }
 
   /**
-   * 判断是否有某个插件
-   */
-  public has(name: string) {
-    return !!this.plugins[name];
-  }
-
-  /**
    * 获取组合后的中间件
    */
   public getComposedPluginMiddlewares() {
     return compose(map(this.plugins, plugin => plugin.proxy()));
-  }
-
-  private async getPluginVersion(pluginName: string) {
-    return (await this.getPluginPackageJson(pluginName)).version;
-  }
-
-  public async getPluginPackageJson(pluginName: string) {
-    return fs.readJSON(path.join(this.getPluginDir(pluginName), 'package.json'));
   }
 
   /**
@@ -219,5 +216,12 @@ export class PluginService extends EventEmitter {
    */
   public getPluginDir(pluginName: string) {
     return path.resolve(this.pluginInstallDir, 'node_modules', pluginName);
+  }
+
+  /**
+   * 获取插件 package.json 信息
+   */
+  public async getPluginPackageJson(pluginName: string) {
+    return fs.readJSON(path.join(this.getPluginDir(pluginName), 'package.json'));
   }
 }

@@ -1,9 +1,6 @@
 import { PluginService } from '@core/services';
-import fs from 'fs-extra';
 import Koa, { Context } from 'koa';
 import koaMount from 'koa-mount';
-import { map } from 'lodash';
-import path from 'path';
 import { Ctx, Get, InternalServerError, JsonController, Post } from 'routing-controllers';
 import { Inject, Service } from 'typedi';
 
@@ -17,7 +14,7 @@ export class PluginController {
     const allPluginInfo = await Promise.all(
       this.pluginManager.allInstalledPlugins.map(async plugin => ({
         ...plugin,
-        ...(await fs.readJSON(path.join(this.pluginManager.getPluginDir(plugin.name), 'package.json'))),
+        ...(await this.pluginManager.getPluginPackageJson(plugin.name)),
       })),
     );
     return allPluginInfo;
@@ -32,11 +29,8 @@ export class PluginController {
     }
     try {
       await this.pluginManager.add(name, npmConfig);
-      this.pluginManager.refreshPlugins();
     } catch (err) {
-      const errorMsg = `安装插件${name}失败`;
-      console.error(errorMsg);
-      throw new InternalServerError(errorMsg);
+      throw new InternalServerError(`安装插件${name}失败`);
     }
     return true;
   }
@@ -45,7 +39,6 @@ export class PluginController {
   public async disabled(@Ctx() ctx: Context) {
     const { name, disabled } = ctx.request.body;
     this.pluginManager.setAttrs(name, { disabled });
-    this.pluginManager.refreshPlugins();
     return true;
   }
 
@@ -53,15 +46,13 @@ export class PluginController {
   public async update(@Ctx() ctx: Context) {
     const { name } = ctx.request.body;
     await this.pluginManager.update(name);
-    this.pluginManager.refreshPlugins();
     return true;
   }
 
   @Post('/remove')
   public async remove(@Ctx() ctx: Context) {
     const { name } = ctx.request.body;
-    await this.pluginManager.remove(name);
-    this.pluginManager.refreshPlugins();
+    await this.pluginManager.uninstall(name);
     return true;
   }
 

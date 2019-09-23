@@ -5,7 +5,7 @@ export interface IPluginInfo {
   name: string;
   disabled?: boolean;
   version: string;
-  registry?: string;
+  registry: string;
 }
 
 export interface IPluginClass {
