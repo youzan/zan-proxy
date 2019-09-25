@@ -1,8 +1,7 @@
+import axios from 'axios';
 // element-ui
 import ElementUI from 'element-ui';
-import 'reflect-metadata';
 import Vue from 'vue';
-import axios from 'axios';
 
 import App from './App.vue';
 import router from './router';

@@ -5,7 +5,7 @@ import _ from 'lodash';
 /**
  * 创建规则文件
  */
-export function createFile(name: string, description: string) {
+export function createRule(name: string, description: string) {
   return axios.post('/rule/create', {
     name: name,
     description: description,
@@ -20,26 +20,25 @@ export function getRuleList() {
 }
 
 export function deleteRule(name: string) {
-  return axios.delete(`/rule/delete`, {
+  return axios.delete('/rule/delete', {
     params: { name },
   });
 }
 
-export function toggleRule(name: string, checked: boolean) {
+export function toggleRule(name: string) {
   return axios.post('/rule/toggle', {
     name,
-    checked,
   });
 }
 
 export function getRuleContent(name: string) {
-  return axios.get<IRuleFile>(`/rule/get`, {
+  return axios.get<IRuleFile>('/rule/get', {
     params: { name },
   });
 }
 
-export function updateRule(name: string, content: any) {
-  return axios.post(`/rule/update`, content, {
+export function saveRule(name: string, content: any) {
+  return axios.post('/rule/save', content, {
     params: { name },
   });
 }
@@ -47,19 +46,16 @@ export function updateRule(name: string, content: any) {
 /**
  * 修改规则集文件名
  */
-export function updateFileInfo(
+export function updateRuleInfo(
   originName: string,
-  {
-    name,
-    description,
-  }: {
+  updateInfo: {
     name: string;
     description: string;
   },
 ) {
-  return axios.post(`/rule/update/info/${originName}`, {
-    name,
-    description,
+  return axios.post('/rule/update/info', {
+    originName,
+    updateInfo
   });
 }
 
@@ -67,21 +63,10 @@ export function testRule(content: IRuleTest) {
   return axios.post('/rule/test', content);
 }
 
-export function getReferenceVar(content: any) {
-  var contentStr = JSON.stringify(content);
-  var reg = RegExp('<%=(.+?)%>', 'g');
-  var result;
-  var varObj: any = {};
-  while ((result = reg.exec(contentStr)) != null) {
-    varObj[_.trim(result[1])] = 1;
-  }
-  return _.keys(varObj);
-}
-
-export function importRemote(url: string) {
+export function importRemoteRule(url: string) {
   return axios.post('/rule/import', { url });
 }
 
-export function copyFile(name: string) {
+export function copyRule(name: string) {
   return axios.post('/rule/copy', { name });
 }

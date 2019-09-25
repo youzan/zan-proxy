@@ -1,6 +1,5 @@
 // element-ui
 import ElementUI from 'element-ui';
-import 'reflect-metadata';
 import Vue from 'vue';
 import VueClipboard from 'vue-clipboard2';
 

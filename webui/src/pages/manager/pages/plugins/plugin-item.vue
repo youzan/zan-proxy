@@ -9,7 +9,7 @@
     </div>
     <div class="footer">
       <el-dropdown @command="toggleDisable">
-        <el-button size="small" type="primary" icon="el-icon-setting" @click.stop>{{ disabledText }}</el-button>
+        <el-button size="small" type="primary" icon="el-icon-setting" @click.stop>{{ statusText }}</el-button>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item :command="false">
             启用
@@ -63,7 +63,7 @@ export default class PluginItem extends Vue {
   updatePopVisible: boolean = false;
   deletePopVisible: boolean = false;
 
-  get disabledText() {
+  get statusText() {
     if (this.plugin.disabled) {
       return '已禁用';
     }

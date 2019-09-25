@@ -11,17 +11,9 @@ export class ForwarderMiddleware implements IProxyMiddleware {
     const url = URL.parse(req.url as string);
     const isHttps = url.protocol && url.protocol.startsWith('https');
     const port = url.port || (isHttps ? 443 : 80);
-    let headers = req.headers;
-    const encoding = headers['accept-encoding'] as string;
-    // decode暂不支持 brolti 算法
-    if (encoding && /br/.test(encoding)) {
-      headers = Object.assign({}, headers, {
-        'accept-encoding': 'gzip, deflate',
-      });
-    }
     return {
       auth: url.auth,
-      headers,
+      headers: req.headers,
       host: url.host,
       hostname: url.hostname,
       method: req.method,

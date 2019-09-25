@@ -1,15 +1,14 @@
 import 'reflect-metadata';
-import promiseFinally from 'promise.prototype.finally';
-import program from 'commander';
-import path from 'path';
-import open from 'open';
+
+import resetDataFiles, { migrateFromOld } from '@core/resetDataFiles';
 import start from '@core/start';
 import syncHost from '@core/syncHost';
 import syncRule from '@core/syncRule';
-import resetDataFiles, { migrateFromOld } from '@core/resetDataFiles';
+import program from 'commander';
+import open from 'open';
+import path from 'path';
 
 import packageInfo from '../../package.json';
-promiseFinally.shim();
 
 if (process.env.NODE_ENV !== 'development') {
   global.__root = path.resolve(__dirname, '..');

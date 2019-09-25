@@ -4,8 +4,6 @@ import Container from 'typedi';
 import { RuleService } from './services';
 import { IRuleFile } from './types/rule';
 
-const userId = 'root';
-
 /**
  * 同步远程转发规则
  */

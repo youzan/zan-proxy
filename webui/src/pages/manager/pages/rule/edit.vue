@@ -12,7 +12,7 @@
       <el-table-column prop="checked" label="启用" align="center" width="60">
         <template v-slot="scope">
           <el-tooltip class="item" effect="dark" content="勾选后启动这条规则" placement="left">
-            <el-checkbox v-model="scope.row.checked" @change="saveFile"></el-checkbox>
+            <el-checkbox v-model="scope.row.checked" @change="saveRule"></el-checkbox>
           </el-tooltip>
         </template>
       </el-table-column>
@@ -103,7 +103,7 @@
     />
     <edit-rule-config-dialog
       :visible="editRuleConfigDialogVisible"
-      :ok="updateFileInfo"
+      :ok="updateRuleInfo"
       :cancel="closeEditRuleNameDialog"
       :defaultName="ruleFile.name"
       :defaultDescription="ruleFile.description"
@@ -198,7 +198,7 @@ export default class RuleEdit extends Vue {
         type: 'warning',
       });
       this.ruleFile.content.splice(index, 1);
-      this.saveFile();
+      this.saveRule();
     } catch {
       // no operation
     }
@@ -208,15 +208,15 @@ export default class RuleEdit extends Vue {
     const copy = _.cloneDeep(this.ruleFile.content[index]);
     copy.key = uuidV4();
     this.ruleFile.content.splice(index, 0, copy);
-    this.saveFile();
+    this.saveRule();
   }
 
   /**
    * 保存
    */
-  async saveFile() {
+  async saveRule() {
     try {
-      await ruleApi.updateRule(this.name, this.ruleFile);
+      await ruleApi.saveRule(this.name, this.ruleFile);
       this.$message.success('保存成功!');
       await this.getFile();
     } catch (err) {
@@ -276,7 +276,7 @@ export default class RuleEdit extends Vue {
     }
     this.ruleFile.content = rules;
     this.hideEditDialog();
-    this.saveFile();
+    this.saveRule();
   }
 
   openEditRuleInfoDialog() {
@@ -287,14 +287,14 @@ export default class RuleEdit extends Vue {
     this.editRuleConfigDialogVisible = false;
   }
 
-  async updateFileInfo(newName: string, newDescription: string) {
+  async updateRuleInfo(newName: string, newDescription: string) {
     if (newName === '') {
       this.$message.error('规则集名称不能为空!');
       return;
     }
 
     try {
-      await ruleApi.updateFileInfo(this.ruleFile.name, {
+      await ruleApi.updateRuleInfo(this.ruleFile.name, {
         name: newName,
         description: newDescription,
       });
@@ -319,7 +319,7 @@ export default class RuleEdit extends Vue {
     rules[index] = rules[index - 1];
     rules[index - 1] = temp;
     this.ruleFile.content = rules;
-    this.saveFile();
+    this.saveRule();
   }
 
   mounted() {

@@ -3,10 +3,10 @@
     <div class="main-content__title">规则集列表</div>
     <el-row :gutter="20" style="margin-bottom: 10px">
       <el-col class="addrule-btn-wrap">
-        <input type="file" @change="fileUpload" class="import-file" />
+        <input type="file" @change="importLocalRuleFile" class="import-file" />
         <el-button size="small">导入规则集</el-button>
         <el-button size="small" type="primary" @click="importRemoteRule">导入远程规则</el-button>
-        <el-button size="small" type="primary" @click="addRuleCollection">新增规则集</el-button>
+        <el-button size="small" type="primary" @click="toCreatePage">新增规则集</el-button>
       </el-col>
     </el-row>
     <el-table border :data="ruleFileList">
@@ -15,7 +15,7 @@
           <el-checkbox
             v-model="scope.row.checked"
             :disabled="!profile.enableRule"
-            @change="toggleRule(scope.row.name, scope.row.checked)"
+            @change="toggleRule(scope.row.name)"
           />
         </template>
       </el-table-column>
@@ -34,12 +34,12 @@
             </router-link>
           </el-tooltip>
           <el-tooltip class="item" effect="dark" content="导出规则" placement="top-start">
-            <el-button type="info" icon="el-icon-share" size="mini" @click="shareFile(scope.row, scope.$index)" />
+            <el-button type="info" icon="el-icon-share" size="mini" @click="downloadRule(scope.row, scope.$index)" />
           </el-tooltip>
           <el-tooltip class="item" effect="dark" content="复制规则" placement="top-start">
-            <el-button type="info" icon="el-icon-document" size="mini" @click="copyFile(scope.row, scope.$index)" />
+            <el-button type="info" icon="el-icon-document" size="mini" @click="copyRule(scope.row, scope.$index)" />
           </el-tooltip>
-          <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteFile(scope.row, scope.$index)" />
+          <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteRule(scope.row, scope.$index)" />
         </template>
       </el-table-column>
     </el-table>
@@ -61,6 +61,17 @@ import { ruleModule, profileModule } from '../../store';
 import { IProfileState } from '../../store/profile';
 import MetaTag from '../../components/common/MetaTag.vue';
 
+function getReferenceVar(content: any) {
+  var contentStr = JSON.stringify(content);
+  var reg = RegExp('<%=(.+?)%>', 'g');
+  var result;
+  var varObj: any = {};
+  while ((result = reg.exec(contentStr)) != null) {
+    varObj[_.trim(result[1])] = 1;
+  }
+  return _.keys(varObj);
+}
+
 @Component({
   components: {
     'meta-tag': MetaTag,
@@ -76,7 +87,7 @@ export default class RuleList extends Vue {
   /**
    * 删除规则
    */
-  async deleteFile(row: IRuleFile) {
+  async deleteRule(row: IRuleFile) {
     try {
       await this.$confirm(`此操作将永久删除该文件: ${row.name}, 是否继续?`, '提示', {
         type: 'warning',
@@ -95,7 +106,7 @@ export default class RuleList extends Vue {
   /**
    * 下载规则
    */
-  shareFile(row: IRuleFile) {
+  downloadRule(row: IRuleFile) {
     if (row.meta && !row.meta.remote) {
       window.open(`/rule/download?name=${row.name}`);
     } else {
@@ -106,9 +117,9 @@ export default class RuleList extends Vue {
   /**
    * 复制规则
    */
-  async copyFile(row: IRuleFile) {
+  async copyRule(row: IRuleFile) {
     try {
-      await ruleApi.copyFile(row.name);
+      await ruleApi.copyRule(row.name);
       this.$message.success('复制成功!');
     } catch (err) {
       this.$message.error(err);
@@ -122,7 +133,7 @@ export default class RuleList extends Vue {
     const result = (await this.$prompt('请输入远程规则文件的url', '导入远程规则')) as MessageBoxInputData;
     let url = result.value;
     try {
-      const response = await ruleApi.importRemote(url);
+      const response = await ruleApi.importRemoteRule(url);
       this.$message.success('导入成功');
     } catch (err) {
       this.$message.error(err);
@@ -132,9 +143,9 @@ export default class RuleList extends Vue {
   /**
    * 启用或禁用规则集
    */
-  async toggleRule(name: string, checked: boolean) {
+  async toggleRule(name: string) {
     try {
-      await ruleApi.toggleRule(name, checked);
+      await ruleApi.toggleRule(name);
       this.$message.success('设置成功!');
     } catch (err) {
       this.$message.error(err);
@@ -144,14 +155,14 @@ export default class RuleList extends Vue {
   /**
    * 跳转到创建页
    */
-  addRuleCollection() {
+  toCreatePage() {
     this.$router.push('/rule/create');
   }
 
   /**
    * 上传文件
    */
-  async fileUpload(evt: MouseEvent) {
+  async importLocalRuleFile(evt: MouseEvent) {
     const files = (evt.target as HTMLInputElement).files;
 
     if (!(files && files[0])) {
@@ -173,20 +184,16 @@ export default class RuleList extends Vue {
         return;
       }
       // 查找引用的变量
-      const varNameList = ruleApi.getReferenceVar(content);
-      let infoStr;
+      const varNameList = getReferenceVar(content);
+      let infoStr = `导入规则文件名为${content.name}`;
       if (varNameList.length > 0) {
-        infoStr = `导入规则文件名为${content.name},引用变量【${varNameList.join(
-          '; ',
-        )}】请确保变量已经在转发变量配置中设置过值`;
-      } else {
-        infoStr = `导入规则文件名为${content.name}`;
+        infoStr += `,引用变量【${varNameList.join(',')}】请确保变量已经在转发变量配置中设置过值`;
       }
       const action = (await this.$alert(infoStr, '规则文件导入')) as MessageBoxCloseAction;
       if (action == 'confirm') {
         // 创建文件
         try {
-          await ruleApi.updateRule(content.name, content);
+          await ruleApi.saveRule(content.name, content);
           this.$message.success('导入成功');
         } catch (err) {
           this.$message.error(err);

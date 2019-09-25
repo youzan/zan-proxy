@@ -4,7 +4,7 @@ import EventEmitter from 'events';
 import fs from 'fs-extra';
 import { defaults, find, forEach, get } from 'lodash';
 import path from 'path';
-import { HttpError } from 'routing-controllers';
+import { HttpError, NotFoundError } from 'routing-controllers';
 import { Service } from 'typedi';
 
 import { AppInfoService } from './appInfo';
@@ -120,38 +120,37 @@ export class HostService extends EventEmitter {
   /**
    * 创建host文件
    */
-  public async create({ name, description, content = {} }: IHostFile) {
-    if (this.hostFilesMap[name]) {
-      // 文件已经存在，不创建
+  public async create(hostFile: IHostFile) {
+    const { name, description, content = {} } = hostFile;
+    if (this.exist(name)) {
+      // 文件已经存在，无法创建
       throw new HttpError(409, 'Host规则已存在');
     }
 
     const entity: IHostFile = {
-      checked: false,
-      content,
-      description,
+      name,
       meta: {
         local: true,
       },
-      name,
+      description,
+      checked: false,
+      content,
     };
     this.hostFilesMap[name] = entity;
 
-    const hostfileName = this.getHostFilePath(name);
-    await fs.writeJson(hostfileName, entity, { encoding: 'utf-8' });
-    this.emit('data-change', this.getHostFileList());
-    return true;
+    await this.saveHostFile(name, entity);
   }
 
   /**
    * 删除 host 文件
    */
   public async deleteHostFile(name: string) {
-    delete this.hostFilesMap[name];
+    if (!this.exist(name)) {
+      throw new NotFoundError('找不到对应名称的Host配置');
+    }
 
-    /**
-     * 删除文件
-     */
+    delete this.hostFilesMap[name];
+    /** 删除文件 */
     const filePath = this.getHostFilePath(name);
     const exists = await fs.pathExists(filePath);
     if (exists) {
@@ -164,22 +163,24 @@ export class HostService extends EventEmitter {
    * 启用或禁用某个host配置
    */
   public async toggleHost(name: string) {
-    const hostFile = this.hostFilesMap[name];
-    if (!hostFile) {
-      return;
+    if (!this.exist(name)) {
+      throw new NotFoundError('找不到对应名称的Host配置');
     }
 
+    const hostFile = this.hostFilesMap[name];
     hostFile.checked = !hostFile.checked;
-    const hostfileName = this.getHostFilePath(name);
-    await fs.writeJson(hostfileName, hostFile, { encoding: 'utf-8' });
-    this.emit('data-change', this.getHostFileList());
+    await this.saveHostFile(name, hostFile);
   }
 
   /**
    * 获取某个 host 配置
    */
   public getHostFile(name: string) {
-    return get(this.hostFilesMap, name);
+    if (!this.exist(name)) {
+      throw new NotFoundError('找不到对应名称的Host配置');
+    }
+
+    return this.hostFilesMap[name];
   }
 
   /**
@@ -200,10 +201,6 @@ export class HostService extends EventEmitter {
     const resp = await request.get(url);
     const file: IHostFile = await resp.json();
 
-    if (this.exist(file.name)) {
-      throw new HttpError(409, 'Host规则已存在');
-    }
-
     Object.assign(file, {
       meta: {
         local: false,
@@ -214,6 +211,6 @@ export class HostService extends EventEmitter {
     defaults(file, {
       content: {},
     });
-    return this.saveHostFile(file.name, file);
+    await this.saveHostFile(file.name, file);
   }
 }

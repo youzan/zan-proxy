@@ -5,7 +5,7 @@
       <span class="dropdown-label">Host规则：</span>
       <el-dropdown trigger="click" :hide-on-click="false" @command="selectHostFile">
         <el-button type="text">
-          {{ profile.enableHost ? selectedHost.join(',') : '禁用' }}
+          {{ profile.enableHost ? selectedHost.join(', ') : '禁用' }}
           <i class="el-icon-caret-bottom el-icon--right" />
         </el-button>
         <el-dropdown-menu slot="dropdown">
@@ -26,7 +26,7 @@
       <span class="dropdown-label">转发规则：</span>
       <el-dropdown trigger="click" :hide-on-click="false" @command="selectRuleFile">
         <el-button type="text">
-          {{ profile.enableRule ? selectedRuleFiles.join(',') : '禁用' }}
+          {{ profile.enableRule ? selectedRuleFiles.join(', ') : '禁用' }}
           <i class="el-icon-caret-bottom el-icon--right" />
         </el-button>
         <el-dropdown-menu slot="dropdown">
@@ -36,7 +36,7 @@
           <el-dropdown-item
             v-for="(ruleFile, index) in ruleFileList"
             :key="index"
-            :command="ruleFile.name + '-%-' + ruleFile.checked"
+            :command="ruleFile.name"
             :disabled="!profile.enableRule"
           >
             {{ ruleFile.name }}
@@ -103,7 +103,6 @@ export default class App extends Vue {
   }
 
   async selectHostFile(command: string) {
-    let name = command;
     if (command === '__disabled__') {
       return await profileApi.toggleHost(false);
     }
@@ -111,8 +110,7 @@ export default class App extends Vue {
       return await profileApi.toggleHost(true);
     }
     try {
-      await hostApi.toggleFile(name);
-      this.$message.success('设置成功!');
+      await hostApi.toggleHost(command);
     } catch (err) {
       this.$message.error(err);
     }
@@ -126,9 +124,8 @@ export default class App extends Vue {
     if (command === '__enabled__') {
       return profileApi.toggleRule(true);
     }
-    let kv = command.split('-%-');
     try {
-      await ruleApi.toggleRule(kv[0], kv[1] == 'false');
+      await ruleApi.toggleRule(command);
     } catch (err) {
       this.$message.error(err);
     }

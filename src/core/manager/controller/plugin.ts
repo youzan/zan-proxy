@@ -12,7 +12,7 @@ export class PluginController {
   @Get('/list')
   public async list(@Ctx() ctx: Context) {
     const allPluginInfo = await Promise.all(
-      this.pluginManager.allInstalledPlugins.map(async plugin => ({
+      this.pluginManager.getPlugins().map(async plugin => ({
         ...plugin,
         ...(await this.pluginManager.getPluginPackageJson(plugin.name)),
       })),
@@ -35,8 +35,8 @@ export class PluginController {
     return true;
   }
 
-  @Post('/disabled')
-  public async disabled(@Ctx() ctx: Context) {
+  @Post('/toggle')
+  public async toggle(@Ctx() ctx: Context) {
     const { name, disabled } = ctx.request.body;
     this.pluginManager.setAttrs(name, { disabled });
     return true;
@@ -56,12 +56,13 @@ export class PluginController {
     return true;
   }
 
-  public mountCustomPlugins(app: Koa) {
-    const usingPlugins = this.pluginManager.usingPlugins;
-    Object.keys(usingPlugins).forEach(name => {
-      const plugin = usingPlugins[name];
-      if (plugin.manage) {
-        const pluginManager = plugin.manage();
+  public mountCustomPluginsManager(app: Koa) {
+    const plugins = this.pluginManager.getPlugins();
+    plugins.forEach(plugin => {
+      const { name } = plugin;
+      const manage = this.pluginManager.getPluginManage(name);
+      if (manage) {
+        const pluginManager = manage();
         if (
           Object.prototype.toString.call(pluginManager) === '[object Object]' &&
           // @ts-ignore

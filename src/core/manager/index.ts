@@ -65,7 +65,7 @@ export class Manager {
     });
 
     // 挂载自定义插件路由
-    Container.get(PluginController).mountCustomPlugins(app);
+    Container.get(PluginController).mountCustomPluginsManager(app);
 
     this.app = app;
     return app;

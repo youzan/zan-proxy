@@ -1,12 +1,12 @@
 <template>
   <div>
     <div class="main-content__title">创建规则集</div>
-    <el-form :model="createFileForm" :rules="rules" ref="ruleForm" label-width="100px" class="rule-form">
+    <el-form :model="createRuleForm" :rules="rules" ref="ruleForm" label-width="100px" class="rule-form">
       <el-form-item label="规则集名字" prop="name">
-        <el-input v-model="createFileForm.name"></el-input>
+        <el-input v-model="createRuleForm.name"></el-input>
       </el-form-item>
       <el-form-item label="规则集描述" prop="description">
-        <el-input type="textarea" v-model="createFileForm.description"></el-input>
+        <el-input type="textarea" v-model="createRuleForm.description"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm">立即创建</el-button>
@@ -29,7 +29,7 @@ import { IProfileState } from '../../store/profile';
 
 @Component
 export default class RuleCreate extends Vue {
-  createFileForm = {
+  createRuleForm = {
     name: '',
     checked: true,
     description: '',
@@ -52,10 +52,10 @@ export default class RuleCreate extends Vue {
     try {
       await (this.$refs.ruleForm as ElForm).validate();
       try {
-        await ruleApi.createFile(this.createFileForm.name, this.createFileForm.description);
+        await ruleApi.createRule(this.createRuleForm.name, this.createRuleForm.description);
         // 判断创建成功还是失败
         this.$message.success('创建成功');
-        this.$router.push(`/rule/edit?name=${this.createFileForm.name}`);
+        this.$router.push(`/rule/edit?name=${this.createRuleForm.name}`);
       } catch (err) {
         this.$message.error(err);
       }

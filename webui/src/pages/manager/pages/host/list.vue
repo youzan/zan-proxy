@@ -2,7 +2,7 @@
   <div class="host-view">
     <div class="main-content__title">Host 文件列表</div>
     <div class="main-content__action">
-      <input type="file" ref="fileimport" @change="importHostFile" style="display:none;" />
+      <input type="file" ref="fileField" @change="importHostFile" style="display:none;" />
       <el-button size="small" @click="importHostFileBtnClick">导入 Host 文件</el-button>
       <el-button size="small" type="primary" @click="importRemoteHostFile">导入远程 Host 文件</el-button>
       <el-button size="small" @click="createNewHostFile">新增 Host 文件</el-button>
@@ -12,7 +12,7 @@
         <template v-slot="scope">
           <el-checkbox
             :checked="scope.row.checked"
-            @change="toggleFile(scope.row.name)"
+            @change="toggleHost(scope.row.name)"
             :disabled="!profile.enableHost"
           />
         </template>
@@ -27,17 +27,12 @@
       <el-table-column label="操作" width="250" :context="_self">
         <template v-slot="scope">
           <a class="link-btn" :href="'#/host/edit?name=' + scope.row.name">
-            <el-button type="info" icon="el-icon-edit" size="mini"></el-button>
+            <el-button type="info" icon="el-icon-edit" size="mini" />
           </a>
           <a class="link-btn" :href="'/host/download?name=' + scope.row.name" target="_blank">
-            <el-button type="info" icon="el-icon-share" size="mini"></el-button>
+            <el-button type="info" icon="el-icon-share" size="mini" />
           </a>
-          <el-button
-            type="danger"
-            icon="el-icon-delete"
-            size="mini"
-            @click="deleteFile(scope.row, scope.$index, user_list)"
-          />
+          <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteHost(scope.row)" />
         </template>
       </el-table-column>
     </el-table>
@@ -73,13 +68,13 @@ export default class HostList extends Vue {
   /**
    * 删除 host 配置
    */
-  async deleteFile(row: IHostFile) {
+  async deleteHost(row: IHostFile) {
     try {
       await this.$confirm(`此操作将永久删除该文件: ${row.name}, 是否继续?`, '提示', {
         type: 'warning',
       });
       try {
-        const response = await hostApi.deleteFile(row.name);
+        const response = await hostApi.deleteHost(row.name);
         this.$message.success('删除成功!');
       } catch (err) {
         this.$message.error(err);
@@ -92,9 +87,9 @@ export default class HostList extends Vue {
   /**
    * 启用或禁用 host 配置
    */
-  async toggleFile(name: string) {
+  async toggleHost(name: string) {
     try {
-      const response = await hostApi.toggleFile(name);
+      const response = await hostApi.toggleHost(name);
       this.$message.success('设置成功!');
     } catch (err) {
       this.$message.error(err);
@@ -112,7 +107,7 @@ export default class HostList extends Vue {
    * 打开导入弹框
    */
   importHostFileBtnClick() {
-    (this.$refs.fileimport as HTMLInputElement).click();
+    (this.$refs.fileField as HTMLInputElement).click();
   }
 
   /**
@@ -120,18 +115,19 @@ export default class HostList extends Vue {
    */
   importHostFile(evt: MouseEvent) {
     const reader = new FileReader();
-    reader.onload = (e: ProgressEvent) => {
+    reader.onload = async (e: ProgressEvent) => {
       const fileStr = (e.target as FileReader).result as string;
       const hostFile = JSON.parse(fileStr);
       hostFile.checked = false;
-      hostApi
-        .createFile(hostFile)
-        .then(() => {
-          this.$message.success('导入成功');
-        })
-        .catch(err => {
-          this.$message.error(err);
-        });
+      try {
+        await hostApi.createHost(hostFile);
+        this.$message.success('导入成功');
+      } catch (err) {
+        this.$message.error(err);
+      } finally {
+        // clear file field
+        (this.$refs.fileField as HTMLInputElement).value = '';
+      }
     };
     const files = (evt.target as HTMLInputElement).files;
     if (!files || !files[0]) {
@@ -149,7 +145,7 @@ export default class HostList extends Vue {
 
     let url = result.value;
     try {
-      await hostApi.importRemote(url);
+      await hostApi.importRemoteHost(url);
       this.$message.success('导入成功');
     } catch (err) {
       this.$message.error(err);

@@ -25,5 +25,5 @@ export interface ITogglePluginReq extends IPluginApiCommonReq {
 }
 
 export function togglePlugin(data: ITogglePluginReq) {
-  return axios.post('/plugins/disabled', data);
+  return axios.post('/plugins/toggle', data);
 }

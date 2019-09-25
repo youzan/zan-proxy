@@ -32,7 +32,7 @@
     <h2>三、下载和安装证书</h2>
 
     <ol>
-      <li><a :href="url">下载证书文件</a>并在本地安装</li>
+      <li><a :href="url">下载证书文件</a>并在本地安装（Mac客户端不需要手动安装）</li>
       <li>
         手机请扫码安装证书
         <img class="qrcode" :src="imgUrl" />

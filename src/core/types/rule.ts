@@ -33,7 +33,7 @@ export interface IRuleFileMeta {
 }
 
 export interface IRuleTest {
-  match: string;
-  url: string;
-  targetTpl: string;
+  match: string; // url匹配规则
+  url: string; // 请求url
+  targetTpl: string; // 路径模板， 会用urlReg的匹配结果来替换targetTpl $1 $2
 }

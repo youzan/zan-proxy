@@ -1,11 +1,11 @@
+import { IMockRecord } from '@core/types/mock';
 import EventEmitter from 'events';
 import fs from 'fs-extra';
-import { find, differenceWith, isEqual } from 'lodash';
+import { differenceWith, find, isEqual } from 'lodash';
 import path from 'path';
 import { Service } from 'typedi';
 
 import { AppInfoService } from './appInfo';
-import { IMockRecord } from '@core/types/mock';
 
 /**
  * 数据 mock Service
@@ -68,7 +68,6 @@ export class MockDataService extends EventEmitter {
       mockList,
       (record1, record2) => record1.id === record2.id,
     ).map(record => record.id);
-    console.log(toRemoveIds);
     // 设置新值
     await this.setMockList(mockList);
 

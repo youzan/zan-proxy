@@ -13,41 +13,41 @@ export interface ICreateHostData {
 /**
  * 创建规则文件
  */
-export function createFile(data: ICreateHostData) {
+export function createHost(data: ICreateHostData) {
   return axios.post('/host/create', data);
 }
 
 /**
  * 获取规则文件列表
  */
-export function getFileList() {
+export function getRuleList() {
   return axios.get('/host/list');
 }
 
-export function deleteFile(name: string) {
-  return axios.delete(`/host/delete`, {
+export function deleteHost(name: string) {
+  return axios.delete('/host/delete', {
     params: { name }
   });
 }
 
-export function toggleFile(name: string) {
-  return axios.post(`/host/toggle`, {}, {
+export function toggleHost(name: string) {
+  return axios.post('/host/toggle', {}, {
     params: { name }
   });
 }
 
-export function getFileContent(name: string) {
-  return axios.get<IHostFile>(`/host/get`, {
+export function getHost(name: string) {
+  return axios.get<IHostFile>('/host/get', {
     params: { name }
   });
 }
 
-export function saveFile(name: string, content: IHostFile) {
-  return axios.post(`/host/save`, content, {
+export function saveHost(name: string, content: IHostFile) {
+  return axios.post('/host/save', content, {
     params: { name }
   });
 }
 
-export function importRemote(url: string) {
+export function importRemoteHost(url: string) {
   return axios.post('/host/import', { url });
 }

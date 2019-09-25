@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 import fs from 'fs-extra';
 import compose from 'koa-compose';
-import { map, pickBy, remove, uniqWith } from 'lodash';
+import { filter, map, pickBy } from 'lodash';
 import { LocalStorage } from 'node-localstorage';
 import npm from 'npm';
 import path from 'path';
@@ -12,7 +12,7 @@ import { AppInfoService } from './appInfo';
 
 import { IPluginClass, IPluginInfo, IPluginModule } from '../types/plugin';
 
-const key = 'zanproxy-plugins';
+const KEY = 'zanproxy-plugins';
 
 @Service()
 export class PluginService extends EventEmitter {
@@ -43,20 +43,21 @@ export class PluginService extends EventEmitter {
   }
 
   public setPlugins(value: IPluginInfo[]) {
-    this.store.setItem(key, JSON.stringify(value));
+    this.store.setItem(KEY, JSON.stringify(value));
     this.refreshPlugins();
   }
 
   public getPlugins(): IPluginInfo[] {
     try {
-      return JSON.parse(this.store.getItem(key) || '[]');
+      return JSON.parse(this.store.getItem(KEY) || '[]');
     } catch {
       return [];
     }
   }
 
-  public get allInstalledPlugins() {
-    return this.getPlugins();
+  public getPluginManage(name: string) {
+    console.log(name, this.plugins);
+    return this.plugins[name].manage;
   }
 
   public get usingPlugins() {
@@ -67,27 +68,25 @@ export class PluginService extends EventEmitter {
    * 刷新插件信息
    */
   public refreshPlugins() {
-    this.plugins = this.getPlugins()
-      .filter(p => !p.disabled)
-      .reduce<{ [key: string]: IPluginModule }>((group, plugin) => {
-        try {
-          const pluginPath = this.getPluginDir(plugin.name);
-          if (!fs.existsSync(pluginPath)) {
-            throw Error(`plugin ${plugin.name} not found`);
-          }
-          delete require.cache[pluginPath];
-          const pluginClassInstance: IPluginClass = new (__non_webpack_require__(pluginPath))();
-          group[plugin.name] = {
-            ...plugin,
-            proxy: pluginClassInstance.proxy.bind(pluginClassInstance),
-            manage: pluginClassInstance.manage.bind(pluginClassInstance),
-          };
-        } catch (error) {
-          console.error(`plugin "${plugin.name}" has a runtime error. please check it.\n${error.stack}`);
-          process.exit(-1);
+    this.plugins = this.getPlugins().reduce<{ [key: string]: IPluginModule }>((group, plugin) => {
+      try {
+        const pluginPath = this.getPluginDir(plugin.name);
+        if (!fs.existsSync(pluginPath)) {
+          throw Error(`plugin ${plugin.name} not found`);
         }
-        return group;
-      }, {});
+        delete require.cache[pluginPath];
+        const pluginClassInstance: IPluginClass = new (__non_webpack_require__(pluginPath))();
+        group[plugin.name] = {
+          ...plugin,
+          proxy: pluginClassInstance.proxy.bind(pluginClassInstance),
+          manage: pluginClassInstance.manage.bind(pluginClassInstance),
+        };
+      } catch (error) {
+        console.error(`plugin "${plugin.name}" has a runtime error. please check it.\n${error.stack}`);
+        process.exit(-1);
+      }
+      return group;
+    }, {});
     this.emit('data-change');
   }
 
@@ -107,7 +106,7 @@ export class PluginService extends EventEmitter {
    */
   public add(pluginName: string, npmConfig: any = {}) {
     if (this.has(pluginName)) {
-      return new HttpError(409, '该插件已存在');
+      throw new HttpError(409, '该插件已存在');
     }
     return new Promise((resolve, reject) => {
       const install = () => {
@@ -140,7 +139,7 @@ export class PluginService extends EventEmitter {
 
   public update(pluginName: string) {
     if (!this.has(pluginName)) {
-      return new NotFoundError('该插件不存在');
+      throw new NotFoundError('该插件不存在');
     }
     return new Promise((resolve, reject) => {
       const update = () => {
@@ -169,7 +168,7 @@ export class PluginService extends EventEmitter {
    */
   public uninstall(pluginName: string) {
     if (!this.has(pluginName)) {
-      return new NotFoundError('该插件不存在');
+      throw new NotFoundError('该插件不存在');
     }
     return new Promise((resolve, reject) => {
       const uninstall = () => {
@@ -177,7 +176,7 @@ export class PluginService extends EventEmitter {
           if (err) {
             return reject(err);
           }
-          const restPlugins = this.getPlugins().filter(p => p.name === pluginName);
+          const restPlugins = this.getPlugins().filter(p => p.name !== pluginName);
           this.setPlugins(restPlugins);
           return resolve(restPlugins);
         });
@@ -192,15 +191,16 @@ export class PluginService extends EventEmitter {
    */
   public setAttrs(pluginName: string, attrs: Partial<IPluginInfo>) {
     if (!this.has(pluginName)) {
-      return new NotFoundError('该插件不存在');
+      throw new NotFoundError('该插件不存在');
     }
-    let plugins = this.getPlugins();
-    plugins = plugins.map(p => {
+    console.log(this.getPlugins());
+    const plugins = this.getPlugins().map(p => {
       if (p.name === pluginName) {
         p = Object.assign(p, attrs);
       }
       return p;
     });
+    console.log(plugins);
     this.setPlugins(plugins);
   }
 
@@ -208,7 +208,7 @@ export class PluginService extends EventEmitter {
    * 获取组合后的中间件
    */
   public getComposedPluginMiddlewares() {
-    return compose(map(this.plugins, plugin => plugin.proxy()));
+    return compose(map(filter(this.plugins, plugin => !plugin.disabled), plugin => plugin.proxy()));
   }
 
   /**

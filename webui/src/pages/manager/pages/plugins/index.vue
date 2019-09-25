@@ -119,7 +119,7 @@ export default class PluginPage extends Vue {
     });
     try {
       await api.togglePlugin({ name, disabled });
-      Message.success('设置成功，重启后生效');
+      Message.success('设置成功');
       await this.fetchPluginList();
     } catch {
       Message.error('设置失败，请重试');

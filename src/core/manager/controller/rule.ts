@@ -29,7 +29,7 @@ export class RuleController {
 
   // 删除规则文件
   @Delete('/delete')
-  public async deleteFile(@Ctx() ctx: Context) {
+  public async delete(@Ctx() ctx: Context) {
     const { query } = ctx;
     await this.ruleService.deleteRuleFile(query.name);
     return true;
@@ -41,36 +41,32 @@ export class RuleController {
     const {
       request: { body },
     } = ctx;
-    await this.ruleService.setRuleFileChecked(body.name, body.checked);
+    await this.ruleService.toggleRuleFile(body.name);
     return true;
   }
 
   // 获取规则文件
   @Get('/get')
-  public async getFile(@Ctx() ctx: Context) {
+  public async get(@Ctx() ctx: Context) {
     const { query } = ctx;
     const content = this.ruleService.getRuleFile(query.name);
     return content;
   }
 
   // 更新规则文件
-  @Post('/update')
-  public async updateFile(@Ctx() ctx: Context) {
-    const { request } = ctx;
-    await this.ruleService.updateRuleFile(request.body);
+  @Post('/save')
+  public async save(@Ctx() ctx: Context) {
+    const { request, query } = ctx;
+    await this.ruleService.saveRuleFile(query.name, request.body);
     return true;
   }
 
   // 重命名规则文件
-  @Post('/update/info/:origin')
-  public async updateFileInfo(@Ctx() ctx: Context) {
-    const { params, request } = ctx;
-    const { origin } = params;
-    const { name, description } = request.body;
-    await this.ruleService.updateFileInfo(origin, {
-      description,
-      name,
-    });
+  @Post('/update/info')
+  public async updateRuleInfo(@Ctx() ctx: Context) {
+    const { request } = ctx;
+    const { originName, updateInfo } = request.body;
+    await this.ruleService.updateRuleInfo(originName, updateInfo);
     return true;
   }
 
@@ -86,29 +82,23 @@ export class RuleController {
   // 测试规则
   @Post('/test')
   public async test(@Ctx() ctx: Context) {
-    /*
-             url: '',// 请求url
-             match: '',// url匹配规则
-             targetTpl: '',// 路径模板， 会用urlReg的匹配结果来替换targetTpl $1 $2
-             matchRlt: '',// url匹配结果
-             targetRlt: ''// 路径匹配结果
-             */
     const {
       request: { body },
     } = ctx;
     const { match, url, targetTpl } = body as IRuleTest;
-    let matchRlt = '不匹配';
 
     if (match && (url.indexOf(match) >= 0 || new RegExp(match).test(url))) {
-      matchRlt = 'url匹配通过';
+      const targetRlt = this.profileService.calcPath(url, match, targetTpl);
+      // 测试规则
+      return {
+        matchRlt: 'url匹配通过',
+        targetRlt,
+      };
     }
 
-    const targetRlt = this.profileService.calcPath(url, match, targetTpl);
-
-    // 测试规则
     return {
-      matchRlt,
-      targetRlt,
+      matchRlt: '不匹配',
+      targetRlt: '',
     };
   }
 

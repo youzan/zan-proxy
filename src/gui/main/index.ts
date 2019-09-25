@@ -1,9 +1,7 @@
 import 'reflect-metadata';
-import * as path from 'path';
-import * as logger from 'electron-log';
-import promiseFinally from 'promise.prototype.finally';
 
-promiseFinally.shim();
+import * as logger from 'electron-log';
+import * as path from 'path';
 
 if (process.env.NODE_ENV === 'development') {
   // 开发模式下，关闭日志文件输出

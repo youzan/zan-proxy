@@ -117,7 +117,7 @@ export default class HostEdit extends Vue {
     this.loading = true;
     try {
       const name = this.$route.query.name as string;
-      const response = await hostApi.getFileContent(name);
+      const response = await hostApi.getHost(name);
       this.hostForm = response.data;
       // 解析host数组
       this.refreshContentRows();
@@ -163,8 +163,8 @@ export default class HostEdit extends Vue {
 
       try {
         const response = await (this.isCreate
-          ? hostApi.createFile(this.hostForm as hostApi.ICreateHostData)
-          : hostApi.saveFile(this.$route.query.name as string, this.hostForm));
+          ? hostApi.createHost(this.hostForm as hostApi.ICreateHostData)
+          : hostApi.saveHost(this.$route.query.name as string, this.hostForm));
         this.refreshContentRows();
         // 判断创建成功还是失败
         this.$message.success('保存成功!');
