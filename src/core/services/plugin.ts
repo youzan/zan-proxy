@@ -56,7 +56,6 @@ export class PluginService extends EventEmitter {
   }
 
   public getPluginManage(name: string) {
-    console.log(name, this.plugins);
     return this.plugins[name].manage;
   }
 
@@ -193,14 +192,12 @@ export class PluginService extends EventEmitter {
     if (!this.has(pluginName)) {
       throw new NotFoundError('该插件不存在');
     }
-    console.log(this.getPlugins());
     const plugins = this.getPlugins().map(p => {
       if (p.name === pluginName) {
         p = Object.assign(p, attrs);
       }
       return p;
     });
-    console.log(plugins);
     this.setPlugins(plugins);
   }
 
