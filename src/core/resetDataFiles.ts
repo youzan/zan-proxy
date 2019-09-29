@@ -1,7 +1,8 @@
 import fs from 'fs-extra';
+import { each } from 'lodash';
 import path from 'path';
 import Container from 'typedi';
-import { each } from 'lodash';
+
 import { AppInfoService } from './services';
 
 const proxyDataDir = Container.get(AppInfoService).proxyDataDir;
@@ -63,10 +64,7 @@ export function migrateFromOld() {
     if (!file.startsWith('root_')) {
       return;
     }
-    move(
-      path.join(proxyDataDir, 'mock-data', file),
-      path.join(proxyDataDir, 'mock-data', file.replace(/^root_/, '')),
-    );
+    move(path.join(proxyDataDir, 'mock-data', file), path.join(proxyDataDir, 'mock-data', file.replace(/^root_/, '')));
   });
 
   // host
@@ -75,10 +73,7 @@ export function migrateFromOld() {
     if (!file.startsWith('root_')) {
       return;
     }
-    move(
-      path.join(proxyDataDir, 'host', file),
-      path.join(proxyDataDir, 'host', file.replace(/^root_/, '')),
-    );
+    move(path.join(proxyDataDir, 'host', file), path.join(proxyDataDir, 'host', file.replace(/^root_/, '')));
   });
 
   // rule
@@ -87,17 +82,14 @@ export function migrateFromOld() {
     if (!file.startsWith('root_')) {
       return;
     }
-    move(
-      path.join(proxyDataDir, 'rule', file),
-      path.join(proxyDataDir, 'rule', file.replace(/^root_/, '')),
-    );
+    move(path.join(proxyDataDir, 'rule', file), path.join(proxyDataDir, 'rule', file.replace(/^root_/, '')));
   });
 }
 
 /**
  * 初始化脚本
  */
-export default function resetDataFiles() {
+export function resetDataFiles() {
   console.log('开始初始化数据...');
   fs.ensureDirSync(proxyDataDir);
   fs.ensureDirSync(path.join(proxyDataDir, 'certificate'));

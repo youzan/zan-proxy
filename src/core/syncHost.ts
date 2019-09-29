@@ -1,5 +1,3 @@
-import { get } from 'lodash';
-import ora from 'ora';
 import Container from 'typedi';
 
 import { HostService } from './services';
@@ -12,17 +10,16 @@ const syncRemoteHosts = async () => {
   const hostService = Container.get(HostService);
   const hostFileList = hostService.getHostFileList();
   for (const hostFile of hostFileList) {
-    const meta = get(hostFile, 'meta');
-    if (!meta || meta.local === true || !meta.url) {
+    if (!hostFile.meta || hostFile.meta.local === true || !hostFile.meta.url) {
       continue;
     }
 
-    const spinner = ora(`同步远程Host${hostFile.name}中`).start();
+    console.info(`同步远程Host${hostFile.name}中`);
     try {
-      await hostService.importRemoteHostFile(meta.url);
-      spinner.succeed(`同步远程Host${hostFile.name}成功`);
+      await hostService.importRemoteHostFile(hostFile.meta.url);
+      console.info(`同步远程Host${hostFile.name}成功`);
     } catch (e) {
-      spinner.fail(`同步远程Host${hostFile.name}失败`);
+      console.error(`同步远程Host${hostFile.name}失败`);
     }
   }
   console.log('同步远程Host文件结束');

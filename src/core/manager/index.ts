@@ -2,7 +2,6 @@ import http from 'http';
 import Koa from 'koa';
 import koaBodyParser from 'koa-bodyparser';
 import koaFavicon from 'koa-favicon';
-import koaLogger from 'koa-logger';
 import koaQs from 'koa-qs';
 import koaStatic from 'koa-static';
 import path from 'path';

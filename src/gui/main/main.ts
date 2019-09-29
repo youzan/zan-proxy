@@ -1,13 +1,13 @@
+import { migrateFromOld, resetDataFiles } from '@core/resetDataFiles';
+import Application from '@gui/main/core/application';
+import { showNotify } from '@gui/main/utils';
 import { app } from 'electron';
 import logger from 'electron-log';
 import { Container } from 'typedi';
 
 import createMenus from './menu';
-import { showNotify } from '@gui/main/utils';
-import Application from '@gui/main/core/application';
-import * as config from '../config';
 
-import resetDataFiles, { migrateFromOld } from '@core/resetDataFiles';
+import * as config from '../config';
 
 // 阻止程序退出
 app.on('window-all-closed', e => e.preventDefault());

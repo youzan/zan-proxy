@@ -1,13 +1,7 @@
-import {
-  IRecord,
-  ITrafficRecord,
-  ITrafficRequest,
-  ITrafficResponse,
-} from '@core/types/http-traffic';
+import { IRecord, ITrafficRecord, ITrafficRequest, ITrafficResponse } from '@core/types/http-traffic';
 import EventEmitter from 'events';
 import fs from 'fs-extra';
 import path from 'path';
-import rimraf from 'rimraf';
 import { Service } from 'typedi';
 
 import { AppInfoService } from './appInfo';
@@ -49,7 +43,7 @@ export class HttpTrafficService extends EventEmitter {
    */
   private clearTrafficDir() {
     try {
-      rimraf.sync(this.trafficDir);
+      fs.removeSync(this.trafficDir);
       fs.mkdirSync(this.trafficDir);
     } catch (e) {
       console.error(e);

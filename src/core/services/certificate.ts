@@ -1,12 +1,19 @@
 import { CertificateModel } from '@core/types/certificate';
-import { promisify } from 'es6-promisify';
 import parseDomain from 'parse-domain';
 import pem from 'pem';
 import { Inject, Service } from 'typedi';
 
 import { CertificateStorage } from '../storage';
 
-const pemCreateCertificate = promisify(pem.createCertificate);
+const pemCreateCertificate = option =>
+  new Promise<any>((resolve, reject) =>
+    pem.createCertificate(option, (err, response) => {
+      if (err) {
+        return reject(err);
+      }
+      return resolve(response);
+    }),
+  );
 
 /**
  * 证书处理 service
