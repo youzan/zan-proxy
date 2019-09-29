@@ -16,8 +16,8 @@ export class RuleController {
     const {
       request: { body },
     } = ctx;
-    const result = await this.ruleService.create(body.name, body.description);
-    return result;
+    await this.ruleService.create(body.name, body.description);
+    return true;
   }
 
   // 获取规则文件列表

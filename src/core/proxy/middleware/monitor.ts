@@ -4,7 +4,6 @@ import http from 'http';
 import raw from 'raw-body';
 import Stream from 'stream';
 import { Inject, Service } from 'typedi';
-import URL from 'url';
 
 import { HttpTrafficService } from '../../services';
 
@@ -31,10 +30,7 @@ export class RecordRequestMiddleware implements IProxyMiddleware {
     const body = await this.getRequestBody(req);
     const clientIp =
       // x-forwarded-for 处理多次代理转发的情况
-      (req.headers['x-forwarded-for'] as string) ||
-      req.connection.remoteAddress ||
-      req.socket.remoteAddress ||
-      '';
+      (req.headers['x-forwarded-for'] as string) || req.connection.remoteAddress || req.socket.remoteAddress || '';
     this.httpTrafficService.recordRequest(
       {
         id: trafficId,

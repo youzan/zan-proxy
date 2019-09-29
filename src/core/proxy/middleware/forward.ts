@@ -1,7 +1,7 @@
 import { IProxyContext, IProxyMiddleware } from '@core/types/proxy';
 import http from 'http';
 import https, { RequestOptions } from 'https';
-import { isNull, isUndefined } from 'lodash';
+import { isNil } from 'lodash';
 import { Service } from 'typedi';
 import URL from 'url';
 
@@ -27,7 +27,7 @@ export class ForwarderMiddleware implements IProxyMiddleware {
   public async middleware(ctx: IProxyContext) {
     return new Promise<void>((resolve, reject) => {
       const { req, res } = ctx;
-      if (!res.writable || res.finished || !(isUndefined(res.body) || isNull(res.body))) {
+      if (!res.writable || res.finished || !isNil(res.body)) {
         return resolve();
       }
 

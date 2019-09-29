@@ -33,7 +33,7 @@
               <el-button type="info" icon="el-icon-edit" size="mini"></el-button>
             </router-link>
           </el-tooltip>
-          <el-tooltip class="item" effect="dark" content="导出规则" placement="top-start">
+          <el-tooltip class="item" effect="dark" content="分享规则" placement="top-start">
             <el-button type="info" icon="el-icon-share" size="mini" @click="downloadRule(scope.row, scope.$index)" />
           </el-tooltip>
           <el-tooltip class="item" effect="dark" content="复制规则" placement="top-start">
