@@ -93,7 +93,6 @@
     "antd": "3.13.2",
     "awesome-typescript-loader": "~5.2.1",
     "babel-loader": "~8.0.5",
-    "cfonts": "~2.4.0",
     "chai": "^4.2.0",
     "chai-events": "^0.0.3",
     "chalk": "~2.4.2",

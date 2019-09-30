@@ -1,8 +1,9 @@
 import 'reflect-metadata';
 
+import path from 'path';
+
 import { migrateFromOld, resetDataFiles } from '@core/resetDataFiles';
 import start from '@core/start';
-import path from 'path';
 
 if (process.env.NODE_ENV !== 'development') {
   global.__root = path.resolve(__dirname, '..');
@@ -34,7 +35,6 @@ async function run() {
   const managerPort = parseInt(process.env.MANAGER_PORT || '40001');
   const managerHost = process.env.MANAGER_HOST || '0.0.0.0';
   await start(proxyPort, managerPort, managerHost);
-  console.log(`zan-proxy server is running on http://localhost:${managerPort}`);
 }
 
 run();

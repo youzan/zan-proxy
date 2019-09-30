@@ -1,6 +1,8 @@
 const path = require('path');
 const fs = require('fs-extra');
 
+const isDev = process.env.NODE_ENV !== 'production';
+
 /**
  * @param {string[]} ps
  * @returns {string}
@@ -18,12 +20,12 @@ const webpackAlias = {
   '@core': rootResolve('src/core'),
   '@gui': rootResolve('src/gui'),
   '@cli': rootResolve('src/cli'),
-}
+};
 
 /**
  * 扫描插件 renderer 入口
  */
-const scanGuiPlugin = (entryRelativePath) => {
+const scanGuiPlugins = entryRelativePath => {
   const pluginRoot = rootResolve('src/gui/plugins');
   const plugins = fs.readdirSync(pluginRoot);
   const entries = {};
@@ -34,11 +36,12 @@ const scanGuiPlugin = (entryRelativePath) => {
     }
   });
   return entries;
-}
+};
 
 module.exports = {
+  isDev,
   rootResolve,
   runtimePathDefine,
   webpackAlias,
-  scanGuiPlugin,
+  scanGuiPlugins,
 };
