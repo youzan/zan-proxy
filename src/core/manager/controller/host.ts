@@ -29,8 +29,8 @@ export class HostController {
 
   @Post('/toggle')
   public async toggle(@Ctx() ctx: Context) {
-    const { name } = ctx.query;
-    await this.hostService.toggleHost(name);
+    const { body } = ctx.request;
+    await this.hostService.toggleHost(body.name, body.enable);
     return true;
   }
 

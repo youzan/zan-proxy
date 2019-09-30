@@ -30,9 +30,10 @@ export function deleteHost(name: string) {
   });
 }
 
-export function toggleHost(name: string) {
-  return axios.post('/host/toggle', {}, {
-    params: { name }
+export function toggleHost(name: string, enable: boolean) {
+  return axios.post('/host/toggle', {
+    name,
+    enable,
   });
 }
 

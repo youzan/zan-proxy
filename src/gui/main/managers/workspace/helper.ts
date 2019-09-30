@@ -1,6 +1,5 @@
-import Container from 'typedi';
-
 import { HostService, ProfileService, RuleService } from '@core/services';
+import Container from 'typedi';
 
 const workspaceManagerHelper = {
   /**
@@ -10,37 +9,36 @@ const workspaceManagerHelper = {
    * @memberof Workspace
    */
   async activateWorkspace(this: void, ws: ZanProxyMac.IWorkspace) {
-    const hostService = Container.get<any>(HostService);
-    const ruleService = Container.get<any>(RuleService);
-    const profileService = Container.get<any>(ProfileService);
+    const hostService = Container.get(HostService);
+    const ruleService = Container.get(RuleService);
+    const profileService = Container.get(ProfileService);
 
-    await profileService.setEnableHost('root', ws.enableHost);
-    await profileService.setEnableRule('root', ws.enableRule);
+    await profileService.setEnableHost(ws.enableHost);
+    await profileService.setEnableRule(ws.enableRule);
 
     // 设置host
     if (ws.enableHost) {
-      const allHosts = hostService.userHostFilesMap.root || {};
-      const hostFileNames = Object.keys(allHosts);
-      for (const hostFileName of hostFileNames) {
-        const hostFile = allHosts[hostFileName];
+      const allHosts = hostService.getHostFileList();
+      for (const hostFile of allHosts) {
+        const hostFileName = hostFile.name;
         const shouldBeUsed = ws.hosts.includes(hostFileName);
         if (shouldBeUsed && !hostFile.checked) {
           // 需要被使用却还未启用的
-          await hostService.toggleUseHost('root', hostFileName);
+          await hostService.toggleHost(hostFileName, true);
         } else if (!shouldBeUsed && hostFile.checked) {
           // 不需要被使用却已启用的
-          await hostService.toggleUseHost('root', hostFileName);
+          await hostService.toggleHost(hostFileName, false);
         }
       }
     }
 
     // 设置转发规则
     if (ws.enableRule) {
-      const allRules = (ruleService.rules && ruleService.rules.root) || {};
+      const allRules = ruleService.rules || {};
       const ruleSetNames = Object.keys(allRules);
       for (const ruleSetName of ruleSetNames) {
         const ruleSetActivate = ws.ruleSet.filter(rs => rs === ruleSetName).length > 0;
-        await ruleService.setRuleFileCheckStatus('root', ruleSetName, ruleSetActivate);
+        await ruleService.toggleRuleFile(ruleSetName, ruleSetActivate);
       }
     }
   },
@@ -52,10 +50,9 @@ const workspaceManagerHelper = {
    * @param {IWorkspace} ws
    */
   async deactivateWorkspace(this: void, ws: ZanProxyMac.IWorkspace) {
-    const profileService = Container.get<any>(ProfileService);
-    await profileService.setEnableHost('root', false);
-    await profileService.setEnableRule('root', false);
-    ws.checked = false;
+    const profileService = Container.get(ProfileService);
+    await profileService.setEnableHost(false);
+    await profileService.setEnableRule(false);
   },
 };
 

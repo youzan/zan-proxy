@@ -13,7 +13,7 @@ function rm(p: string) {
   }
 }
 
-function move(source: string, target: string, transformer?: (text: any) => any) {
+function move(source: string, target: string, transformer?: (text: string) => string) {
   if (fs.existsSync(source)) {
     let text = fs.readFileSync(source, 'utf-8');
     if (transformer) {
@@ -41,7 +41,11 @@ export function migrateFromOld() {
     source: path.join(proxyDataDir, 'profile/root.json'),
     target: path.join(proxyDataDir, 'profile.json'),
   };
-  move(profile.source, profile.target);
+  move(profile.source, profile.target, text => {
+    const profileContent = JSON.parse(text);
+    delete profileContent.enableFilter;
+    return JSON.stringify(profileContent);
+  });
   rm(path.join(profile.source, '..'));
 
   // mock-data & mock-list

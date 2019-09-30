@@ -10,11 +10,7 @@
     <el-table border :data="hostFileList">
       <el-table-column align="center" prop="checked" label="启用" width="60">
         <template v-slot="scope">
-          <el-checkbox
-            :checked="scope.row.checked"
-            @change="toggleHost(scope.row.name)"
-            :disabled="!profile.enableHost"
-          />
+          <el-checkbox :checked="scope.row.checked" @change="toggleHost(scope.row)" :disabled="!profile.enableHost" />
         </template>
       </el-table-column>
       <el-table-column prop="name" label="名字" width="250">
@@ -87,9 +83,9 @@ export default class HostList extends Vue {
   /**
    * 启用或禁用 host 配置
    */
-  async toggleHost(name: string) {
+  async toggleHost(hostFile: IHostFile) {
     try {
-      const response = await hostApi.toggleHost(name);
+      const response = await hostApi.toggleHost(hostFile.name, !hostFile.checked);
       this.$message.success('设置成功!');
     } catch (err) {
       this.$message.error(err);

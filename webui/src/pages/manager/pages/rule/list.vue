@@ -12,11 +12,7 @@
     <el-table border :data="ruleFileList">
       <el-table-column align="center" prop="checked" label="启用" width="60">
         <template v-slot="scope">
-          <el-checkbox
-            v-model="scope.row.checked"
-            :disabled="!profile.enableRule"
-            @change="toggleRule(scope.row.name)"
-          />
+          <el-checkbox v-model="scope.row.checked" :disabled="!profile.enableRule" @change="toggleRule(scope.row)" />
         </template>
       </el-table-column>
       <el-table-column prop="name" label="名字" width="250">
@@ -143,9 +139,9 @@ export default class RuleList extends Vue {
   /**
    * 启用或禁用规则集
    */
-  async toggleRule(name: string) {
+  async toggleRule(ruleFile: IRuleFile) {
     try {
-      await ruleApi.toggleRule(name);
+      await ruleApi.toggleRule(ruleFile.name, !ruleFile.checked);
       this.$message.success('设置成功!');
     } catch (err) {
       this.$message.error(err);

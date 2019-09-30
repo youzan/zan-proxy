@@ -25,9 +25,10 @@ export function deleteRule(name: string) {
   });
 }
 
-export function toggleRule(name: string) {
+export function toggleRule(name: string, enable: boolean) {
   return axios.post('/rule/toggle', {
     name,
+    enable,
   });
 }
 

@@ -5,6 +5,7 @@ import path from 'path';
 import { Service } from 'typedi';
 
 import { AppInfoService } from './appInfo';
+
 import { IProfile } from '../types/profile';
 
 const DEFAULT_PROFILE: IProfile = {
@@ -32,7 +33,6 @@ export class ProfileService extends EventEmitter {
     super();
 
     const proxyDataDir = appInfoService.proxyDataDir;
-    // 修改为单用户模式，但是为了保证兼容，需要使用之前的配置保存文件路径
     this.profileSaveFile = path.join(proxyDataDir, 'profile.json');
 
     try {

@@ -112,13 +112,13 @@ export class RuleService extends EventEmitter {
   /**
    * 设置规则文件的使用状态
    */
-  public async toggleRuleFile(name: string) {
+  public async toggleRuleFile(name: string, checked: boolean) {
     if (!this.exist(name)) {
       throw new NotFoundError('找不到对应名称的转发规则集');
     }
 
     const ruleFile = this.rules[name];
-    ruleFile.checked = !ruleFile.checked;
+    ruleFile.checked = checked;
     await this.saveRuleFile(name, ruleFile);
   }
 

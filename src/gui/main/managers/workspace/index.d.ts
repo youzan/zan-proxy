@@ -36,6 +36,7 @@ declare namespace ZanProxyMac {
      * 是否启用 host 代理
      */
     enableHost: boolean;
+
     /**
      * host 代理规则名称列表
      */

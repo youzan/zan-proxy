@@ -26,7 +26,7 @@ app.on('ready', async () => {
     logger.error(e);
     showNotify({
       title: 'Zan Proxy 启动失败！',
-      body: '请检查是否端口冲突或出现其他原因',
+      body: '请检查是否配置文件是否正常，是否有端口冲突或其他原因',
     });
     app.exit(-1);
   }

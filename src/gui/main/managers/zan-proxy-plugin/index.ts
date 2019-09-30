@@ -49,7 +49,7 @@ export default class ZanPorxyPluginManager extends BaseManager {
       });
       setTimeout(() => {
         app.quit();
-      }, 1500);
+      }, 2000);
     }
   }
 }

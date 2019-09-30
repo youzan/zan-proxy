@@ -110,7 +110,10 @@ export default class App extends Vue {
       return await profileApi.toggleHost(true);
     }
     try {
-      await hostApi.toggleHost(command);
+      const hostFile = this.hostFileList.find(h => h.name === command);
+      if (hostFile) {
+        await hostApi.toggleHost(hostFile.name, !hostFile.checked);
+      }
     } catch (err) {
       this.$message.error(err);
     }
@@ -125,7 +128,10 @@ export default class App extends Vue {
       return profileApi.toggleRule(true);
     }
     try {
-      await ruleApi.toggleRule(command);
+      const ruleFile = this.ruleFileList.find(r => r.name === command);
+      if (ruleFile) {
+        await ruleApi.toggleRule(ruleFile.name, !ruleFile.checked);
+      }
     } catch (err) {
       this.$message.error(err);
     }

@@ -23,7 +23,7 @@ export default class App {
       httpsProxyPort,
     });
     await this.proxy.init();
-    await this.manager.init();
+    this.manager.init();
     this.proxy.ignore(`127.0.0.1:${managerPort}`);
     this.proxy.ignore(`${this.appInfoService.appInfo.managerHost}:${managerPort}`);
   }
@@ -33,10 +33,7 @@ export default class App {
    */
   public start() {
     this.proxy.listen(this.appInfoService.appInfo.proxyPort);
-    this.manager.listen(
-      this.appInfoService.appInfo.managerPort,
-      this.appInfoService.appInfo.managerHost,
-    );
+    this.manager.listen(this.appInfoService.appInfo.managerPort, this.appInfoService.appInfo.managerHost);
     this.appInfoService.printRuntimeInfo();
   }
 }

@@ -1,6 +1,6 @@
-import { Module } from 'vuex';
 import { IProfile } from '@core/types/profile';
 import { map } from 'lodash';
+import { Module } from 'vuex';
 
 export interface IProjectPath {
   key: string;
@@ -19,9 +19,9 @@ const profile: Module<IProfileState, any> = {
   state: {
     // 个人配置
     profile: {
-      projectPath: {},
       enableRule: false,
       enableHost: false,
+      projectPath: {},
     },
     // 将转发变量配置转换为数组格式 方便编辑
     projectPathArray: [],

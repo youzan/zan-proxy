@@ -41,7 +41,7 @@ export class RuleController {
     const {
       request: { body },
     } = ctx;
-    await this.ruleService.toggleRuleFile(body.name);
+    await this.ruleService.toggleRuleFile(body.name, body.enable);
     return true;
   }
 

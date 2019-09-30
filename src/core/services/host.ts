@@ -162,13 +162,13 @@ export class HostService extends EventEmitter {
   /**
    * 启用或禁用某个host配置
    */
-  public async toggleHost(name: string) {
+  public async toggleHost(name: string, checked: boolean) {
     if (!this.exist(name)) {
       throw new NotFoundError('找不到对应名称的Host配置');
     }
 
     const hostFile = this.hostFilesMap[name];
-    hostFile.checked = !hostFile.checked;
+    hostFile.checked = checked;
     await this.saveHostFile(name, hostFile);
   }
 

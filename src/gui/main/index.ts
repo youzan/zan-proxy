@@ -11,6 +11,8 @@ if (process.env.NODE_ENV === 'development') {
   console.info = logger.info.bind(logger);
   console.log = logger.info.bind(logger);
   console.error = logger.error.bind(logger);
+  console.debug = logger.debug.bind(logger);
+  console.warn = logger.warn.bind(logger);
   global.__root = path.resolve(__dirname, '../');
   global.__site = path.resolve(__dirname, '../site');
   global.__static = path.resolve(__dirname, '../static');
