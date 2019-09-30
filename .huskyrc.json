@@ -1,6 +1,6 @@
 {
   "hooks": {
-    "pre-commit": "lint-staged",
+    "pre-commit": "yarn format && lint-staged",
     "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
   }
 }

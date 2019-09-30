@@ -66,10 +66,7 @@ export default class TrayManager extends BaseManager {
    * 更新托盘菜单
    */
   private async renderTrayMenu() {
-    const template: MenuItemConstructorOptions[] = [
-      ...(await this.getPluginTrayOptions()),
-      quitItem,
-    ];
+    const template: MenuItemConstructorOptions[] = [...(await this.getPluginTrayOptions()), quitItem];
     this.tray.setContextMenu(Menu.buildFromTemplate(template));
   }
 

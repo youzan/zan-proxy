@@ -2,13 +2,7 @@ import http from 'http';
 import SocketIO from 'socket.io';
 import { Inject, Service } from 'typedi';
 
-import {
-  HostService,
-  HttpTrafficService,
-  MockDataService,
-  ProfileService,
-  RuleService,
-} from '../../services';
+import { HostService, HttpTrafficService, MockDataService, ProfileService, RuleService } from '../../services';
 import { IProfile } from '../../types/profile';
 import { IMockRecord } from '@core/types/mock';
 import { IHostFile } from '@core/types/host';

@@ -53,11 +53,7 @@ class WorkspaceEditor extends React.Component<IProps> {
       this.props.workspaceStore.setCurrentWorkspace(workspace);
       message.success('保存成功');
       // 若保存的是当前已被激活的工作区配置，则需要重新启用（更新配置规则）
-      if (
-        activatedWorkspace &&
-        currentWorkspace &&
-        activatedWorkspace.key === currentWorkspace.key
-      ) {
+      if (activatedWorkspace && currentWorkspace && activatedWorkspace.key === currentWorkspace.key) {
         return api.activateWorkspace(currentWorkspace);
       }
     } catch (err) {
@@ -217,11 +213,7 @@ class WorkspaceEditor extends React.Component<IProps> {
               </Col>
             </Row>
             <Form.Item label="名称" {...formItemLayout}>
-              <Input
-                value={workspace.name}
-                onChange={this.changeName}
-                placeholder="请输入预设名称"
-              />
+              <Input value={workspace.name} onChange={this.changeName} placeholder="请输入预设名称" />
             </Form.Item>
           </div>
           <div className="editor-field">

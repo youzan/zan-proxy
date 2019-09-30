@@ -18,8 +18,7 @@ export default class PluginStore {
     const plugins = window.__plugins;
     this.names.forEach(name => {
       if (plugins[name]) {
-        has(plugins[name], 'components.EditorField') &&
-          components.push(get(plugins[name], 'components.EditorField'));
+        has(plugins[name], 'components.EditorField') && components.push(get(plugins[name], 'components.EditorField'));
       }
     });
     return components;

@@ -34,10 +34,9 @@ export class CertificateStorage {
   }
 
   public async has(domain: string) {
-    return Promise.all([
-      fs.pathExists(this.getCertPath(domain)),
-      fs.pathExists(this.getKeyPath(domain)),
-    ]).then(([certExist, keyExist]) => certExist && keyExist);
+    return Promise.all([fs.pathExists(this.getCertPath(domain)), fs.pathExists(this.getKeyPath(domain))]).then(
+      ([certExist, keyExist]) => certExist && keyExist,
+    );
   }
 
   public async get(domain: string) {

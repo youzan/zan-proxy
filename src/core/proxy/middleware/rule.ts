@@ -38,10 +38,7 @@ export class RuleMiddleware implements IProxyMiddleware {
   /**
    * 添加响应头
    */
-  private async processAddResponseHeader(
-    data: IRuleActionData,
-    resHeaders: http.OutgoingHttpHeaders,
-  ) {
+  private async processAddResponseHeader(data: IRuleActionData, resHeaders: http.OutgoingHttpHeaders) {
     resHeaders[data.headerKey] = data.headerValue;
   }
 

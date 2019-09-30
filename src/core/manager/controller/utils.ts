@@ -63,9 +63,7 @@ export class UtilsController {
       for (const host of hosts) {
         matchScripts.push(`if ( host == "${host}" ) { return zProxy; }`);
         if (host.startsWith('*')) {
-          matchScripts.push(
-            `if ( host.indexOf("${host.substr(1, host.length)}") > -1 ) { return zProxy; } `,
-          );
+          matchScripts.push(`if ( host.indexOf("${host.substr(1, host.length)}") > -1 ) { return zProxy; } `);
         }
       }
     }

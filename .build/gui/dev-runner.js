@@ -3,7 +3,6 @@
 const chalk = require('chalk');
 const electron = require('electron');
 const path = require('path');
-const { say } = require('cfonts');
 const { spawn } = require('child_process');
 const webpack = require('webpack');
 const WebpackDevServer = require('webpack-dev-server');
@@ -147,7 +146,6 @@ function electronLog(data, color) {
 }
 
 function init() {
-  console.log('get ready to build zan-proxy...');
   Promise.all([startRenderer(), startMain()])
     .then(() => {
       startElectron();

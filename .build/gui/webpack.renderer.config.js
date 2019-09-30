@@ -10,17 +10,13 @@ const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 
 const { isDev, rootResolve, runtimePathDefine, webpackAlias, scanGuiPlugins } = require('../utils');
 
-const styleLoader = [
-  isDev
-    ? {
-        // dev style loader
-        loader: 'style-loader',
-      }
-    : {
-        // prod extract loader
-        loader: MiniCssExtractPlugin.loader,
-      },
-];
+const styleLoader = {
+  loader: MiniCssExtractPlugin.loader,
+  options: {
+    // only enable hot in development
+    hmr: isDev,
+  },
+};
 
 /**
  * @type {import('webpack').Configuration}
@@ -71,15 +67,16 @@ const electronRendererConfig = {
       {
         test: /\.m\.scss$/,
         use: [
-          ...styleLoader,
+          styleLoader,
           {
             loader: 'css-loader',
             options: {
-              modules: true,
+              modules: {
+                localIdentName: '[folder]__[name]__[local]--[hash:base64:5]',
+              },
+              localsConvention: 'camelCase',
               sourceMap: true,
               importLoaders: 1,
-              camelCase: true,
-              localIdentName: '[folder]__[local]__[hash:base64:5]',
             },
           },
           'sass-loader',
@@ -88,7 +85,7 @@ const electronRendererConfig = {
       {
         test: /^((?!\.m).)*\.scss$/,
         use: [
-          ...styleLoader,
+          styleLoader,
           {
             loader: 'css-loader',
             options: {
@@ -100,7 +97,7 @@ const electronRendererConfig = {
       },
       {
         test: /\.css$/,
-        use: [...styleLoader, 'css-loader'],
+        use: [styleLoader, 'css-loader'],
       },
       {
         test: /\.node$/,
@@ -113,16 +110,6 @@ const electronRendererConfig = {
           options: {
             limit: 10000,
             name: 'imgs/[name]--[folder].[ext]',
-          },
-        },
-      },
-      {
-        test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
-        use: {
-          loader: 'url-loader',
-          options: {
-            limit: 10000,
-            name: 'media/[name]--[folder].[ext]',
           },
         },
       },
