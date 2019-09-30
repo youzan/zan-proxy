@@ -31,14 +31,13 @@ export class ProfileService extends EventEmitter {
 
   constructor(appInfoService: AppInfoService) {
     super();
-
     const proxyDataDir = appInfoService.proxyDataDir;
     this.profileSaveFile = path.join(proxyDataDir, 'profile.json');
 
     try {
       this.profile = fs.readJsonSync(this.profileSaveFile);
-    } catch {
-      // no operation
+    } catch (err) {
+      console.error('read profile file failed:', err);
     }
   }
 

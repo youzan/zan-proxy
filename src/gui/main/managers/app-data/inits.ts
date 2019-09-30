@@ -16,7 +16,7 @@ export async function initCert() {
   return new Promise(resolve => {
     try {
       // 检查是否已经安装证书
-      childProcess.execSync('security find-certificate -c zProxy', { encoding: 'utf-8' });
+      childProcess.execSync('security find-certificate -c zan-proxy', { encoding: 'utf-8' });
     } catch (e) {
       const cmd = `security add-trusted-cert -d -r trustRoot -p ssl -k /Library/Keychains/System.keychain ${certPath}`;
       sudo.exec(cmd, execIcon, (error, stdout) => {

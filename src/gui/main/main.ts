@@ -1,9 +1,9 @@
-import { migrateFromOld, resetDataFiles } from '@core/resetDataFiles';
-import Application from '@gui/main/core/application';
-import { showNotify } from '@gui/main/utils';
 import { app } from 'electron';
 import logger from 'electron-log';
 import { Container } from 'typedi';
+
+import { migrateFromOld, resetDataFiles } from '@core/resetDataFiles';
+import { showNotify } from '@gui/main/utils';
 
 import createMenus from './menu';
 
@@ -18,7 +18,8 @@ app.on('ready', async () => {
   try {
     migrateFromOld();
     resetDataFiles();
-    // 异步初始化工作区信息
+    // 异步加载应用主体，初始化工作区信息
+    const Application = (await import('@gui/main/core/application')).default;
     const zanProxyApp = Container.get(Application);
     await zanProxyApp.loadPlugins(config.plugins);
     await zanProxyApp.init();

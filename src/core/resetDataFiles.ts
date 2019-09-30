@@ -28,6 +28,7 @@ function move(source: string, target: string, transformer?: (text: string) => st
  * 旧版数据方法
  */
 export function migrateFromOld() {
+  console.log('开始迁移旧版数据');
   const unusedFileOrDir = [
     path.join(proxyDataDir, 'clientIpUserMap.json'),
     path.join(proxyDataDir, 'configure.json'),
@@ -88,6 +89,7 @@ export function migrateFromOld() {
     }
     move(path.join(proxyDataDir, 'rule', file), path.join(proxyDataDir, 'rule', file.replace(/^root_/, '')));
   });
+  console.log('旧版数据迁移完毕');
 }
 
 /**
