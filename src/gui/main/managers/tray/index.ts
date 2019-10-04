@@ -1,14 +1,15 @@
+import { Menu, MenuItemConstructorOptions, Tray } from 'electron';
 /**
  * 系统托盘
  */
 import * as path from 'path';
-import { MenuItemConstructorOptions, Menu, Tray } from 'electron';
-import { Container, Service, Inject } from 'typedi';
+import { Container, Inject, Service } from 'typedi';
 
-import BaseManager from '@gui/main/core/base-manager';
 import { APP_STATES } from '@gui/common/constants';
-import WorkspaceManager from '../workspace';
+import BaseManager from '@gui/main/core/base-manager';
+
 import AppDataManager from '../app-data';
+import WorkspaceManager from '../workspace';
 
 const quitItem = {
   id: 'quit',
@@ -18,7 +19,7 @@ const quitItem = {
 
 @Service()
 export default class TrayManager extends BaseManager {
-  private tray: Tray = new Tray(path.resolve(global.__static, 'z.png'));
+  private tray: Tray = new Tray(path.resolve(global.__static, 'tray.png'));
 
   @Inject()
   private appDataManager: AppDataManager;

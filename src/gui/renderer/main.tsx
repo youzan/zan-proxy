@@ -4,11 +4,11 @@ import { Provider } from 'mobx-react';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import App from './App';
-import store from './store';
-
 import 'antd/dist/antd.css';
 import './global.scss';
+
+import App from './App';
+import store from './store';
 
 window.addEventListener('unhandledrejection', err => logger.error(err));
 window.addEventListener('error', err => logger.error(err));

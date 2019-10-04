@@ -76,7 +76,6 @@ const electronRendererConfig = {
               },
               localsConvention: 'camelCase',
               sourceMap: true,
-              importLoaders: 1,
             },
           },
           'sass-loader',
@@ -130,7 +129,7 @@ const electronRendererConfig = {
     splitChunks: {
       cacheGroups: {
         vendor: {
-          chunks: 'initial',
+          chunks: 'all',
           test: 'vendor',
           name: 'vendor', // 使用 vendor 入口作为公共部分
           enforce: true,
