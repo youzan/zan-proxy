@@ -15,8 +15,6 @@ const errorLog = chalk.bgRed.white(' ERROR ');
 const okayLog = chalk.bgBlue.white(' OKAY ');
 
 function build() {
-  greeting();
-
   del.sync(['build/*', 'dist/*']);
 
   const tasks = ['main', 'renderer'];
