@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "decompress-response": "^4.2.1",
+    "del": "~5.1.0",
     "devtron": "~1.4.0",
     "electron-debug": "~2.1.0",
     "electron-devtools-installer": "~2.2.4",
@@ -95,7 +96,6 @@
     "chai-events": "^0.0.3",
     "chalk": "~2.4.2",
     "css-loader": "~3.2.0",
-    "del": "~5.1.0",
     "electron": "4.2.10",
     "electron-builder": "21.2.0",
     "form-data": "^2.3.3",

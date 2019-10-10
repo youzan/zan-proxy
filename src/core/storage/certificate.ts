@@ -1,3 +1,4 @@
+import del from 'del';
 import fs from 'fs-extra';
 import LRUCache from 'lru-cache';
 import path from 'path';
@@ -61,6 +62,14 @@ export class CertificateStorage {
       }),
       fs.writeFile(this.getKeyPath(domain), cert.key, { encoding: 'utf-8' }),
     ]);
+  }
+
+  public async clear() {
+    this.cache.reset();
+    return del(['*.key', '*.crt', '!root'], {
+      cwd: this.storagePath,
+      dot: true,
+    });
   }
 
   /**

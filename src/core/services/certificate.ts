@@ -1,7 +1,8 @@
-import { CertificateModel } from '@core/types/certificate';
 import parseDomain from 'parse-domain';
 import pem from 'pem';
 import { Inject, Service } from 'typedi';
+
+import { CertificateModel } from '@core/types/certificate';
 
 import { CertificateStorage } from '../storage';
 
@@ -66,5 +67,9 @@ export class CertificateService {
       cert: res.certificate,
       key: res.clientKey,
     };
+  }
+
+  public async clear() {
+    this.storage.clear();
   }
 }

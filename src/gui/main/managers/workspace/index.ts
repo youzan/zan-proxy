@@ -1,12 +1,13 @@
-import { APP_STATES } from '@gui/common/constants';
-import { WORKSPACE_EVENTS } from '@gui/common/events';
-import BaseManager from '@gui/main/core/base-manager';
-import { homePath, setIpcReplier, showNotify } from '@gui/main/utils';
 import { dialog, ipcMain, MenuItemConstructorOptions, Notification } from 'electron';
 import logger from 'electron-log';
 import * as fs from 'fs-extra';
 import { Container, Service } from 'typedi';
 import uuid from 'uuid/v4';
+
+import { APP_STATES } from '@gui/common/constants';
+import { WORKSPACE_EVENTS } from '@gui/common/events';
+import BaseManager from '@gui/main/core/base-manager';
+import { homePath, setIpcReplier, showNotify } from '@gui/main/utils';
 
 import helper from './helper';
 
@@ -32,21 +33,23 @@ export default class WorkspaceManager extends BaseManager {
       workspaces = JSON.parse(workspaces);
     }
     this.workspaces = workspaces;
-    // 激活选中的工作区
-    for (const ws of this.workspaces) {
-      if (ws.checked) {
-        await this.activateWorkspace(ws).catch(err => {
-          logger.error('激活工作区信息失败', err);
-          showNotify({
-            title: '激活工作区信息失败',
-            body: '请检查网络后重试',
-          });
-        });
-        break;
-      }
-    }
 
     this.emit('workspace:update-list', this.workspaces);
+  }
+
+  public async afterInit() {
+    // 激活选中的工作区
+    const checkedWorkspace = this.workspaces.find(ws => ws.checked);
+    if (!checkedWorkspace) {
+      return;
+    }
+    await this.activateWorkspace(checkedWorkspace).catch(err => {
+      logger.error('激活工作区失败', err);
+      showNotify({
+        title: '激活工作区失败',
+        body: '请检查网络和配置后重试',
+      });
+    });
   }
 
   private async syncUpdate() {
@@ -255,13 +258,9 @@ export default class WorkspaceManager extends BaseManager {
       })),
       { type: 'separator' },
       {
-        label: '导入并使用',
+        label: '导入配置',
         click() {
-          manager.importWorkspace().then(w => {
-            if (w) {
-              manager.activateWorkspace(w);
-            }
-          });
+          manager.importWorkspace();
         },
       },
       {

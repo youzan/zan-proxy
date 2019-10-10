@@ -1,13 +1,14 @@
-import { Service } from 'typedi';
-import { shell, MenuItemConstructorOptions, app } from 'electron';
+import { app, MenuItemConstructorOptions, shell } from 'electron';
 import * as prompt from 'electron-prompt';
 import * as ip from 'ip';
-import startProxy from '@core/start';
+import { Service } from 'typedi';
 
-import BaseManager from '@gui/main/core/base-manager';
-import { showNotify, setIpcReplier } from '@gui/main/utils';
-import { ZAN_PROXY_EVENTS } from '@gui/common/events';
+import startProxy from '@core/start';
 import { APP_STATES } from '@gui/common/constants';
+import { ZAN_PROXY_EVENTS } from '@gui/common/events';
+import BaseManager from '@gui/main/core/base-manager';
+import { setIpcReplier, showNotify } from '@gui/main/utils';
+
 import { initCert } from './inits';
 
 /**

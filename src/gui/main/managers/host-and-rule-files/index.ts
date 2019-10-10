@@ -35,8 +35,12 @@ export default class HostAndRuleFilesManager extends BaseManager {
     this.on('workspace:import', this.parseImportData);
   }
 
-  public afterInit() {
-    this.syncHostAndRules();
+  public async afterInit() {
+    try {
+      await this.syncHostAndRules();
+    } catch (err) {
+      console.error('同步 Host 和 Rule 文件失败', err);
+    }
   }
 
   /**

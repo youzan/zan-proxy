@@ -15,6 +15,8 @@ import BaseManager from './base-manager';
 import Storage from './storage';
 import WorkspaceWindow from './window';
 
+import CertificateManager from '../managers/certificate';
+
 interface IPlugin {
   name: string;
   manager: BaseManager;
@@ -65,6 +67,10 @@ export default class Application {
     {
       name: 'tray',
       manager: Container.get(TrayManager),
+    },
+    {
+      name: 'certificate',
+      manager: Container.get(CertificateManager),
     },
     {
       name: 'renderer-loader',
