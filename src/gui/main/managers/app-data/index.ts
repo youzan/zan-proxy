@@ -4,6 +4,7 @@ import * as ip from 'ip';
 import { Service } from 'typedi';
 
 import startProxy from '@core/start';
+import { isMac } from '@core/utils';
 import { APP_STATES } from '@gui/common/constants';
 import { ZAN_PROXY_EVENTS } from '@gui/common/events';
 import BaseManager from '@gui/main/core/base-manager';
@@ -41,8 +42,10 @@ export default class AppDataManager extends BaseManager {
   public async init() {
     this.ports = this.storage.get('ports', DEFAULT_PORTS);
 
-    // 初始化网络配置切换工具和证书文件
-    await initCert();
+    if (isMac) {
+      // 初始化证书文件
+      await initCert();
+    }
 
     // 同步gitlab仓库配置文件
     showNotify({
