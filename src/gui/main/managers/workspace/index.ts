@@ -269,16 +269,13 @@ export default class WorkspaceManager extends BaseManager {
       },
     ];
 
-    const appStateIndex = options.findIndex(op => op.id === 'appState') + 1;
-
-    options.splice(
-      appStateIndex,
-      0,
-      { type: 'separator' },
+    options.push(
       {
         id: 'workspaces',
         label,
         submenu,
+        afterGroupContaining: ['appState'],
+        beforeGroupContaining: ['setting'],
       },
       { type: 'separator' },
     );
