@@ -25,9 +25,18 @@ function move(source: string, target: string, transformer?: (text: string) => st
 }
 
 /**
- * 旧版数据方法
+ * 旧版数据迁移方法
  */
 export function migrateFromOld() {
+  // 非旧版配置
+  if (!fs.existsSync(path.join(proxyDataDir, 'clientIpUserMap.json'))) {
+    return;
+  }
+
+  const backDir = proxyDataDir + '-bak';
+  console.log('备份旧版数据');
+  fs.copySync(proxyDataDir, backDir);
+
   console.log('开始迁移旧版数据');
   const unusedFileOrDir = [
     path.join(proxyDataDir, 'clientIpUserMap.json'),
