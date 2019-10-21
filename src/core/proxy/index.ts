@@ -3,8 +3,6 @@ import { Container, Inject, Service } from 'typedi';
 
 import { IProxyMiddlewareFn } from '@core/types/proxy';
 
-import { ConnectHandler, RequestHandler, UpgradeHandler } from '../proxy/handler';
-import { IProxyMiddleware } from '../types/proxy';
 import {
   ForwarderMiddleware,
   HostMiddleware,
@@ -16,6 +14,9 @@ import {
 } from './middleware';
 import HttpServer from './servers/http';
 import HttpsServer from './servers/https';
+
+import { ConnectHandler, RequestHandler, UpgradeHandler } from '../proxy/handler';
+import { IProxyMiddleware } from '../types/proxy';
 
 const COMMON_MIDDLEWARE_CLASSES: IProxyMiddleware[] = [
   Container.get(IgnoreMiddleware),

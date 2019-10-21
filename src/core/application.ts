@@ -1,4 +1,5 @@
 import getPort from 'get-port';
+import ip from 'ip';
 import { Inject, Service } from 'typedi';
 
 import { Manager } from './manager';
@@ -25,7 +26,8 @@ export default class App {
     await this.proxy.init();
     this.manager.init();
     this.proxy.ignore(`127.0.0.1:${managerPort}`);
-    this.proxy.ignore(`${this.appInfoService.appInfo.managerHost}:${managerPort}`);
+    this.proxy.ignore(`${ip.address()}:${managerPort}`);
+    this.proxy.ignore(`0.0.0.0:${managerPort}`);
   }
 
   /**
