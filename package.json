@@ -1,6 +1,6 @@
 {
   "name": "zan-proxy",
-  "version": "5.0.0-beta.1",
+  "version": "5.0.0",
   "description": "前端代理",
   "main": "./dist/main.js",
   "scripts": {

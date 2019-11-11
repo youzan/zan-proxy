@@ -1,5 +1,24 @@
 # Github Change Log
 
+## zan-proxy@5.0.0（2019-11-11）
+
+**Refactor:**
+
+- 替换部分长期未更新的依赖包
+- `vue` 及组件库升级，使用 `vuex` 替换 `vue-data-center`
+- webui 部分添加了 typescript 支持
+- 删除原来无用的配置文件，删除文件 root_ 前缀
+- 将核心转发服务器和管理服务器移至 core 目录下，并进行重构，统一 middleware、controller、service 的风格
+
+**Implemented enhancements:**
+
+- 添加新版本配置文件的自动迁移脚本
+- 插件支持动态开关，并添加升级按钮（升级后依旧需要重启）
+- 添加证书缓存清理功能（GUI）
+- 替换 2048 位证书以支持 ios 13 和 Mac OS 10.15
+
+[PR](https://github.com/youzan/zan-proxy/pull/116)
+
 ## zan-proxy@4.1.0 (2019-03-08)
 
 **Implemented enhancements:**
