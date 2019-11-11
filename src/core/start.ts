@@ -1,8 +1,13 @@
 import { Container } from 'typedi';
-import App from './App';
 
-export default async (proxyPort?, uiPort?, uiHost?) => {
+import App from './application';
+
+export default async function start(
+  proxyPort: number = 8001,
+  managerPort: number = 40001,
+  managerHost: string = '0.0.0.0',
+) {
   const app = Container.get(App);
-  await app.init();
-  await app.start(proxyPort, uiPort, uiHost);
-};
+  await app.init(proxyPort, managerPort, managerHost);
+  app.start();
+}

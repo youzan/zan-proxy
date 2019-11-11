@@ -1,18 +1,18 @@
-import Vue from 'vue';
-import DataCenter from 'vue-data-center';
-import VueClipboard from 'vue-clipboard2';
 // element-ui
 import ElementUI from 'element-ui';
-import 'element-ui/lib/theme-default/index.css';
+import Vue from 'vue';
+import VueClipboard from 'vue-clipboard2';
 
 import App from './App.vue';
-import './index.scss';
+import store from './store';
+
+import 'element-ui/lib/theme-chalk/index.css';
 
 Vue.use(ElementUI);
-Vue.use(DataCenter);
 Vue.use(VueClipboard);
 
 new Vue({
   el: '#app',
   render: h => h(App),
+  store,
 });

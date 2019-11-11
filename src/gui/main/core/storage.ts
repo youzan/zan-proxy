@@ -1,6 +1,5 @@
+import ElectronStore from 'electron-store';
 import { Service } from 'typedi';
-// @ts-ignore
-import * as ElectronStore from 'electron-store';
 
 /**
  * 配置存储获取单元

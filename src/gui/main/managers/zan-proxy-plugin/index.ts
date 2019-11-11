@@ -1,10 +1,10 @@
 import { app } from 'electron';
 import Container, { Service } from 'typedi';
-import BaseManager from '@gui/main/core/base-manager';
 
-import PluginManager from '@core/App/plugin-manager';
-import { showNotify } from '@gui/main/utils';
+import { PluginService } from '@core/services';
 import { APP_STATES } from '@gui/common/constants';
+import BaseManager from '@gui/main/core/base-manager';
+import { showNotify } from '@gui/main/utils';
 
 @Service()
 export default class ZanPorxyPluginManager extends BaseManager {
@@ -29,9 +29,9 @@ export default class ZanPorxyPluginManager extends BaseManager {
    * 文件目录为 .front-end-proxy/plugins
    */
   private async installPlugin(pluginPkgs: ZanProxyMac.IPluginPkg[]) {
-    const pluginManager = Container.get<any>(PluginManager);
+    const pluginManager = Container.get(PluginService);
     let pluginsAllInstalled = true;
-    const installedPlugins = pluginManager.storage.get();
+    const installedPlugins = pluginManager.getPlugins();
     for (const plugin of pluginPkgs) {
       // 检查插件是否已经安装
       const hasInstalled = installedPlugins.filter(i => i.name === plugin.name).length > 0;
@@ -49,7 +49,7 @@ export default class ZanPorxyPluginManager extends BaseManager {
       });
       setTimeout(() => {
         app.quit();
-      }, 1500);
+      }, 2000);
     }
   }
 }

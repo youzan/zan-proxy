@@ -4,17 +4,28 @@ declare module '*.vue' {
 }
 
 // third lib types
-declare module 'vue-data-center' {
-  const plugin: any;
-  export default plugin;
-}
 
-declare module 'element-ui' {
-  const ui: any;
-  export default ui;
+declare module 'vue-json-tree' {
+  const component: any;
+  export default component;
 }
 
 declare module 'vue-clipboard2' {
   const plugin: any;
   export default plugin;
+}
+
+declare module 'qrcode-js' {
+  const content: any;
+  export default content;
+}
+
+declare module 'prettytime' {
+  interface IOptions {
+    decimals: number;
+    short: boolean;
+  }
+
+  function prettytime(ms: number, options?: Partial<IOptions>): string;
+  export default prettytime;
 }

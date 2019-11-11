@@ -1,10 +1,10 @@
-import { ipcRenderer } from 'electron';
-import { observable, action } from 'mobx';
-
+import { IHostFile } from '@core/types/host';
 import { HOST_FILE_EVENTS } from '@gui/common/events';
+import { ipcRenderer } from 'electron';
+import { action, observable } from 'mobx';
 
 export default class HostFileStore {
-  @observable hostFiles: ZanProxyMac.IHostFile[] = [];
+  @observable hostFiles: IHostFile[] = [];
 
   constructor() {
     ipcRenderer.on(HOST_FILE_EVENTS.list, (e, hostFiles) => {
@@ -15,7 +15,7 @@ export default class HostFileStore {
   }
 
   @action
-  public setHostFiles(hostFiles: ZanProxyMac.IHostFile[]) {
+  public setHostFiles(hostFiles: IHostFile[]) {
     this.hostFiles = hostFiles;
   }
 }

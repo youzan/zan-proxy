@@ -1,17 +1,18 @@
-import * as path from 'path';
-import * as fs from 'fs-extra';
 import { app } from 'electron';
 import logger from 'electron-log';
+import * as fs from 'fs-extra';
+import * as path from 'path';
 import Container, { Service } from 'typedi';
 
-import Storage from './storage';
-import BaseManager from './base-manager';
-import ZanPorxyPluginManager from '@gui/main/managers/zan-proxy-plugin';
-import TrayManager from '@gui/main/managers/tray';
 import AppDataManager from '@gui/main/managers/app-data';
-import WorkspaceManager from '@gui/main/managers/workspace';
 import HostAndRuleFilesManager from '@gui/main/managers/host-and-rule-files';
 import RendererLoaderManager from '@gui/main/managers/renderer-loader';
+import TrayManager from '@gui/main/managers/tray';
+import WorkspaceManager from '@gui/main/managers/workspace';
+import ZanPorxyPluginManager from '@gui/main/managers/zan-proxy-plugin';
+
+import BaseManager from './base-manager';
+import Storage from './storage';
 import WorkspaceWindow from './window';
 
 interface IPlugin {
@@ -252,10 +253,7 @@ export default class Application {
   /**
    * 触发 manager 的生命周期函数
    */
-  private async emitManagersLifecycleFunc(
-    lifecycleName: keyof ZanProxyMac.IManagerLifeCycle,
-    ...args: any[]
-  ) {
+  private async emitManagersLifecycleFunc(lifecycleName: keyof ZanProxyMac.IManagerLifeCycle, ...args: any[]) {
     for (const manager of this.managers) {
       const lifecycleFunc = manager[lifecycleName];
       typeof lifecycleFunc === 'function' && (await lifecycleFunc.call(manager, ...args));

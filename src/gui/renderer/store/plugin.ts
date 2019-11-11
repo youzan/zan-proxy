@@ -1,7 +1,7 @@
-import { observable, action, computed } from 'mobx';
-import { ipcSend } from '@gui/renderer/utils/ipc';
 import { PLUGIN_LOADER_EVENTS } from '@gui/common/events';
-import { has } from 'lodash';
+import { ipcSend } from '@gui/renderer/utils/ipc';
+import { get, has } from 'lodash';
+import { action, computed, observable } from 'mobx';
 
 export default class PluginStore {
   @observable names: string[] = [];
@@ -14,12 +14,11 @@ export default class PluginStore {
    */
   @computed
   public get editorComponents(): Array<React.ComponentClass<{}>> {
-    const components = [];
+    const components: Array<React.ComponentClass<{}>> = [];
     const plugins = window.__plugins;
     this.names.forEach(name => {
       if (plugins[name]) {
-        has(plugins[name], 'components.EditorField') &&
-          components.push(plugins[name].components.EditorField);
+        has(plugins[name], 'components.EditorField') && components.push(get(plugins[name], 'components.EditorField'));
       }
     });
     return components;

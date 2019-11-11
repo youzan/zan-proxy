@@ -1,15 +1,15 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "lib": [
-      "dom",
-      "esnext"
-    ],
+    "target": "esnext",
+    "lib": ["dom", "esnext"],
     "jsx": "react",
     "moduleResolution": "node",
     "module": "esnext",
     "allowJs": true,
+    "strictNullChecks": true,
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "alwaysStrict": true,
@@ -20,23 +20,14 @@
     "baseUrl": "./src",
     "paths": {
       "@core/*": ["core/*"],
-      "@cli/*": ["gui/*"],
+      "@cli/*": ["cli/*"],
       "@gui/*": ["gui/*"]
     },
-    "typeRoots": [
-      "./node_modules/@types",
-      "./src/gui/types",
-      "./src/gui/main/managers",
-      "./src/gui/plugins"
-    ],
+    "typeRoots": ["./node_modules/@types", "./src/gui/types", "./src/gui/main/managers", "./src/gui/plugins"],
     "sourceMap": true,
     "strictBindCallApply": true,
     "outDir": "./dist"
   },
-  "files": [
-    "src/global.d.ts"
-  ],
-  "include": [
-    "./src"
-  ]
+  "files": ["src/global.d.ts"],
+  "include": ["./src"]
 }

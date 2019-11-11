@@ -2,37 +2,32 @@
 
 process.env.BABEL_ENV = 'renderer';
 
-const path = require('path');
-const fs = require('fs-extra');
 const webpack = require('webpack');
 const tsImportPluginFactory = require('ts-import-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 
-const { rootResolve, runtimePathDefine, webpackAlias, scanGuiPlugin } = require('../utils');
+const { isDev, rootResolve, runtimePathDefine, webpackAlias, scanGuiPlugins } = require('../utils');
 
-const isDev = process.env.NODE_ENV !== 'production';
+const styleLoader = {
+  loader: MiniCssExtractPlugin.loader,
+  options: {
+    // only enable hot in development
+    hmr: isDev,
+  },
+};
 
-const styleLoader = [
-  isDev
-    ? {
-        // dev style loader
-        loader: 'style-loader',
-      }
-    : {
-        // prod extract loader
-        loader: MiniCssExtractPlugin.loader,
-      },
-];
-
-const rendererConfig = {
+/**
+ * @type {import('webpack').Configuration}
+ */
+const electronRendererConfig = {
   mode: process.env.NODE_ENV,
   target: 'electron-renderer',
   devtool: '#cheap-module-eval-source-map',
   entry: {
     vendor: ['react', 'react-dom', 'lodash', 'mobx', 'mobx-react', 'antd'],
-    ...scanGuiPlugin('renderer/index.ts'), // 插件先加载，将组件设置到 window.__plugins
+    ...scanGuiPlugins('renderer/index.ts'), // 插件先加载，将组件设置到 window.__plugins
     renderer: rootResolve('src/gui/renderer/main.tsx'),
   },
   output: {
@@ -72,15 +67,15 @@ const rendererConfig = {
       {
         test: /\.m\.scss$/,
         use: [
-          ...styleLoader,
+          styleLoader,
           {
             loader: 'css-loader',
             options: {
-              modules: true,
+              modules: {
+                localIdentName: '[folder]__[name]__[local]--[hash:base64:5]',
+              },
+              localsConvention: 'camelCase',
               sourceMap: true,
-              importLoaders: 1,
-              camelCase: true,
-              localIdentName: '[folder]__[local]__[hash:base64:5]',
             },
           },
           'sass-loader',
@@ -89,7 +84,7 @@ const rendererConfig = {
       {
         test: /^((?!\.m).)*\.scss$/,
         use: [
-          ...styleLoader,
+          styleLoader,
           {
             loader: 'css-loader',
             options: {
@@ -101,7 +96,7 @@ const rendererConfig = {
       },
       {
         test: /\.css$/,
-        use: [...styleLoader, 'css-loader'],
+        use: [styleLoader, 'css-loader'],
       },
       {
         test: /\.node$/,
@@ -118,16 +113,6 @@ const rendererConfig = {
         },
       },
       {
-        test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
-        use: {
-          loader: 'url-loader',
-          options: {
-            limit: 10000,
-            name: 'media/[name]--[folder].[ext]',
-          },
-        },
-      },
-      {
         test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
         use: {
           loader: 'url-loader',
@@ -140,20 +125,17 @@ const rendererConfig = {
     ],
   },
   optimization: {
+    minimize: false,
     splitChunks: {
       cacheGroups: {
         vendor: {
-          chunks: 'initial',
+          chunks: 'all',
           test: 'vendor',
           name: 'vendor', // 使用 vendor 入口作为公共部分
           enforce: true,
         },
       },
     },
-  },
-  node: {
-    __dirname: isDev,
-    __filename: isDev,
   },
   plugins: [
     new MiniCssExtractPlugin({
@@ -175,7 +157,7 @@ if (isDev) {
   /**
    * Adjust rendererConfig for development settings
    */
-  rendererConfig.plugins.push(
+  electronRendererConfig.plugins.push(
     new webpack.DefinePlugin({
       ...runtimePathDefine,
     }),
@@ -185,21 +167,18 @@ if (isDev) {
   /**
    * Adjust rendererConfig for production settings
    */
-  rendererConfig.devtool = '#source-map';
+  electronRendererConfig.devtool = '#source-map';
 
-  rendererConfig.plugins.push(
+  electronRendererConfig.plugins.push(
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': '"production"',
-    }),
-    new webpack.LoaderOptionsPlugin({
-      minimize: true,
     }),
   );
 }
 
 if (process.env.ANALYZER) {
   const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-  rendererConfig.plugins.push(new BundleAnalyzerPlugin());
+  electronRendererConfig.plugins.push(new BundleAnalyzerPlugin());
 }
 
-module.exports = rendererConfig;
+module.exports = electronRendererConfig;

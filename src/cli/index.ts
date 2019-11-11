@@ -1,17 +1,9 @@
 import 'reflect-metadata';
-import promiseFinally from 'promise.prototype.finally';
-import program from 'commander';
-import path from 'path';
-import ip from 'ip';
-import open from 'open';
-import selfUpdate from './selfUpdate';
-import start from '@core/start';
-import syncHost from '@core/syncHost';
-import syncRule from '@core/syncRule';
-import resetDataFiles from '@core/resetDataFiles';
 
-import packageInfo from '../../package.json';
-promiseFinally.shim();
+import path from 'path';
+
+import { migrateFromOld, resetDataFiles } from '@core/resetDataFiles';
+import start from '@core/start';
 
 if (process.env.NODE_ENV !== 'development') {
   global.__root = path.resolve(__dirname, '..');
@@ -36,30 +28,13 @@ process.on('SIGINT', () => {
   process.exit();
 });
 
-program
-  .version(packageInfo.version)
-  .description('start ZanProxy server')
-  .option('-p, --proxy_port [value]', 'set the proxy port')
-  .option('-m, --manager_port [value]', 'set the manager server port')
-  .option('--manager_host [value]', 'set the manager server host')
-  .option('--no-update', 'do not check if update available')
-  .option('--no-sync', 'do not sync remote rules')
-  .parse(process.argv);
-
 async function run() {
+  migrateFromOld();
   resetDataFiles();
-  if (program.update) {
-    await selfUpdate();
-  }
-  if (program.sync) {
-    await syncRule();
-    await syncHost();
-  }
-  const managerPort = program.manager_port || 40001;
-  const managerHost = program.manager_host || ip.address();
-  const url = `http://${managerHost}:${managerPort}`;
-  await start(program.proxy_port, program.manager_port, program.manager_host);
-  open(url);
+  const proxyPort = parseInt(process.env.PROXY_PORT || '8001');
+  const managerPort = parseInt(process.env.MANAGER_PORT || '40001');
+  const managerHost = process.env.MANAGER_HOST || '0.0.0.0';
+  await start(proxyPort, managerPort, managerHost);
 }
 
 run();

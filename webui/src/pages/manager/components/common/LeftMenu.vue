@@ -1,140 +1,106 @@
 <template>
   <div class="left-menu">
-    <h2>Zan Proxy</h2>
-    <el-menu class="el-menu-vertical-demo" theme="dark" :default-active="defaultActive" @select="handleSelect">
-      <template v-for="(item, index) in menuList">
-        <div :key="index">
-          <el-submenu :index="index + ''" v-if="item.children">
-            <!-- 菜单标题 -->
-            <template slot="title">
-              <i class="iconfont" :class="item.icon" />
-              <span class="menu-name">{{ item.name }}</span>
-            </template>
-            <!-- 子菜单 -->
-            <el-menu-item
-              v-for="(child, cindex) in item.children"
-              :style="{ 'padding-left': '40px' }"
-              :index="index + '-' + cindex"
-              :key="cindex"
-            >
-              <i class="iconfont" :class="child.icon" />
-              <span class="menu-name">{{ child.name }}</span>
-            </el-menu-item>
-          </el-submenu>
-          <!-- 子菜单 -->
-          <el-menu-item :index="index + ''" v-else>
-            <i class="iconfont" :class="item.icon" />
-            <span class="menu-name">{{ item.name }}</span>
-          </el-menu-item>
-        </div>
-      </template>
+    <h2 class="title">Zan Proxy</h2>
+    <el-menu theme="dark" :default-active="activeKey" @select="handleSelect">
+      <el-menu-item v-for="item in menuList" :key="item.name" :index="item.link">
+        <i class="iconfont" :class="item.icon" />
+        <span class="menu-name">{{ item.name }}</span>
+      </el-menu-item>
     </el-menu>
   </div>
 </template>
 
-<script>
-const menuList = [
+<script lang="ts">
+import Vue from 'vue';
+import 'vue-router';
+import { Component } from 'vue-property-decorator';
+
+interface IMenuItem {
+  name: string;
+  icon: string;
+  link: string;
+  newPage?: boolean;
+  pathPrefix?: string;
+}
+
+const menuList: IMenuItem[] = [
   {
     name: '使用说明',
     icon: 'icon-search',
-    link: 'helpinstall',
+    link: '/intro',
+    pathPrefix: '/intro',
   },
   {
     name: 'Host 管理',
     icon: 'icon-box',
-    link: 'hostfilelist',
+    link: '/host',
+    pathPrefix: '/host',
   },
   {
-    name: 'Http 转发',
+    name: '转发规则',
     icon: 'icon-skip',
-    link: 'rulefilelist',
+    link: '/rule',
+    pathPrefix: '/rule',
   },
   {
-    name: '转发变量配置',
+    name: '转发变量',
     icon: 'icon-layers',
-    link: 'projectpath',
+    link: '/profile',
+    pathPrefix: '/profile',
   },
   {
-    name: '自定义 mock 数据',
+    name: 'Mock 数据',
     icon: 'icon-suoding',
-    link: 'datalist',
+    link: '/mock',
+    pathPrefix: '/mock',
   },
   {
     name: '请求监控',
     icon: 'icon-bargraph',
     link: '/monitor.html',
-    targetBlank: true,
+    newPage: true,
   },
   {
-    name: '帮助中心',
+    name: '帮助文档',
     icon: 'icon-security',
     link: 'https://youzan.github.io/zan-proxy/',
-    targetBlank: true,
+    newPage: true,
   },
   {
     name: '插件管理',
     icon: 'icon-layers',
-    link: 'plugins',
+    link: '/plugins',
+    pathPrefix: '/plugins',
   },
-  // {
-  //   name: '断点',
-  //   icon: 'icon-remind',
-  //   link: '/breakpoint.html',
-  //   targetBlank: true
-  // },
-  // {
-  //   name: 'WebSocket Mock',
-  //   icon: 'icon-hot',
-  //   link: '/wsmock.html',
-  //   targetBlank: true
-  // },
 ];
 
-export default {
-  name: 'left-menu',
+@Component
+export default class LeftMenu extends Vue {
+  menuList = menuList;
 
-  data() {
-    return {
-      defaultActive: this.getDefaultActive(),
-      menuList,
-    };
-  },
+  get activeKey() {
+    const path = this.$route.path;
+    const item = this.menuList.find(item => path.startsWith(item.link));
+    return item && item.pathPrefix;
+  }
 
-  methods: {
-    getDefaultActive() {
-      const { hash } = location;
-      let defaultActive = '';
-      menuList.forEach((item, index1) => {
-        if (Array.isArray(item)) {
-          // no any effect
-        } else if (hash.indexOf(item.link) !== -1) {
-          defaultActive = index1 + '';
-        }
-      });
+  handleSelect(key: string) {
+    const item = this.menuList.find(item => item.link === key);
 
-      return defaultActive;
-    },
+    if (!item) {
+      return;
+    }
 
-    handleSelect(key, keyPath) {
-      let item = {};
-      if (keyPath.length == 2) {
-        var indexarray = keyPath[1].split('-');
-        item = this.menuList[indexarray[0]]['children'][indexarray[1]];
-      } else {
-        item = this.menuList[parseInt(key)];
-      }
-
-      if (item.targetBlank) {
-        window.open(item['link']);
-      } else {
-        this.$router.push(item['link']);
-      }
-    },
-  },
-};
+    if (item.newPage) {
+      window.open(item.link);
+    } else {
+      this.$router.push(item.link);
+    }
+  }
+}
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .left-menu {
   z-index: 1;
   width: 230px;
@@ -142,12 +108,16 @@ export default {
   user-select: none;
   position: relative;
   overflow-x: hidden;
-  background-image: linear-gradient(#3b3e8f, #6f73d7);
+  background-color: #4b4eac;
 
-  h2 {
+  .title {
+    position: fixed;
+    z-index: 10;
+    width: 230px;
+    background-color: #4b4eac;
     color: #fff;
     font-size: 20px;
-    line-height: 72px;
+    line-height: 60px;
     padding-left: 22px;
     font-weight: normal;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
@@ -155,8 +125,7 @@ export default {
   }
 
   .iconfont {
-    width: 28px;
-    display: inline-block;
+    margin-right: 16px;
   }
 
   .icon-bargraph {
@@ -171,9 +140,11 @@ export default {
 
   .el-menu {
     background-color: transparent;
+    border-right: none;
+    position: relative;
+    top: 60px;
   }
 
-  .el-submenu__title,
   .el-menu-item {
     color: #fff;
     height: 52px;

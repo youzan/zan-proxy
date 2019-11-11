@@ -1,13 +1,16 @@
-import { Service } from 'typedi';
-import { shell, MenuItemConstructorOptions, app } from 'electron';
+import { app, MenuItemConstructorOptions, shell } from 'electron';
 import * as prompt from 'electron-prompt';
 import * as ip from 'ip';
-import startProxy from '@core/start';
+import { Inject, Service } from 'typedi';
 
-import BaseManager from '@gui/main/core/base-manager';
-import { showNotify, setIpcReplier } from '@gui/main/utils';
-import { ZAN_PROXY_EVENTS } from '@gui/common/events';
+import { CertificateService } from '@core/services';
+import startProxy from '@core/start';
+import { isMac } from '@core/utils';
 import { APP_STATES } from '@gui/common/constants';
+import { ZAN_PROXY_EVENTS } from '@gui/common/events';
+import BaseManager from '@gui/main/core/base-manager';
+import { setIpcReplier, showNotify } from '@gui/main/utils';
+
 import { initCert } from './inits';
 
 /**
@@ -22,6 +25,9 @@ export const DEFAULT_PORTS: ZanProxyMac.IPorts = {
 export default class AppDataManager extends BaseManager {
   public state: ZanProxyMac.IState = APP_STATES.STOP;
   public ports: ZanProxyMac.IPorts = DEFAULT_PORTS;
+
+  @Inject()
+  private certificateService: CertificateService;
 
   constructor() {
     super();
@@ -40,8 +46,10 @@ export default class AppDataManager extends BaseManager {
   public async init() {
     this.ports = this.storage.get('ports', DEFAULT_PORTS);
 
-    // 初始化网络配置切换工具和证书文件
-    await initCert();
+    if (isMac) {
+      // 初始化证书文件
+      await initCert();
+    }
 
     // 同步gitlab仓库配置文件
     showNotify({
@@ -115,6 +123,21 @@ export default class AppDataManager extends BaseManager {
     };
   }
 
+  private cleanCertificates = async () => {
+    let cleanResultMsg = '';
+    try {
+      await this.certificateService.clear();
+      cleanResultMsg = '清理证书完毕';
+    } catch (err) {
+      console.error(err);
+      cleanResultMsg = '清理证书失败';
+    }
+    showNotify({
+      title: '清理证书',
+      body: cleanResultMsg,
+    });
+  };
+
   /**
    * 端口设置菜单项
    */
@@ -168,6 +191,8 @@ export default class AppDataManager extends BaseManager {
       id: 'port',
       label: '端口设置',
       submenu,
+      afterGroupContaining: ['setting', 'clean-certificate'],
+      beforeGroupContaining: ['quit'],
     };
   }
 
@@ -177,11 +202,13 @@ export default class AppDataManager extends BaseManager {
   private get commonTrayItems(): MenuItemConstructorOptions[] {
     return [
       {
-        id: 'plugin',
-        label: '配置插件',
+        id: 'setting',
+        label: '代理设置',
         click: () => {
-          this.showManager('/#/plugins');
+          this.showManager('');
         },
+        afterGroupContaining: ['workspaces'],
+        beforeGroupContaining: ['port'],
       },
       {
         id: 'monitor',
@@ -189,13 +216,16 @@ export default class AppDataManager extends BaseManager {
         click: () => {
           this.showManager('/monitor.html');
         },
+        afterGroupContaining: ['workspaces'],
+        beforeGroupContaining: ['port'],
       },
       {
-        id: 'manager',
-        label: '代理设置',
-        click: () => {
-          this.showManager('');
-        },
+        id: 'clean-certificate',
+        label: '清理证书缓存',
+        click: this.cleanCertificates,
+        after: ['setting'],
+        afterGroupContaining: ['workspaces'],
+        beforeGroupContaining: ['port'],
       },
     ];
   }

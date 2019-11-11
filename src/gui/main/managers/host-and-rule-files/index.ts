@@ -1,22 +1,28 @@
-import SocketClient from 'socket.io-client';
-import Container, { Inject, Service } from 'typedi';
 import { ipcMain } from 'electron';
 import logger from 'electron-log';
+import SocketClient from 'socket.io-client';
+import { Inject, Service } from 'typedi';
 
+import { HostService, RuleService } from '@core/services';
+import syncHosts from '@core/syncHost';
+import syncRules from '@core/syncRule';
+import { IHostFile } from '@core/types/host';
+import { IRuleFile } from '@core/types/rule';
 import { HOST_FILE_EVENTS, RULE_FILE_EVENTS } from '@gui/common/events';
 import BaseManager from '@gui/main/core/base-manager';
 import { showNotify } from '@gui/main/utils';
 
 import AppDataManager from '../app-data';
-import { HostService, RuleService } from '@core/App/services';
-import syncRules from '@core/syncRule';
-import syncHosts from '@core/syncHost';
 
 @Service()
 export default class HostAndRuleFilesManager extends BaseManager {
   private socketClient: SocketIOClient.Socket;
-  public hostFiles: ZanProxyMac.IHostFile[] = [];
-  public ruleFiles: ZanProxyMac.IRuleFile[] = [];
+
+  @Inject()
+  private hostService: HostService;
+
+  @Inject()
+  private ruleService: RuleService;
 
   @Inject(() => AppDataManager)
   private appDataManager: AppDataManager;
@@ -29,8 +35,12 @@ export default class HostAndRuleFilesManager extends BaseManager {
     this.on('workspace:import', this.parseImportData);
   }
 
-  public afterInit() {
-    this.syncHostAndRules();
+  public async afterInit() {
+    try {
+      await this.syncHostAndRules();
+    } catch (err) {
+      console.error('同步 Host 和 Rule 文件失败', err);
+    }
   }
 
   /**
@@ -42,28 +52,24 @@ export default class HostAndRuleFilesManager extends BaseManager {
   private initSocket() {
     this.socketClient = SocketClient(`http://${this.appDataManager.zanProxyManagerRoot}/manager`);
 
-    this.socketClient.on('hostfilelist', async data => {
-      await this.application.emitAllManager('host-and-rule-files:update-host', data);
-      // 获取 host 规则列表
-      this.hostFiles = data;
-      this.workspaceWindow.send(HOST_FILE_EVENTS.list, data);
+    this.socketClient.on('hostFileList', async (hostFileList: IHostFile[]) => {
+      await this.application.emitAllManager('host-and-rule-files:update-host', hostFileList);
+      this.workspaceWindow.send(HOST_FILE_EVENTS.list, hostFileList);
     });
 
-    this.socketClient.on('rulefilelist', async data => {
-      await this.application.emitAllManager('host-and-rule-files:update-rule', data);
-      // 获取转发规则列表
-      this.ruleFiles = data;
-      this.workspaceWindow.send(RULE_FILE_EVENTS.list, data);
+    this.socketClient.on('ruleFileList', async (ruleFileList: IRuleFile[]) => {
+      await this.application.emitAllManager('host-and-rule-files:update-rule', ruleFileList);
+      this.workspaceWindow.send(RULE_FILE_EVENTS.list, ruleFileList);
     });
   }
 
   private initEventHandlers() {
     ipcMain.on(HOST_FILE_EVENTS.fetch, () => {
-      this.workspaceWindow.send(HOST_FILE_EVENTS.list, this.hostFiles);
+      this.workspaceWindow.send(HOST_FILE_EVENTS.list, this.hostService.getHostFileList());
     });
 
     ipcMain.on(RULE_FILE_EVENTS.fetch, () => {
-      this.workspaceWindow.send(RULE_FILE_EVENTS.list, this.ruleFiles);
+      this.workspaceWindow.send(RULE_FILE_EVENTS.list, this.ruleService.getRuleFileList());
     });
   }
 
@@ -92,13 +98,11 @@ export default class HostAndRuleFilesManager extends BaseManager {
     const workspace = dataToExport.workspace;
     // 获取 host 配置
     if (workspace.hosts) {
-      const hostService = Container.get<any>(HostService);
-      dataToExport.hostFiles = workspace.hosts.map(h => hostService.getHostFile('root', h));
+      dataToExport.hostFiles = workspace.hosts.map(hostName => this.hostService.getHostFile(hostName));
     }
     // 获取 转发规则 配置
     if (workspace.ruleSet) {
-      const ruleService = Container.get<any>(RuleService);
-      dataToExport.ruleFiles = workspace.ruleSet.map(n => ruleService.getRuleFile('root', n));
+      dataToExport.ruleFiles = workspace.ruleSet.map(ruleName => this.ruleService.getRuleFile(ruleName));
     }
   };
 
@@ -110,32 +114,30 @@ export default class HostAndRuleFilesManager extends BaseManager {
    */
   private parseImportData = async (dataToExport: ZanProxyMac.IExportOrImportData) => {
     if (dataToExport.hostFiles) {
-      const hostService = Container.get<any>(HostService);
       for (const hostFile of dataToExport.hostFiles) {
         if (hostFile.meta && hostFile.meta.local === false && hostFile.meta.url) {
           // 导入远程 host 文件
-          await hostService.importRemoteHostFile('root', hostFile.meta.url);
+          await this.hostService.importRemoteHostFile(hostFile.meta.url);
         } else {
           // 保存 host 文件
-          await hostService.saveHostFile('root', hostFile.name, hostFile);
+          await this.hostService.saveHostFile(hostFile.name, hostFile);
         }
       }
     }
 
     if (dataToExport.ruleFiles) {
-      const ruleService = Container.get<any>(RuleService);
-      for (const rf of dataToExport.ruleFiles) {
-        rf.checked = false;
-        if (rf.meta && rf.meta.remote && rf.meta.url) {
+      for (const ruleFile of dataToExport.ruleFiles) {
+        ruleFile.checked = false;
+        if (ruleFile.meta && ruleFile.meta.remote && ruleFile.meta.url) {
           // 导入远程规则文件
           try {
-            await ruleService.importRemoteRuleFile('root', rf.meta.url);
+            await this.ruleService.importRemoteRuleFile(ruleFile.meta.url);
           } catch (e) {
             logger.error(e);
           }
         } else {
           // 保存本地规则文件
-          await ruleService.saveRuleFile('root', rf);
+          await this.ruleService.saveRuleFile('root', ruleFile);
         }
       }
     }

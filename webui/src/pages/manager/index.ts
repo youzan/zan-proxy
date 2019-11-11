@@ -1,32 +1,28 @@
-import Vue from 'vue';
-import router from './router';
-import DataCenter from 'vue-data-center';
-
+import axios from 'axios';
 // element-ui
 import ElementUI from 'element-ui';
-import 'element-ui/lib/theme-default/index.css';
-import './index.scss';
-import './iconfont.css';
+import Vue from 'vue';
 
 import App from './App.vue';
+import router from './router';
+import store from './store';
+
+import 'element-ui/lib/theme-chalk/index.css';
+import './iconfont.css';
+import './index.scss';
+
+axios.interceptors.response.use(
+  v => v,
+  error => {
+    throw error.response.data.message;
+  },
+);
 
 Vue.use(ElementUI);
-Vue.use(DataCenter);
-/* eslint-disable no-new */
+
 new Vue({
   el: '#app',
   router,
+  store,
   render: h => h(App),
 });
-
-document.addEventListener(
-  'keydown',
-  function(event) {
-    if ((event.ctrlKey || event.metaKey) && event.which == 83) {
-      // Save Function
-      event.preventDefault();
-      return false;
-    }
-  },
-  true,
-);

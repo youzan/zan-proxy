@@ -1,100 +1,152 @@
 <template>
   <el-collapse v-model="activeNames">
+    <!-- basic info -->
     <el-collapse-item title="General" name="general">
-      <div>
-        <kv k="Request URL" :v="href">
-          <a
-            class="copy-as-curl"
-            v-clipboard:copy="curl"
-            v-clipboard:success="onCopySuccess"
-            v-clipboard:error="onCopyFail"
-            >Copy as cURL</a
-          >
-        </kv>
-        <kv k="Request Method" :v="method"></kv>
-        <kv k="Protocol" :v="protocol"></kv>
-        <kv k="HTTP Version" :v="httpVersion"></kv>
-      </div>
+      <key-value k="Request URL" :v="parsedOriginUrl.href">
+        <el-link
+          type="primary"
+          class="copy-as-curl"
+          v-clipboard:copy="curl"
+          v-clipboard:success="onCopySuccess"
+          v-clipboard:error="onCopyFail"
+        >Copy as cURL</el-link>
+      </key-value>
+      <key-value k="Request Method" :v="currentRecord.request.method || '-'"></key-value>
+      <key-value k="Protocol" :v="protocol"></key-value>
+      <key-value k="HTTP Version" :v="currentRecord.request.httpVersion || '-'"></key-value>
     </el-collapse-item>
+
+    <!-- request headers -->
     <el-collapse-item title="Headers" name="headers">
-      <obj-kv :obj="$dc.requestHeader"></obj-kv>
+      <key-value v-for="(value, key) in requestHeader" :k="key" :v="value" :key="key"></key-value>
     </el-collapse-item>
-    <el-collapse-item name="query" v-if="Object.keys($dc.requestQueryParams).length">
+
+    <!-- request query -->
+    <el-collapse-item name="query" v-if="Object.keys(requestQueryParams).length">
       <template slot="title">
         Query
-        <span class="toggle-mode-button" @click="toggleQueryMode">
-          <span v-if="queryMode === 'parsed'">View Source</span>
-          <span v-else>View Parsed</span>
-        </span>
+        <el-link
+          class="mode-toggle"
+          @click="toggleQueryMode"
+        >{{ queryMode === 'parsed' ? 'View Source' : 'View Parsed' }}</el-link>
       </template>
-      <obj-kv :obj="$dc.requestQueryParams" v-if="queryMode === 'parsed'"></obj-kv>
-      <div v-else>{{ $dc.currentRow.originRequest.query }}</div>
+      <div v-if="queryMode === 'parsed'">
+        <key-value v-for="(value, key) in requestQueryParams" :k="key" :v="value" :key="key"></key-value>
+      </div>
+      <div v-else>{{ parsedOriginUrl.query }}</div>
     </el-collapse-item>
-    <el-collapse-item title="Body" name="body" v-if="$dc.currentRequestBody">
-      {{ $dc.currentRequestBody || '' }}
-    </el-collapse-item>
+
+    <!-- request body -->
+    <body-collapse-item :loading="bodyLoading" :body="requestBody" :contentType="contentType"/>
   </el-collapse>
 </template>
 
-<script>
-import KeyValue from './KeyValue';
-import ObjKV from './ObjKV';
-import makeCURL from './makeCURL';
+<script lang="ts">
+import Vue from 'vue';
+import url from 'url';
+import qs from 'querystring';
+import { Component, Prop } from 'vue-property-decorator';
+import KeyValue from './KeyValue.vue';
+import BodyCollapseItem from './BodyCollapseItem.vue';
+import _get from 'lodash/get';
+import { makeCurl } from '../../utils';
+import { IClientRecord } from '../../types';
+import { Getter } from 'vuex-class';
+import { Message } from 'element-ui';
 
-export default {
-  data() {
-    return {
-      activeNames: ['general', 'headers', 'query', 'body'],
-      queryMode: 'parsed',
-    };
-  },
+@Component({
   components: {
-    kv: KeyValue,
-    'obj-kv': ObjKV,
+    KeyValue,
+    BodyCollapseItem,
   },
-  computed: {
-    href() {
-      return (this.$dc.currentRow.originRequest && this.$dc.currentRow.originRequest.href) || '';
-    },
-    method() {
-      return (this.$dc.currentRow.originRequest && this.$dc.currentRow.originRequest.method) || '';
-    },
-    protocol() {
-      return (this.$dc.currentRow.originRequest && this.$dc.currentRow.originRequest.protocol.slice(0, -1)) || 'http';
-    },
-    httpVersion() {
-      return (this.$dc.currentRow.originRequest && this.$dc.currentRow.originRequest.httpVersion) || '';
-    },
-    curl() {
-      const data = this.$dc.currentRow;
-      return makeCURL({
-        ...data.originRequest,
-        body: this.$dc.currentRequestBody || '',
-      });
-    },
-  },
-  methods: {
-    toggleQueryMode(e) {
-      e.stopPropagation();
-      this.queryMode = this.queryMode === 'parsed' ? 'raw' : 'parsed';
-    },
-    onCopySuccess() {
-      this.$message({
-        type: 'success',
-        message: '已成功复制到粘贴板!',
-      });
-    },
-    onCopyFail() {
-      this.$message.error('复制失败，请重试');
-    },
-  },
-};
+})
+export default class Request extends Vue {
+  activeNames = ['general', 'headers', 'query', 'body'];
+  queryMode = 'parsed';
+  bodyMode = 'parsed';
+
+  @Getter
+  currentRecord: IClientRecord;
+
+  @Prop(String)
+  requestBody: string;
+  @Prop(Boolean)
+  bodyLoading: boolean;
+
+  get parsedOriginUrl() {
+    return url.parse(this.currentRecord.request.originUrl);
+  }
+
+  get protocol() {
+    return (this.parsedOriginUrl.protocol && this.parsedOriginUrl.protocol.slice(0, -1)) || 'http';
+  }
+
+  get curl() {
+    const record = this.currentRecord;
+    return makeCurl({
+      href: record.request.originUrl,
+      method: record.request.method,
+      headers: record.request.headers,
+      auth: this.parsedOriginUrl.auth || '',
+      body: this.requestBody || '',
+    });
+  }
+
+  get requestHeader() {
+    try {
+      return this.currentRecord.request.headers || {};
+    } catch (e) {
+      return {};
+    }
+  }
+
+  get requestQueryParams() {
+    try {
+      return qs.parse(this.parsedOriginUrl.query || '');
+    } catch (e) {
+      return {};
+    }
+  }
+
+  get contentType() {
+    return _get(this.currentRecord.request, "headers['content-type']", '');
+  }
+
+  toggleQueryMode(e: MouseEvent) {
+    e.stopPropagation();
+    this.queryMode = this.queryMode === 'parsed' ? 'raw' : 'parsed';
+  }
+
+  toggleBodyMode(e: MouseEvent) {
+    e.stopPropagation();
+    this.bodyMode = this.bodyMode === 'parsed' ? 'raw' : 'parsed';
+  }
+
+  onCopySuccess() {
+    Message.success('已成功复制到粘贴板!');
+  }
+
+  onCopyFail() {
+    Message.error('复制失败，请重试');
+  }
+}
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .copy-as-curl {
   cursor: pointer;
   margin-left: 15px;
-  color: #20a0ff;
+  font-size: 13px;
+  line-height: 18px;
+  vertical-align: text-bottom;
+}
+
+.mode-toggle {
+  float: right;
+  color: #ccc;
+  font-size: 12px;
+  cursor: pointer;
+  line-height: 100%;
+  margin-left: 15px;
 }
 </style>

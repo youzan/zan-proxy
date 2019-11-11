@@ -1,13 +1,13 @@
-import { ipcRenderer } from 'electron';
-import { observable, action } from 'mobx';
-
+import { IRuleFile } from '@core/types/rule';
 import { RULE_FILE_EVENTS } from '@gui/common/events';
+import { ipcRenderer } from 'electron';
+import { action, observable } from 'mobx';
 
 export default class RuleFileStore {
-  @observable ruleFiles: ZanProxyMac.IHostFile[] = [];
+  @observable ruleFiles: IRuleFile[] = [];
 
   constructor() {
-    ipcRenderer.on(RULE_FILE_EVENTS.list, (e, ruleFiles: ZanProxyMac.IHostFile[]) => {
+    ipcRenderer.on(RULE_FILE_EVENTS.list, (e, ruleFiles: IRuleFile[]) => {
       this.setRuleFiles(ruleFiles);
     });
 
@@ -15,7 +15,7 @@ export default class RuleFileStore {
   }
 
   @action
-  public setRuleFiles(ruleFiles: ZanProxyMac.IHostFile[]) {
+  public setRuleFiles(ruleFiles: IRuleFile[]) {
     this.ruleFiles = ruleFiles;
   }
 }

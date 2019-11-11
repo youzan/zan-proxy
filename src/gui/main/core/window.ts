@@ -1,5 +1,5 @@
-import * as path from 'path';
 import { BrowserWindow } from 'electron';
+import * as path from 'path';
 import { Service } from 'typedi';
 
 const winURL =
@@ -9,7 +9,7 @@ const winURL =
 
 @Service()
 export default class WorkspaceWindow {
-  private window: BrowserWindow = null;
+  private window: BrowserWindow | null = null;
 
   public send(channel: string, ...args: any[]) {
     this.window && this.window.webContents.send(channel, ...args);

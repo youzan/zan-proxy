@@ -1,24 +1,25 @@
-import ora from 'ora';
-import { AppInfoService, HostService } from './App/services';
+import Container from 'typedi';
 
+import { HostService } from './services';
+
+/**
+ * 同步远程 Host 规则
+ */
 const syncRemoteHosts = async () => {
   console.log('开始同步远程Host文件');
-  const appInfoService = new AppInfoService(false);
-  const hostService = new HostService(appInfoService);
-  const hostFileList = hostService.getHostFileList('root');
+  const hostService = Container.get(HostService);
+  const hostFileList = hostService.getHostFileList();
   for (const hostFile of hostFileList) {
-    if (!hostFile.meta) {
+    if (!hostFile.meta || hostFile.meta.local === true || !hostFile.meta.url) {
       continue;
     }
-    if (!hostFile.meta.url || hostFile.meta.local) {
-      continue;
-    }
-    const spinner = ora(`同步远程Host${hostFile.name}`).start();
+
+    console.info(`同步远程Host${hostFile.name}中`);
     try {
-      await hostService.importRemoteHostFile('root', hostFile.meta.url);
-      spinner.succeed();
+      await hostService.importRemoteHostFile(hostFile.meta.url);
+      console.info(`同步远程Host${hostFile.name}成功`);
     } catch (e) {
-      spinner.fail();
+      console.error(`同步远程Host${hostFile.name}失败`);
     }
   }
   console.log('同步远程Host文件结束');

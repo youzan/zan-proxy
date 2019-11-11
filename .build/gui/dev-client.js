@@ -10,7 +10,7 @@ hotClient.subscribe(event => {
    * giving notice for an expected reload of the `electron` process
    */
   if (event.action === 'compiling') {
-    document.body.innerHTML += `
+    document.body.innerHTML = `
       <style>
         #dev-client {
           background: #4fc08d;

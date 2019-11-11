@@ -1,12 +1,12 @@
-import { ipcRenderer } from 'electron';
-import { observable, action, computed } from 'mobx';
-import uuid from 'uuid/v4';
-import { cloneDeep } from 'lodash';
-
 import { WORKSPACE_EVENTS } from '@gui/common/events';
+import { ipcRenderer } from 'electron';
+import { cloneDeep } from 'lodash';
+import { action, computed, observable } from 'mobx';
+import uuid from 'uuid/v4';
 
 export default class WorkspaceStore {
   @observable workspaces: ZanProxyMac.IWorkspace[] = [];
+  // @ts-ignore
   @observable currentWorkspace: ZanProxyMac.IWorkspace = null;
 
   constructor() {
