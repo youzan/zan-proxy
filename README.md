@@ -34,6 +34,13 @@ The proxy server can be easily configured by a user-friendly interface. In addit
 
 Download from [Github](https://github.com/youzan/zan-proxy/releases).
 
+### Upgrade To v5
+
+Zan Proxy v5.0.0 did some incompatible change，you should pay attention to something when upgrading：
+
+1. To fit macOS 10.15 and ios 13, we replaced the Zan Proxy certificate(from 1024 bits to 2048 bits), we will automatically install the certificate for you on the Mac, but on other devices(like Windows、phone), you have to install the certificate manually.
+2. Change some config file fields, but you need not update it manually, Zan Proxy will update these files automatically.
+
 ## Interface
 
 ### GUI
