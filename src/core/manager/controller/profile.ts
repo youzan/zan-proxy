@@ -26,4 +26,10 @@ export class ProfileController {
     await this.profileService.setEnableHost(ctx.request.body.enable);
     return true;
   }
+
+  @Post('/custom-proxy')
+  public async saveCustomProxy(@Ctx() ctx: Context) {
+    await this.profileService.setCustomProxsy(ctx.request.body.customProxy);
+    return true;
+  }
 }

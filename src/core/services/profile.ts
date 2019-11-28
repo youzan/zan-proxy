@@ -62,6 +62,10 @@ export class ProfileService extends EventEmitter {
     return this.getProfile().enableHost;
   }
 
+  public get customProxy() {
+    return this.getProfile().customProxy;
+  }
+
   /**
    * 更新配置信息
    */
@@ -98,6 +102,15 @@ export class ProfileService extends EventEmitter {
   public async setEnableHost(enable: boolean) {
     const profile = this.getProfile();
     profile.enableHost = enable;
+    await this.setProfile(profile);
+  }
+
+  /**
+   * 设置自定义二次代理服务器
+   */
+  public async setCustomProxsy(customProxy: string) {
+    const profile = this.getProfile();
+    profile.customProxy = customProxy;
     await this.setProfile(profile);
   }
 
