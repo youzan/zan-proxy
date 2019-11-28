@@ -10,7 +10,7 @@
     "build:ui": "cd ./webui && yarn run build",
     "build:cli": "NODE_ENV=production webpack --config .build/cli/webpack.cli.config.js",
     "build:gui": "NODE_ENV=production node .build/gui/build.js && electron-builder",
-    "format": "tslint --format stylish --project tsconfig.json --fix",
+    "format": "prettier --write",
     "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
@@ -111,7 +111,7 @@
     "node-loader": "~0.6.0",
     "node-sass": "~4.11.0",
     "nodemon": "^1.19.3",
-    "prettier": "~1.18.2",
+    "prettier": "^1.19.1",
     "react": "^16.8.4",
     "react-copy-to-clipboard": "^5.0.1",
     "react-dom": "^16.8.4",
@@ -124,7 +124,7 @@
     "tslint-eslint-rules": "^5.4.0",
     "tslint-plugin-prettier": "^2.0.1",
     "tslint-react": "^4.1.0",
-    "typescript": "^3.6.3",
+    "typescript": "^3.7.2",
     "url-loader": "~2.1.0",
     "webpack": "4.41.0",
     "webpack-bundle-analyzer": "^3.5.2",
