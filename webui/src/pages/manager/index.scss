@@ -95,30 +95,10 @@ body {
   }
 }
 
-.monitor-wrap {
-  text-align: right;
-  padding-right: 10px;
-}
-
-.monitor-wrap .monitor-btn {
-  margin-top: 16px;
-}
-
 .el-icon-check {
   font-size: 12px;
   color: #64ff10;
   margin-left: 5px;
-}
-
-.CodeMirror {
-  border-top: 1px solid black;
-  border-bottom: 1px solid black;
-}
-
-.CodeMirror-fullscreen {
-  z-index: 3000 !important;
-  border-top: none;
-  border-bottom: none;
 }
 
 .link-btn + .el-button,

@@ -24,3 +24,12 @@ export function toggleHost(enable: boolean) {
     enable,
   });
 }
+
+/**
+ * 设置自定义二次代理服务器
+ */
+export function setCustomProxy(customProxy: string) {
+  return axios.post(`/profile/custom-proxy`, {
+    customProxy,
+  });
+}

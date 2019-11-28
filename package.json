@@ -43,6 +43,7 @@
     "npm": "6.11.3",
     "parse-domain": "^2.3.2",
     "pem": "1.12.5",
+    "proxy-agent": "^3.1.1",
     "raw-body": "^2.4.1",
     "reflect-metadata": "^0.1.13",
     "routing-controllers": "^0.7.7",

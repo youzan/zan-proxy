@@ -3,7 +3,7 @@
     <h2 class="title">Zan Proxy</h2>
     <el-menu theme="dark" :default-active="activeKey" @select="handleSelect">
       <el-menu-item v-for="item in menuList" :key="item.name" :index="item.link">
-        <i class="iconfont" :class="item.icon" />
+        <i :class="['left-menu-icon', { iconfont: !item.isElIcon }, item.icon]" />
         <span class="menu-name">{{ item.name }}</span>
       </el-menu-item>
     </el-menu>
@@ -18,6 +18,7 @@ import { Component } from 'vue-property-decorator';
 interface IMenuItem {
   name: string;
   icon: string;
+  isElIcon?: boolean;
   link: string;
   newPage?: boolean;
   pathPrefix?: string;
@@ -72,6 +73,13 @@ const menuList: IMenuItem[] = [
     link: '/plugins',
     pathPrefix: '/plugins',
   },
+  {
+    name: '其他设置',
+    icon: 'el-icon-setting',
+    isElIcon: true,
+    link: '/other-setting',
+    pathPrefix: '/other-setting',
+  },
 ];
 
 @Component
@@ -124,8 +132,11 @@ export default class LeftMenu extends Vue {
     font-family: Dosis, Source Sans Pro, Helvetica Neue, Arial, sans-serif;
   }
 
-  .iconfont {
+  &-icon {
+    display: inline-block;
+    width: 24px;
     margin-right: 16px;
+    font-size: 16px;
   }
 
   .icon-bargraph {
