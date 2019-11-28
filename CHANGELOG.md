@@ -1,5 +1,11 @@
 # Github Change Log
 
+## zan-proxy@5.1.0 (2019-11-28)
+
+**Feature:**
+
+- 添加二次转发代理服务器的功能及相关 WebUI 可视化配置 [#126](https://github.com/youzan/zan-proxy/pull/126)
+
 ## zan-proxy@5.0.0（2019-11-11）
 
 **Refactor:**
@@ -13,6 +19,7 @@
 **Implemented enhancements:**
 
 - 添加新版本配置文件的自动迁移脚本
+- 为避免同步规则时将本地修改的配置静默覆盖的情况，禁用了远程规则的改动，若需要进行修改，请复制一份本地版本
 - 插件支持动态开关，并添加升级按钮（升级后依旧需要重启）
 - 添加证书缓存清理功能（GUI）
 - 替换 2048 位证书以支持 ios 13 和 Mac OS 10.15
