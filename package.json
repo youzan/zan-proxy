@@ -8,10 +8,15 @@
     "dev:cli": "rm -rf dist && NODE_ENV=development node .build/cli/dev-runner.js",
     "dev:gui": "rm -rf dist && NODE_ENV=development node .build/gui/dev-runner.js",
     "build:ui": "cd ./webui && yarn run build",
-    "build:cli": "NODE_ENV=production webpack --config .build/cli/webpack.cli.config.js",
-    "build:gui": "NODE_ENV=production node .build/gui/build.js && electron-builder",
-    "format": "tslint --format stylish --project tsconfig.json --fix",
+    "build:gui:webpack": "NODE_ENV=production node .build/gui/build.js",
+    "build:gui:mac": "yarn build:gui:webpack && electron-builder --mac",
+    "build:gui:win": "yarn build:gui:webpack && WIN_CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --win",
+    "format": "prettier --write",
     "postinstall": "electron-builder install-app-deps"
+  },
+  "productName": "Zan Proxy",
+  "engines": {
+    "node": ">= 10.16.0"
   },
   "dependencies": {
     "decompress-response": "^4.2.1",
@@ -62,8 +67,6 @@
     "@babel/runtime": "^7.6.2",
     "@commitlint/cli": "^7.5.2",
     "@commitlint/config-conventional": "^7.5.0",
-    "@types/chai": "^4.1.7",
-    "@types/cookie": "^0.3.3",
     "@types/electron-debug": "~2.1.0",
     "@types/electron-devtools-installer": "~2.2.0",
     "@types/electron-store": "1.3.1",
@@ -93,13 +96,10 @@
     "antd": "3.13.2",
     "awesome-typescript-loader": "~5.2.1",
     "babel-loader": "~8.0.6",
-    "chai": "^4.2.0",
-    "chai-events": "^0.0.3",
     "chalk": "~2.4.2",
     "css-loader": "~3.2.0",
     "electron": "4.2.10",
-    "electron-builder": "21.2.0",
-    "form-data": "^2.3.3",
+    "electron-builder": "22.2.0",
     "friendly-errors-webpack-plugin": "^1.7.0",
     "html-webpack-plugin": "~3.2.0",
     "husky": "^3.0.7",
@@ -111,7 +111,7 @@
     "node-loader": "~0.6.0",
     "node-sass": "~4.11.0",
     "nodemon": "^1.19.3",
-    "prettier": "~1.18.2",
+    "prettier": "^1.19.1",
     "react": "^16.8.4",
     "react-copy-to-clipboard": "^5.0.1",
     "react-dom": "^16.8.4",
@@ -124,7 +124,7 @@
     "tslint-eslint-rules": "^5.4.0",
     "tslint-plugin-prettier": "^2.0.1",
     "tslint-react": "^4.1.0",
-    "typescript": "^3.6.3",
+    "typescript": "^3.7.2",
     "url-loader": "~2.1.0",
     "webpack": "4.41.0",
     "webpack-bundle-analyzer": "^3.5.2",
@@ -144,26 +144,6 @@
     "site",
     "resource"
   ],
-  "productName": "Zan Proxy",
-  "build": {
-    "productName": "Zan Proxy",
-    "appId": "com.youzan.zanproxy",
-    "directories": {
-      "output": "build"
-    },
-    "files": [
-      "dist/**",
-      "site/**",
-      "static/**"
-    ],
-    "extraResources": [
-      "resource/**"
-    ],
-    "mac": {
-      "icon": "icons/icon.icns",
-      "category": "public.app-category.developer-tools"
-    }
-  },
   "keywords": [
     "proxy",
     "redirect",

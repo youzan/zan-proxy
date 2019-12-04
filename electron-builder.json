@@ -1,0 +1,18 @@
+{
+  "productName": "Zan Proxy",
+  "appId": "com.youzan.zanproxy",
+  "directories": {
+    "output": "build"
+  },
+  "files": ["dist/**", "site/**", "static/**"],
+  "extraResources": ["resource/**"],
+  "mac": {
+    "icon": "icons/icon.icns",
+    "category": "public.app-category.developer-tools",
+    "target": ["dmg"]
+  },
+  "win": {
+    "icon": "icons/icon.icns",
+    "target": ["nsis"]
+  }
+}
