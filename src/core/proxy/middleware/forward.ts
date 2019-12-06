@@ -38,7 +38,7 @@ export class ForwarderMiddleware implements IProxyMiddleware {
     }
 
     // node version under v11.7.0, not support brotli algorithm
-    if (!isSupportBrotli && options.headers) {
+    if (!isSupportBrotli && options.headers && options.headers['accept-encoding']) {
       const accpetEncoding = options.headers['accept-encoding'] as string;
       accpetEncoding
         .split(',')
