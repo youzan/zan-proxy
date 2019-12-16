@@ -1,11 +1,12 @@
-import { IHostFile } from '@core/types/host';
-import { request } from '@core/utils';
 import EventEmitter from 'events';
 import fs from 'fs-extra';
 import { defaults, find, forEach, get } from 'lodash';
 import path from 'path';
 import { HttpError, NotFoundError } from 'routing-controllers';
 import { Service } from 'typedi';
+
+import { IHostFile } from '@core/types/host';
+import { request } from '@core/utils';
 
 import { AppInfoService } from './appInfo';
 
@@ -17,6 +18,7 @@ interface IUsingHostMap {
 }
 
 @Service()
+@Service('HostService')
 export class HostService extends EventEmitter {
   private hostFilesMap: {
     [fileName: string]: IHostFile;

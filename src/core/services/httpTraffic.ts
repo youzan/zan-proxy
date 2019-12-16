@@ -1,12 +1,14 @@
-import { IRecord, ITrafficRecord, ITrafficRequest, ITrafficResponse } from '@core/types/http-traffic';
 import EventEmitter from 'events';
 import fs from 'fs-extra';
 import path from 'path';
 import { Service } from 'typedi';
 
+import { IRecord, ITrafficRecord, ITrafficRequest, ITrafficResponse } from '@core/types/http-traffic';
+
 import { AppInfoService } from './appInfo';
 
 @Service()
+@Service('HttpTrafficService')
 export class HttpTrafficService extends EventEmitter {
   /**
    * http请求缓存数据
