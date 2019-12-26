@@ -157,7 +157,8 @@ export default class WorkspaceManager extends BaseManager {
       this.workspaces.push(workspace);
     } else {
       // 更新旧的工作区
-      Object.assign(this.workspaces[targetWsIndex], workspace);
+      const { checked, ...workspaceParams } = workspace;
+      Object.assign(this.workspaces[targetWsIndex], workspaceParams);
     }
     await this.syncUpdate();
     return workspace;
