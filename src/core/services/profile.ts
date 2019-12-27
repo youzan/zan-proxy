@@ -18,6 +18,7 @@ const DEFAULT_PROFILE: IProfile = {
  * 配置是否启用host解析、转发规则及工程路径
  */
 @Service()
+@Service('ProfileService')
 export class ProfileService extends EventEmitter {
   /**
    * 用户配置信息映射表

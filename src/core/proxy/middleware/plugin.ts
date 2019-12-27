@@ -5,14 +5,14 @@ import { IProxyContext, IProxyMiddleware, IProxyMiddlewareFn, NextFunction } fro
 
 @Service()
 export class PluginMiddleware implements IProxyMiddleware {
-  @Inject() private pluginManager: PluginService;
+  @Inject() private pluginService: PluginService;
 
   private pluginMiddlewareCache: IProxyMiddlewareFn;
 
   public onInit() {
     this.updateMiddlewareCache();
 
-    this.pluginManager.on('data-change', () => {
+    this.pluginService.on('data-change', () => {
       this.updateMiddlewareCache();
     });
   }
@@ -21,13 +21,14 @@ export class PluginMiddleware implements IProxyMiddleware {
    * 更新插件中间件缓存
    */
   private updateMiddlewareCache() {
-    this.pluginMiddlewareCache = this.pluginManager.getComposedPluginMiddlewares();
+    this.pluginMiddlewareCache = this.pluginService.getComposedPluginMiddlewares();
   }
 
   public async middleware(ctx: IProxyContext, next: NextFunction) {
     if (!this.pluginMiddlewareCache) {
       this.updateMiddlewareCache();
     }
+
     return this.pluginMiddlewareCache ? this.pluginMiddlewareCache(ctx, next) : next();
   }
 }

@@ -1,9 +1,10 @@
-import { IMockRecord } from '@core/types/mock';
 import EventEmitter from 'events';
 import fs from 'fs-extra';
 import { differenceWith, find, isEqual } from 'lodash';
 import path from 'path';
 import { Service } from 'typedi';
+
+import { IMockRecord } from '@core/types/mock';
 
 import { AppInfoService } from './appInfo';
 
@@ -11,6 +12,7 @@ import { AppInfoService } from './appInfo';
  * 数据 mock Service
  */
 @Service()
+@Service('MockDataService')
 export class MockDataService extends EventEmitter {
   private mockListFile: string;
   private mockDataDir: string;

@@ -6,7 +6,7 @@ import { LocalStorage } from 'node-localstorage';
 import npm from 'npm';
 import path from 'path';
 import { HttpError, NotFoundError } from 'routing-controllers';
-import { Service } from 'typedi';
+import Container, { Service } from 'typedi';
 
 import { AppInfoService } from './appInfo';
 
@@ -15,6 +15,7 @@ import { IPluginClass, IPluginInfo, IPluginModule } from '../types/plugin';
 const KEY = 'zanproxy-plugins';
 
 @Service()
+@Service('PluginService')
 export class PluginService extends EventEmitter {
   private store: LocalStorage;
   private plugins: { [key: string]: IPluginModule };
@@ -47,6 +48,40 @@ export class PluginService extends EventEmitter {
     this.refreshPlugins();
   }
 
+  /**
+   * 加载某个指定路径下的插件
+   */
+  private requirePlugin(pluginPath: string) {
+    delete require.cache[pluginPath];
+    const PluginModule = __non_webpack_require__(pluginPath);
+    const pluginClassInstance: IPluginClass = new PluginModule(Container);
+    return {
+      proxy: pluginClassInstance.proxy.bind(pluginClassInstance),
+      manage: pluginClassInstance.manage.bind(pluginClassInstance),
+    };
+  }
+
+  /**
+   * 加载指定路径的插件，用于插件开发的 debug
+   */
+  private requireDebugPlugin() {
+    const debugPluginPath = process.env.DEBUG_PLUGIN_PATH;
+    if (!debugPluginPath || !fs.pathExistsSync(debugPluginPath)) {
+      return;
+    }
+
+    const packageJson = __non_webpack_require__(path.resolve(debugPluginPath, 'package.json'));
+
+    try {
+      this.plugins[packageJson.name] = {
+        ...packageJson,
+        ...this.requirePlugin(debugPluginPath),
+      };
+    } catch (error) {
+      console.error(`plugin "${packageJson.name}" has a runtime error. please check it.\n${error.stack}`);
+    }
+  }
+
   public getPlugins(): IPluginInfo[] {
     try {
       return JSON.parse(this.store.getItem(KEY) || '[]');
@@ -67,25 +102,22 @@ export class PluginService extends EventEmitter {
    * 刷新插件信息
    */
   public refreshPlugins() {
-    this.plugins = this.getPlugins().reduce<{ [key: string]: IPluginModule }>((group, plugin) => {
+    this.plugins = this.getPlugins().reduce((group, plugin) => {
       try {
         const pluginPath = this.getPluginDir(plugin.name);
         if (!fs.existsSync(pluginPath)) {
           throw Error(`plugin ${plugin.name} not found`);
         }
-        delete require.cache[pluginPath];
-        const pluginClassInstance: IPluginClass = new (__non_webpack_require__(pluginPath))();
         group[plugin.name] = {
           ...plugin,
-          proxy: pluginClassInstance.proxy.bind(pluginClassInstance),
-          manage: pluginClassInstance.manage.bind(pluginClassInstance),
+          ...this.requirePlugin(pluginPath),
         };
       } catch (error) {
         console.error(`plugin "${plugin.name}" has a runtime error. please check it.\n${error.stack}`);
-        process.exit(-1);
       }
       return group;
     }, {});
+    this.requireDebugPlugin();
     this.emit('data-change');
   }
 
@@ -205,7 +237,12 @@ export class PluginService extends EventEmitter {
    * 获取组合后的中间件
    */
   public getComposedPluginMiddlewares() {
-    return compose(map(filter(this.plugins, plugin => !plugin.disabled), plugin => plugin.proxy()));
+    return compose(
+      map(
+        filter(this.plugins, plugin => !plugin.disabled),
+        plugin => plugin.proxy(),
+      ),
+    );
   }
 
   /**

@@ -1,5 +1,3 @@
-import { IRule, IRuleAction, IRuleFile } from '@core/types/rule';
-import { request } from '@core/utils';
 import EventEmitter from 'events';
 import fs from 'fs-extra';
 import { cloneDeep, filter, flatMap, lowerCase, pick } from 'lodash';
@@ -9,9 +7,13 @@ import { Service } from 'typedi';
 import URL from 'url';
 import uuid from 'uuid/v4';
 
+import { IRule, IRuleAction, IRuleFile } from '@core/types/rule';
+import { request } from '@core/utils';
+
 import { AppInfoService } from './appInfo';
 
 @Service()
+@Service('RuleService')
 export class RuleService extends EventEmitter {
   private ruleSaveDir: string;
 

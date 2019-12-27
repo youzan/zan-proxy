@@ -1,9 +1,10 @@
-import { IRule, IRuleActionData } from '@core/types/rule';
 import fs from 'fs-extra';
 import http from 'http';
 import mime from 'mime-types';
 import { Inject, Service } from 'typedi';
 import URL from 'url';
+
+import { IRule, IRuleActionData } from '@core/types/rule';
 
 import { MockDataService, ProfileService, RuleService } from '../../services';
 import { IProxyContext, IProxyMiddleware, NextFunction } from '../../types/proxy';
@@ -102,7 +103,7 @@ export class RuleMiddleware implements IProxyMiddleware {
     }
 
     // 规则的响应头先缓存在这里
-    const resHeaders: http.OutgoingHttpHeaders = {};
+    const resHeaders: Record<string, string> = {};
     for (const action of processRule.actionList) {
       const { data } = action;
       switch (action.type) {
@@ -129,7 +130,7 @@ export class RuleMiddleware implements IProxyMiddleware {
 
     // 在响应中设置额外的响应头
     Object.keys(resHeaders).forEach(headerKey => {
-      ctx.res.setHeader(headerKey, resHeaders[headerKey] as string);
+      ctx.res.setHeader(headerKey, resHeaders[headerKey]);
     });
   }
 }

@@ -20,6 +20,7 @@ const pemCreateCertificate = option =>
  * 证书处理 service
  */
 @Service()
+@Service('CertificateService')
 export class CertificateService {
   /**
    * @param storage 证书存储服务

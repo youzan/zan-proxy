@@ -16,6 +16,7 @@ export interface AppInfo {
 const USER_HOME = os.homedir();
 
 @Service()
+@Service('AppInfoService')
 export class AppInfoService extends EventEmitter {
   /**
    * app信息
