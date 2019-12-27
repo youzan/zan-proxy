@@ -12,7 +12,7 @@
     <el-table border :data="ruleFileList">
       <el-table-column align="center" prop="checked" label="启用" width="60">
         <template v-slot="scope">
-          <el-checkbox v-model="scope.row.checked" :disabled="!profile.enableRule" @change="toggleRule(scope.row)" />
+          <el-checkbox :checked="scope.row.checked" :disabled="!profile.enableRule" @change="toggleRule(scope.row)" />
         </template>
       </el-table-column>
       <el-table-column prop="name" label="名字" width="250">
