@@ -1,5 +1,18 @@
 # Github Change Log
 
+## zan-proxy@5.1.0
+
+**Feature:**
+
+- 依赖升级，支持 windows 打包 [#128](https://github.com/youzan/zan-proxy/pull/128)
+- 支持插件开发调试，为插件 class 构造函数注入 typedi 的 Container 参数 [#133](https://github.com/youzan/zan-proxy/pull/133)
+
+**Bugfix:**
+
+- 修复 content-type 头不存在时的报错 [#129](https://github.com/youzan/zan-proxy/pull/129)
+- 修复保存配置时可能会出现左侧配置checkbox被多选的情况 [#132](https://github.com/youzan/zan-proxy/pull/132)
+- 修复规则集列表页 toggle 点击失效的问题 [#134](https://github.com/youzan/zan-proxy/pull/134)
+
 ## zan-proxy@5.0.0（2019-11-11）
 
 **Refactor:**
