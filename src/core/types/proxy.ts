@@ -21,7 +21,6 @@ export interface ICtxTimeTrack {
 }
 
 export interface IProxyContext {
-  ctx: {};
   req: http.IncomingMessage;
   res: http.ServerResponse;
 

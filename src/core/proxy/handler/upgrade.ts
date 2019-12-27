@@ -1,10 +1,11 @@
-import { IProxyContext } from '@core/types/proxy';
 import http from 'http';
 import HttpProxy from 'http-proxy';
 import { ComposedMiddleware } from 'koa-compose';
 import net from 'net';
 import { Service } from 'typedi';
 import URL from 'url';
+
+import { IProxyContext } from '@core/types/proxy';
 
 @Service()
 export class UpgradeHandler {
