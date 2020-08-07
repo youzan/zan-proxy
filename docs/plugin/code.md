@@ -2,7 +2,7 @@
 
 ZanProxy插件是是一个**npm包**，这个npm包需要导出一个类，这个类要实现两个方法：`proxy`和`manage`，**除此之外没有任何特殊要求**。 `proxy`方法用于请求的处理，`manage`方法用于插件的配置。
 
-可以参考的例子：[点击这里](https://github.com/youzan/zan-proxy/tree/master/plugin-examples)。
+可以参考的例子：[点击这里](https://github.com/youzan/zan-proxy/tree/master/src/gui/plugins)。
 
 **注意**
 
